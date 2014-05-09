@@ -1,0 +1,23 @@
+.body {
+	font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
+	font-size: 1.1em;
+}
+
+.form {
+	font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
+	font-size: 1.1em;
+	background: #FFFFD1;
+	padding: 10px 10px 10px 10px;
+	margin-top: 2em;
+}
+
+.form h1 {
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+.form h2 {
+	font-size: 1.1em;
+	font-style: italic;
+	font-weight: normal;
+}
