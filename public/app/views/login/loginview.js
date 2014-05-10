@@ -2,16 +2,17 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
-	'text!views/login/login.html'
+	'text!templates/login.html',
+	'text!templates/form-message.html'
 ],
-function ($, _, Backbone, html) {
+function ($, _, Backbone, loginHtml, messageHtml) {
 	
 	var LoginView = Backbone.View.extend({
 
-		template: _.template(html),
+		template: _.template(loginHtml),
 
 		events: {
-			'click': 'showUserName'
+			'click #login': 'doLogin'
 		},
 
 		render: function () {
@@ -27,8 +28,32 @@ function ($, _, Backbone, html) {
 			return this;
 		},
 
-		showUserName: function () {
-			alert('User ' + this.model.get('name') + ' clicked!');
+		doLogin: function () {
+
+			var username,
+				password;
+
+			// Read username and password fields.
+			//
+			username = this.$('#username').val();
+			password = this.$('#password').val();
+
+			// Both must be present.
+			//
+			if(!username) {
+				this.$('username').addClass('error', 1000);
+
+				var html = _.template(messageHtml, { title: 'Errore', message: 'Il campo username è obbligatorio.'});
+				this.$('.row').first().before(html).prev().hide().fadeIn(function() {
+					var that = this;
+					setTimeout(function() {
+						$(that).fadeOut(function() {
+							this.remove();
+						});
+					}, 5000);
+				});
+
+			}
 		}
 	});
 	return LoginView;

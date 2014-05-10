@@ -21,13 +21,18 @@ require.config({
 
 requirejs([
 	'jquery',
+	'underscore',
 	'views/login/loginview',
 
 	'jquery-ui'
 ],
-function ($, LoginView) {
+function ($, _, LoginView) {
 
 	$(document).ready(function() {
+
+		_.templateSettings = {
+			interpolate: /\{\{(.+?)\}\}/g
+		};
 
 		var loginView = new LoginView();
 		$(document.body).append(loginView.render().el);
