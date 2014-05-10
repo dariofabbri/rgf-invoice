@@ -41,6 +41,6 @@
 	width: 100%;
 }
 
-.form input .error {
+.form .field-error {
 	background: #FF0000;
 }
