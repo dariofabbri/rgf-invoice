@@ -41,31 +41,35 @@ function ($, _, Backbone) {
 	// Set up the application namespace.
 	//
 	application = {};
-	application.views = {};
 
 
 	$(document).ready(function() {
 
 		require([
+			'utils/view-manager',
 			'views/header/header',
 			'views/footer/footer',
 			'routers/home'
 		], 
-		function(HeaderView, FooterView, HomeRouter) {
+		function(ViewManager, HeaderView, FooterView, HomeRouter) {
+
+			// Create the view manager.
+			//
+			application.viewManager = new ViewManager();
 
 			// Set up header view. It will stay there for the whole application
 			// lifetime.
 			//
 			var headerView = new HeaderView();
 			$("#header").append(headerView.render().el);
-			application.views['header'] = headerView;
+			application.viewManager.setView(header, headerView);
 
 			// Set up footer view. It will stay there for the whole application
 			// lifetime.
 			//
 			var footerView = new FooterView();
 			$("#footer").append(footerView.render().el);
-			application.views['footer'] = footerView;
+			application.viewManager.setView(footer, footerView);
 
 
 			var homeRouter = new HomeRouter();
