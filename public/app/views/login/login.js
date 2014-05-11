@@ -2,11 +2,12 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'views/form/form',
 	'text!templates/login.html'
 ],
-function ($, _, Backbone, loginHtml) {
+function ($, _, Backbone, FormView, loginHtml) {
 	
-	var LoginView = Backbone.FormView.extend({
+	var LoginView = FormView.extend({
 
 		template: _.template(loginHtml),
 

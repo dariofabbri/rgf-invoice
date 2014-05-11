@@ -23,11 +23,12 @@ requirejs([
 	'jquery',
 	'underscore',
 	'backbone',
-	'text!templates/form-message.html',
 
 	'jquery-ui'
 ],
-function ($, _, Backbone, messageHtml) {
+function ($, _, Backbone) {
+
+	var application;
 
 	// Customize underscore's templates to mimic mustache style
 	// field replacing.
@@ -36,45 +37,41 @@ function ($, _, Backbone, messageHtml) {
 		interpolate: /\{\{(.+?)\}\}/g
 	};
 
-	// Create an extend version of Backbone.View dedicated to form
-	// building.
+
+	// Set up the application namespace.
 	//
-	Backbone.FormView = Backbone.View.extend({
+	application = {};
+	application.views = {};
 
-		fldDelay: 1000,
-
-		// Add a generic function to show a message in the form.
-		//
-		showMessage: function(title, message, removeTimeout) {
-
-			// If no remove timeout has been specified, just
-			// set a default to 5 seconds.
-			//
-			removeTimeout = removeTimeout || 5000;
-
-			var html = _.template(messageHtml, { title: title, message: message});
-			this.$('.row').first().before(html).prev().hide().fadeIn(function() {
-				var that = this;
-
-				// A negative remove timeout disables the automatic
-				// removal of the message.
-				//
-				if(removeTimeout >= 0) {
-					setTimeout(function() {
-						$(that).fadeOut(function() {
-							this.remove();
-						});
-					}, removeTimeout);
-				}
-			});
-		}
-	});
 
 	$(document).ready(function() {
 
-		require(['views/login/loginview'], function(LoginView) {
-			var loginView = new LoginView();
-			$(document.body).append(loginView.render().el);
+		require([
+			'views/header/header',
+			'views/footer/footer',
+			'routers/home'
+		], 
+		function(HeaderView, FooterView, HomeRouter) {
+
+			// Set up header view. It will stay there for the whole application
+			// lifetime.
+			//
+			var headerView = new HeaderView();
+			$("#header").append(headerView.render().el);
+			application.views['header'] = headerView;
+
+			// Set up footer view. It will stay there for the whole application
+			// lifetime.
+			//
+			var footerView = new FooterView();
+			$("#footer").append(footerView.render().el);
+			application.views['footer'] = footerView;
+
+
+			var homeRouter = new HomeRouter();
+
+			Backbone.history.start({ pushState: true});
+			homeRouter.navigate('login', true);
 		});
 	});
 });
