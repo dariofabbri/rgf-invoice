@@ -28,19 +28,12 @@ requirejs([
 ],
 function ($, _, Backbone) {
 
-	var application;
-
 	// Customize underscore's templates to mimic mustache style
 	// field replacing.
 	//
 	_.templateSettings = {
 		interpolate: /\{\{(.+?)\}\}/g
 	};
-
-
-	// Set up the application namespace.
-	//
-	application = {};
 
 
 	$(document).ready(function() {
@@ -51,31 +44,27 @@ function ($, _, Backbone) {
 			'views/footer/footer',
 			'routers/home'
 		], 
-		function(ViewManager, HeaderView, FooterView, HomeRouter) {
-
-			// Create the view manager.
-			//
-			application.viewManager = new ViewManager();
+		function(viewManager, HeaderView, FooterView, HomeRouter) {
 
 			// Set up header view. It will stay there for the whole application
 			// lifetime.
 			//
 			var headerView = new HeaderView();
 			$("#header").append(headerView.render().el);
-			application.viewManager.setView(header, headerView);
+			viewManager.setView('#header', headerView);
 
 			// Set up footer view. It will stay there for the whole application
 			// lifetime.
 			//
 			var footerView = new FooterView();
 			$("#footer").append(footerView.render().el);
-			application.viewManager.setView(footer, footerView);
+			viewManager.setView('#footer', footerView);
 
 
 			var homeRouter = new HomeRouter();
 
 			Backbone.history.start({ pushState: true});
-			homeRouter.navigate('login', true);
+			Backbone.history.navigate('login', true);
 		});
 	});
 });

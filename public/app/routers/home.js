@@ -2,36 +2,29 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
-	'views/login/login'
+	'views/login/login',
+	'views/main-menu/main-menu',
+	'utils/view-manager'
 ],
-function ($, _, Backbone, LoginView) {
+function ($, _, Backbone, LoginView, MainMenuView, viewManager) {
 	
 	var HomeRouter = Backbone.Router.extend({
 
 		routes: {
-			"login":	"login",
-			"home":		"home"
+			"login":		"login",
+			"mainMenu":	"mainMenu"
 		},
 
 		login: function() {
 
-			// Transition out existing view.
-			//
-
-			// Remove existing view.
-			//
-
-			// Create new view.
-			//
-
-			// Transition in new view.
-			//
-
 			var loginView = new LoginView();
-			$("#main-content").append(loginView.render().el);
+			viewManager.setView('#main-content', loginView);
 		},
 
-		home: function() {
+		mainMenu: function() {
+
+			var mainMenuView = new MainMenuView();
+			viewManager.setView('#main-content', mainMenuView);
 		}
 
 	});

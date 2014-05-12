@@ -71,6 +71,10 @@ function ($, _, Backbone, FormView, loginHtml) {
 			// Set the focus on the first field in error.
 			//
 			firstInError && firstInError.focus();
+
+			if(!firstInError) {
+				Backbone.history.navigate('mainMenu', true);
+			}
 		},
 
 		resetFieldErrors: function () {
