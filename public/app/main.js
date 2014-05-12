@@ -50,20 +50,18 @@ function ($, _, Backbone) {
 			// lifetime.
 			//
 			var headerView = new HeaderView();
-			$("#header").append(headerView.render().el);
-			viewManager.setView('#header', headerView);
+			viewManager.setView('#header', headerView, false);
 
 			// Set up footer view. It will stay there for the whole application
 			// lifetime.
 			//
 			var footerView = new FooterView();
-			$("#footer").append(footerView.render().el);
-			viewManager.setView('#footer', footerView);
+			viewManager.setView('#footer', footerView, false);
 
 
 			var homeRouter = new HomeRouter();
 
-			Backbone.history.start({ pushState: true});
+			Backbone.history.start({ pushState: true });
 			Backbone.history.navigate('login', true);
 		});
 	});

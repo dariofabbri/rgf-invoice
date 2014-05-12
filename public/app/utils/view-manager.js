@@ -8,20 +8,43 @@ function (_) {
 
 		this.transitionIn = {
 			effect: 'fade',
-			duration: 1000
+			duration: 400
 		};
 
 		this.transitionOut = {
 			effect: 'fade',
-			duration: 1000
+			duration: 400
 		};
 	};
 
 	_.extend(ViewManager.prototype, {
 
-		setView: function(selector, view) {
+		setView: function(selector, view, useTransition, transitionIn, transitionOut) {
 
 			var that = this;
+
+			var tIn = transitionIn || this.transitionIn;
+
+			var tOut = transitionOut || this.transitionOut;
+			_.extend(tOut, {
+				
+				complete: function() {
+
+					// Clean up previous view including
+					// subviews, if present.
+					//
+					that.removeView(prev);
+
+					// Transition in new view.
+					//
+					$(selector).append(view.render().el);
+					view.$el.hide();
+					view.$el.show(that.transitionIn);
+				}
+			});
+
+			var tUse = _.isUndefined(useTransition) ? true : useTransition;
+
 
 			// Check if the view exists.
 			//
@@ -30,31 +53,21 @@ function (_) {
 
 				// Transition out existing view.
 				//
-				_.extend(this.transitionOut, { 
-					
-					complete: function() {
-
-						// Clean up previous view including
-						// subviews, if present.
-						//
-						that.removeView(prev);
-
-						// Transition in new view.
-						//
-						$(selector).append(view.render().el);
-						view.$el.hide();
-						view.$el.show(that.transitionIn);
-					}
-				});
-				prev.$el.hide(this.transitionOut);
+				if(tUse) {
+					prev.$el.hide(tOut);
+				} else {
+					that.removeView(prev);
+				}
 
 			} else {
 
 				// Transition in new view.
 				//
 				$(selector).append(view.render().el);
-				view.$el.hide();
-				view.$el.show(that.transitionIn);
+				if(tUse) {
+					view.$el.hide();
+					view.$el.show(that.transitionIn);
+				}
 			}
 
 			// Set the new view.
