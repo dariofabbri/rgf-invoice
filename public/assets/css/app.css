@@ -81,3 +81,7 @@ body {
 .form .field-error {
 	background: #FF0000;
 }
+
+.right {
+	text-align: right;
+}
