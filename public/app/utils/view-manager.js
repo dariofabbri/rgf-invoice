@@ -5,35 +5,57 @@ function (_) {
 
 	var ViewManager = function() {
 		this.views = {};
+
+		this.transitionIn = {
+			effect: 'fade',
+			duration: 1000
+		};
+
+		this.transitionOut = {
+			effect: 'fade',
+			duration: 1000
+		};
 	};
 
 	_.extend(ViewManager.prototype, {
 
 		setView: function(selector, view) {
 
+			var that = this;
+
 			// Check if the view exists.
 			//
 			var prev = this.views[selector];
 			if(prev) {
 
-				var that = this;
-
 				// Transition out existing view.
 				//
-				this.transitionOut(prev, function() {
+				_.extend(this.transitionOut, { 
+					
+					complete: function() {
 
-					// Clean up previous view including
-					// subviews, if present.
-					//
-					that.removeView(prev);
+						// Clean up previous view including
+						// subviews, if present.
+						//
+						that.removeView(prev);
+
+						// Transition in new view.
+						//
+						$(selector).append(view.render().el);
+						view.$el.hide();
+						view.$el.show(that.transitionIn);
+					}
 				});
-			}
+				prev.$el.hide(this.transitionOut);
 
-			// Transition in new view.
-			//
-			$(selector).append(view.render().el);
-			view.$el.addClass('page');
-			this.transitionIn(view);
+			} else {
+
+				// Transition in new view.
+				//
+				$(selector).append(view.render().el);
+				view.$el.hide();
+				view.$el.show(that.transitionIn);
+			}
 
 			// Set the new view.
 			//
@@ -51,28 +73,6 @@ function (_) {
 			// Remove the view.
 			//
 			view.remove();
-		},
-
-		transitionIn: function (view, callback) {
-			var animateIn = function () {
-				view.$el.addClass('is-visible');
-				view.$el.one('transitionend', function () {
-					if (_.isFunction(callback)) {
-						callback();
-					}
-				});
-			};
-
-			_.delay(animateIn, 20);
-		},
-
-		transitionOut: function (view, callback) {
-			view.$el.removeClass('is-visible');
-			view.$el.one('transitionend', function () {
-				if (_.isFunction(callback)) {
-					callback();
-				}
-			});
 		}
 	});
 
