@@ -3,9 +3,10 @@ define([
 	'underscore',
 	'backbone',
 	'views/form/form',
+	'models/login-info',
 	'text!templates/login.html'
 ],
-function ($, _, Backbone, FormView, loginHtml) {
+function ($, _, Backbone, FormView, loginInfo, loginHtml) {
 	
 	var LoginView = FormView.extend({
 
@@ -73,6 +74,7 @@ function ($, _, Backbone, FormView, loginHtml) {
 			firstInError && firstInError.focus();
 
 			if(!firstInError) {
+				loginInfo.set('loggedOn', true);
 				Backbone.history.navigate('mainMenu', true);
 			}
 		},
