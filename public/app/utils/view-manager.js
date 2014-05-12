@@ -4,12 +4,10 @@ define([
 function (_) {
 
 	var ViewManager = function() {
-
-		var views = {};
-
+		this.views = {};
 	};
 
-	_.extends(ViewManager.prototype, {
+	_.extend(ViewManager.prototype, {
 
 		setView: function(id, view) {
 
@@ -30,8 +28,8 @@ function (_) {
 
 			// Check if the view has child views.
 			//
-			if(prev.childViews) {
-				_.each(prev.childViews, this.removeViews);
+			if(view.childViews) {
+				_.each(view.childViews, this.removeViews);
 			}
 
 			// Remove the view.
