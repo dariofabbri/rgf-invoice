@@ -36,7 +36,10 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 			});
 			
 			if(this.model.get('loggedOn')) {
-				logoutButton.show('fade');
+				logoutButton
+					.attr('title', this.model.get('name') + ' ' + this.model.get('surname'))
+					.tooltip()
+					.show('fade');
 			} else {
 				logoutButton.hide('fade');
 			}
