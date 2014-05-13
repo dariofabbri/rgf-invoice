@@ -1,0 +1,22 @@
+@media print {
+
+	div.header { display: none }
+	div.header { display: block; position: running(header); }
+
+	div.footer { display: none }
+	div.footer { display: block; position: running(footer); }
+
+	@page {
+		size: a4 portrait;
+		@bottom-right { 
+			content: "Page " counter(page) " of " counter(pages);
+			font-family: Helvetica, Arial, Sans-Serif; font-size: 10pt; 
+		}
+		@bottom-left { 
+			content: "Generated with VelocityReport Plugin $!plugin.version for Servoy";
+			font-family:helvetica, arial, sans-serif; font-size: 10pt; 
+		}
+		margin: 1.2in .4in .4in .4in;
+		@top-left { content: element(header); }
+	}
+}

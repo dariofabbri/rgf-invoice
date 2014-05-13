@@ -21,6 +21,9 @@ passport.use(new BasicStrategy({
 
 			User.findOne({username: username}, function(err, user) {
 
+				console.log(err);
+				console.log(user);
+
 				if (err) { 
 					return done(err); 
 				}

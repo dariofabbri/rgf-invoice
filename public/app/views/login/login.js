@@ -3,10 +3,11 @@ define([
 	'underscore',
 	'backbone',
 	'views/form/form',
+	'utils/base64',
 	'models/login-info',
 	'text!templates/login.html'
 ],
-function ($, _, Backbone, FormView, loginInfo, loginHtml) {
+function ($, _, Backbone, FormView, Base64, loginInfo, loginHtml) {
 	
 	var LoginView = FormView.extend({
 
@@ -44,12 +45,49 @@ function ($, _, Backbone, FormView, loginInfo, loginHtml) {
 
 			var username,
 				password,
-				firstInError;
+				that = this;
 
-			// Read username and password fields.
+			// Read username and password fields and fill in the login info model.
 			//
-			username = this.$('#username').val();
-			password = this.$('#password').val();
+			loginInfo.set('username', this.$('#username').val());
+			loginInfo.set('password', this.$('#password').val());
+
+			// Validate read data.
+			//
+			if(!this.validate(loginInfo)) {
+				return;
+			}
+
+			// Try to execute the login on the server.
+			//
+			var authorization = 'Basic ' + Base64.encode(loginInfo.get('username') + ':' + loginInfo.get('password'));
+			$.ajax('login', {
+				headers: {
+					'Authorization': authorization
+				},
+				type: 'GET',
+				success: function(data) {
+					loginInfo.set({
+						_id: data._id,
+						name: data.name,
+						surname: data.surname,
+						createdOn: data.createdOn,
+						updatedOn: data.updatedOn,
+						loggedOn: true
+					});
+					Backbone.history.navigate('mainMenu', true);
+				},
+				error: function(data) {
+					that.showMessage('Errore', 'Username e password non validi.');
+				}
+			});
+		},
+
+		validate: function(loginInfo) {
+
+			var firstInError,
+				field,
+				msg;
 
 			// Clear previous validation errors from form fields.
 			//
@@ -57,31 +95,32 @@ function ($, _, Backbone, FormView, loginInfo, loginHtml) {
 
 			// Validate username field.
 			//
-			if (!username) {
-				firstInError = firstInError || this.$('#username').addClass('field-error', this.fldDelay);
-				this.showMessage('Errore', 'Il campo username è obbligatorio.');
+			if (!loginInfo.get('username')) {
+				msg = 'Il campo username è obbligatorio.';
+				field = this.setFieldError('#username', msg);
+				firstInError = firstInError || field;
+				this.showMessage('Errore', msg);
 			}
 
 			// Validate password field.
 			//
-			if (!password) {
-				firstInError = firstInError || this.$('#password').addClass('field-error', this.fldDelay).focus();
-				this.showMessage('Errore', 'Il campo password è obbligatorio.');
+			if (!loginInfo.get('password')) {
+				msg = 'Il campo password è obbligatorio.';
+				field = this.setFieldError('#password', msg);
+				firstInError = firstInError || field;
+				this.showMessage('Errore', msg);
 			}
 
 			// Set the focus on the first field in error.
 			//
 			firstInError && firstInError.focus();
 
-			if(!firstInError) {
-				loginInfo.set('loggedOn', true);
-				Backbone.history.navigate('mainMenu', true);
-			}
+			return !firstInError;
 		},
 
 		resetFieldErrors: function () {
-			this.$('#username').removeClass('field-error');
-			this.$('#password').removeClass('field-error');
+			this.resetFieldError('#username');
+			this.resetFieldError('#password');
 		}
 	});
 

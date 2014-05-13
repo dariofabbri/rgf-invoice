@@ -37,6 +37,44 @@ function ($, _, Backbone, messageHtml) {
 					}, removeTimeout);
 				}
 			});
+		},
+
+
+		// Set the error on a field.
+		//
+		setFieldError: function(selector, tooltip) {
+
+			if(tooltip) {
+
+				// Save existing title attribute.
+				//
+				var title = this.$(selector).attr('title');
+				this.$(selector).data('savedTitle', title);
+
+				this.$(selector)
+					.addClass('field-error', this.fldDelay)
+					.attr('title', tooltip)
+					.tooltip();
+			}
+
+			return this.$(selector).addClass('field-error', this.fldDelay);
+		},
+
+		// Reset the error on a field.
+		//
+		resetFieldError: function(selector) {
+
+			// Restore previous tooltip, in case.
+			//
+			var savedTitle = this.$(selector).data('savedTitle');
+			if(savedTitle) {
+				this.$(selector)
+					.attr('title', savedTitle);
+			}
+
+			return this.$(selector)
+				.removeClass('field-error')
+				.data('savedTitle', null);
 		}
 	});
 

@@ -21,7 +21,7 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 
 			// Listen to changes to login info model.
 			//
-			this.model.on('change', this.render, this);
+			this.model.on('change:loggedOn', this.render, this);
 		},
 
 		render: function () {
