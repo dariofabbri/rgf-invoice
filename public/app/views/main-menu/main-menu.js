@@ -11,16 +11,19 @@ function ($, _, Backbone, html) {
 		template: _.template(html),
 
 		events: {
-			'click #utenti': 'onUtentiClick',
-			'click #clienti': 'onClientiClick',
+			'click #users': 'onUsersClick'
 		},
 
 		render: function () {
 			var html = this.template();
 			this.$el.html(html);
 
-			this.$('#utenti').button();
-			this.$('#clienti').button();
+			this.$('#users').button();
+			this.$('#contacts').button();
+			this.$('#invoices').button();
+			this.$('#creditNotes').button();
+			this.$('#deliveryNotes').button();
+			this.$('#repairs').button();
 
 			return this;
 		},

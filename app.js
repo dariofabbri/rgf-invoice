@@ -47,7 +47,7 @@ passport.use(new BasicStrategy({
 mongoose.connect('mongodb://localhost:27017/rgf');
 
 var users = require('./routes/user');
-var customers = require('./routes/customers');
+var contacts = require('./routes/contacts');
 
 var app = express();
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -71,11 +71,11 @@ app.post('/users', passport.authenticate('basic', { session: false }), users.cre
 app.put('/users/:id', passport.authenticate('basic', { session: false }), users.update);
 app.delete('/users/:id', passport.authenticate('basic', { session: false }), users.delete);
 
-app.get('/customers', passport.authenticate('basic', { session: false }), customers.list);
-app.get('/customers/:id', passport.authenticate('basic', { session: false }), customers.retrieve);
-app.post('/customers', passport.authenticate('basic', { session: false }), customers.create);
-app.put('/customers/:id', passport.authenticate('basic', { session: false }), customers.update);
-app.delete('/customers/:id', passport.authenticate('basic', { session: false }), customers.delete);
+app.get('/contacts', passport.authenticate('basic', { session: false }), contacts.list);
+app.get('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.retrieve);
+app.post('/contacts', passport.authenticate('basic', { session: false }), contacts.create);
+app.put('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.update);
+app.delete('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.delete);
 
 
 // Catch 404 and forwarding to error handler

@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var customerSchema = new Schema({
+var contactSchema = new Schema({
 	vatCode: String,
 	cfCode: String,
 	description: String,
@@ -15,8 +15,8 @@ var customerSchema = new Schema({
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now }
 }, {
-	collection: 'customers'
+	collection: 'contacts'
 });
 
-var Customer = mongoose.model('Customer', customerSchema);
-module.exports = Customer;
+var Contact = mongoose.model('Contact', contactSchema);
+module.exports = Contact;

@@ -1,6 +1,6 @@
 var moment = require('moment');
 var mongoose = require('mongoose');
-var Customer = require('../models/customer');
+var Contact = require('../models/contact');
 
 exports.list = function(req, res) {
 
@@ -52,7 +52,7 @@ exports.retrieve = function(req, res) {
 		}
 		if(!doc) {
 			res.statusCode = 404;
-			return res.send('Customer not found.');
+			return res.send('Contact not found.');
 		}
   	res.send(doc);
 	});
