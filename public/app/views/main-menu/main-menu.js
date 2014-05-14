@@ -27,6 +27,11 @@ function ($, _, Backbone, html) {
 
 			return this;
 		},
+
+		onUsersClick: function() {
+
+			Backbone.history.navigate("users", true);
+		}
 	});
 
 	return MainMenuView;

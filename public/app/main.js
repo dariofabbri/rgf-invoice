@@ -42,9 +42,10 @@ function ($, _, Backbone) {
 			'utils/view-manager',
 			'views/header/header',
 			'views/footer/footer',
-			'routers/home'
+			'routers/home',
+			'routers/user'
 		], 
-		function(viewManager, HeaderView, FooterView, HomeRouter) {
+		function(viewManager, HeaderView, FooterView, HomeRouter, UserRouter) {
 
 			// Set up header view. It will stay there for the whole application
 			// lifetime.
@@ -59,8 +60,13 @@ function ($, _, Backbone) {
 			viewManager.setView('#footer', footerView, false);
 
 
+			// Register application routers.
+			//
 			var homeRouter = new HomeRouter();
+			var userRouter = new UserRouter();
 
+			// Kick off the application.
+			//
 			Backbone.history.start({ pushState: true });
 			Backbone.history.navigate('login', true);
 		});

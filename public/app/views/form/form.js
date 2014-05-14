@@ -2,14 +2,15 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'views/parent/parent',
 	'text!templates/form-message.html'
 ],
-function ($, _, Backbone, messageHtml) {
+function ($, _, Backbone, ParentView, messageHtml) {
 
-	// Create an extend version of Backbone.View dedicated to form
+	// Create an extended version of Backbone.View dedicated to form
 	// building.
 	//
-	var FormView = Backbone.View.extend({
+	var FormView = ParentView.extend({
 
 		fldDelay: 1000,
 

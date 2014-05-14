@@ -77,10 +77,12 @@ function (_) {
 
 		removeView: function(view) {
 
+			var that = this;
+
 			// Check if the view has child views.
 			//
 			if (view.childViews) {
-				_.each(view.childViews, this.removeViews);
+				_.each(view.childViews, that.removeView, that);
 			}
 
 			// Remove the view.
