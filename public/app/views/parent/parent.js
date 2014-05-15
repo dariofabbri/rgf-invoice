@@ -5,25 +5,35 @@ define([
 ],
 function ($, _, Backbone) {
 
-	// Create an extended version of Backbone.View that can manage child views.
+	// Create an extended version of Backbone.View that can support subviews.
 	//
 	var ParentView = Backbone.View.extend({
 
-		childViews: [],
+		constructor: function() {
+			
+			this.subviews = [];
 
-		removeChildViews: function () {
+			Backbone.View.apply(this, arguments);
+		},
 
-			if(this.childViews) {
-				_.each(this.childViews, this.removeView);
+		removeSubviews: function () {
+
+			if(this.subviews) {
+				_.each(this.subviews, this.removeView);
 			}
+		},
+
+		addSubview: function(subview) {
+
+			this.subviews.push(subview);
 		},
 
 		removeView: function (view) {
 
-			// Check if the view has child views.
+			// Process subviews, if needed.
 			//
-			if (view.childViews) {
-				_.each(view.childViews, this.removeView);
+			if (view.subviews) {
+				_.each(view.subviews, this.removeView);
 			}
 
 			// Remove the view.

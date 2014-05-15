@@ -17,19 +17,19 @@ function ($, _, Backbone, ParentView, SearchView, DetailView, mainHtml) {
 			var html = this.template();
 			this.$el.html(html);
 
-			this.removeChildViews();
+			this.removeSubviews();
 
 			// Render search view.
 			//
 			var searchView = new SearchView();
 			this.$('#search').html(searchView.render().el);
-			this.childViews.push(searchView);
+			this.addSubview(searchView);
 
 			// Render detail view.
 			//
 			var detailView = new DetailView();
 			this.$('#detail').html(detailView.render().el).hide();
-			this.childViews.push(detailView);
+			this.addSubview(detailView);
 
 			return this;
 		}

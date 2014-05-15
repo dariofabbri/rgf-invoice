@@ -14,7 +14,8 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 		model: loginInfo,
 
 		events: {
-			'click #logout': 'onLogoutClick',
+			'click #logout': 	'onLogoutClick',
+			'click #home': 		'onHomeClick',
 		},
 
 		initialize: function () {
@@ -34,13 +35,22 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 					text: false
 				}
 			});
+
+			var homeButton = this.$('#home').button({
+				icons: {
+					primary: 'ui-icon-home',
+					text: false
+				}
+			});
 			
 			if(this.model.get('loggedOn')) {
+				homeButton.show('fade');
 				logoutButton
 					.attr('title', this.model.get('name') + ' ' + this.model.get('surname'))
 					.tooltip()
 					.show('fade');
 			} else {
+				homeButton.hide('fade');
 				logoutButton.hide('fade');
 			}
 
@@ -51,6 +61,11 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 
 			this.model.doLogout();
 			Backbone.history.navigate('login', true);
+		},
+
+		onHomeClick: function() {
+
+			Backbone.history.navigate('mainMenu', true);
 		}
 
 	});
