@@ -1,11 +1,12 @@
 require.config({
 	baseUrl: 'app',
 	paths: {
-		jquery: '../libs/jquery',
-		'jquery-ui': '../libs/jquery-ui',
-		underscore: '../libs/underscore',
-		backbone: '../libs/backbone',
-		text: '../libs/text'
+		jquery: 				'../libs/jquery',
+		'jquery-ui':		'../libs/jquery-ui',
+		'datatables': 	'../libs/jquery.dataTables',
+		underscore: 		'../libs/underscore',
+		backbone: 			'../libs/backbone',
+		text: 					'../libs/text'
 	},
 	shim: {
 		backbone: {
@@ -14,6 +15,10 @@ require.config({
 		},
 
 		'jquery-ui': {
+			deps: ['jquery']
+		},
+
+		'jquery-dataTables': {
 			deps: ['jquery']
 		}
 	}
@@ -24,7 +29,8 @@ requirejs([
 	'underscore',
 	'backbone',
 
-	'jquery-ui'
+	'jquery-ui',
+	'datatables'
 ],
 function ($, _, Backbone) {
 

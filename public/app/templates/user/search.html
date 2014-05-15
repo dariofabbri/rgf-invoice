@@ -1,54 +1,49 @@
 <div class="grid">
-	<div class="c12">
-		<span>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed laoreet et
-			sapien in eleifend. Pellentesque sed diam nec orci dapibus commodo ut vel
-			orci. Nam eget mattis tellus, ac fermentum elit. Vestibulum dapibus
-			lobortis eros sed venenatis. Mauris suscipit justo a orci gravida tempor.
-			Nunc in posuere massa. Phasellus dictum diam at dictum aliquam.
-			Suspendisse pellentesque lectus elementum, sollicitudin ante sed,
-			venenatis velit. Duis quis neque aliquam, convallis sem quis, dignissim
-			nunc. Donec imperdiet iaculis pharetra. Aliquam interdum, nisi id posuere
-			tincidunt, lorem nulla placerat est, et tempor magna ante sed metus.
-			Donec bibendum felis et lacus porta, a porttitor turpis dapibus.
 
-			Proin vel metus eu neque hendrerit vestibulum. Sed in lectus et mi
-			venenatis ornare. Praesent vel feugiat turpis, adipiscing dignissim mi.
-			Etiam lobortis lorem vitae rutrum sagittis. Quisque quis facilisis arcu,
-			at semper nulla. Vestibulum nec lobortis sem, id dignissim magna. Mauris
-			purus quam, consectetur nec laoreet tincidunt, suscipit ornare libero.
-			Vivamus auctor nunc molestie nulla ultrices convallis. Nullam lectus
-			mauris, mattis eget porttitor non, iaculis nec lacus. Sed venenatis
-			turpis ut odio fermentum, non pharetra enim hendrerit.
+	<div class="form c12">
 
-			Duis elit ipsum, cursus ac malesuada nec, pretium a massa. Suspendisse
-			rhoncus euismod velit non eleifend. Suspendisse ac nunc non sapien
-			fringilla porta. Quisque viverra sem nibh, id gravida diam semper a. Nam
-			quis dignissim dui, vitae gravida elit. Vestibulum ligula erat, varius
-			sit amet consequat elementum, tristique id ligula. Praesent at sapien
-			egestas, ultricies nulla vel, condimentum eros. Aliquam facilisis commodo
-			nisi in accumsan. In mattis tempus nisl a condimentum. Cum sociis natoque
-			penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-			Maecenas eleifend erat sapien, sit amet euismod massa mollis eu. Duis non
-			erat lorem. Aliquam blandit viverra eros at volutpat. Ut sit amet nisl
-			sed eros ornare laoreet eu sit amet enim. Donec ornare lorem auctor massa
-			venenatis adipiscing. Vivamus vel ultrices mi.
+		<div class="header"><span>Ricerca utenti</span></div>
+		<div class="subheader"><span>Inserire i campi di ricerca</span></div>
 
-			Nulla id pulvinar lectus. Integer quis interdum mauris. In libero nulla,
-			congue et posuere nec, semper tempor nunc. Donec vulputate urna ut mauris
-			viverra suscipit. Suspendisse at mauris interdum, pharetra dui vitae,
-			pharetra urna. Morbi semper odio nisl, id hendrerit ante iaculis a.
-			Quisque sit amet metus in dui vestibulum luctus.
+		<div class="row">
+			<div class="c4"><span>Nome utente:<span></div>
+			<div class="c8"><input id="username" type="text" placeholder="Inserire parte dello username" /></div>
+		</div>
 
-			Proin a dolor nunc. Integer eleifend mollis facilisis. Curabitur
-			malesuada dolor ut turpis ultricies, et ultricies urna vestibulum. Donec
-			non arcu augue. Vestibulum lobortis magna eget pharetra tristique. Aenean
-			a orci et metus interdum tempus. Ut sed sapien vehicula, posuere lacus a,
-			iaculis mauris. Integer ultrices bibendum orci quis sollicitudin.
-			Praesent sed scelerisque purus. Vestibulum vel mollis quam. Suspendisse
-			vitae iaculis mauris, et egestas velit. Fusce vel magna enim. Vestibulum
-			ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
-			Curae;
-		</span>
+		<div class="row">
+			<div class="c4"><span>Cognome:<span></div>
+			<div class="c8"><input id="surname" type="text" placeholder="Inserire parte del cognome" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Nome:<span></div>
+			<div class="c8"><input id="name" type="text" placeholder="Inserire parte del nome" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c12 right">
+				<button id="new">Crea nuovo</button>
+			</div>
+		</div>
 	</div>
+
+	<table id="list" class="c12">
+		<thead>
+			<tr>
+				<th>Username</th>
+				<th>Cognome</th>
+				<th>Nome</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th>Username</th>
+				<th>Cognome</th>
+				<th>Nome</th>
+				<th>&nbsp;</th>
+			</tr>
+		</tfoot>
+	</table>
+
 </div>
