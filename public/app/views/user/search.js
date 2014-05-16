@@ -57,7 +57,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 
 			this.$('#new').button();
 
-			this.$('#list').dataTable({
+			var datatable = this.$('#list').dataTable({
 				serverSide: true,
 				ajax: this.ajaxSearch,
 				dom: 'tipr',
@@ -100,9 +100,17 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				}
 			});
 			
-			// Enable grid buttons.
-			//
-			this.$('#list').find('button').button();
+			datatable.on('draw.dt', function() {
+				
+				// Enable grid buttons.
+				//
+				datatable.find('button').button({
+					icons: {
+						primary: 'ui-icon-document',
+						text: false
+					}
+				}).width('35px').height('20px');
+			});
 
 			// Set up focus on the first search field.
 			//

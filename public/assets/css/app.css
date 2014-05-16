@@ -43,7 +43,7 @@ body {
 .form {
 	font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
 	font-size: .9em;
-	background: #E6B2FF;
+	background: #C4C6DE;
 	padding: 0;
 	margin-top: 2em;
 	border-top-left-radius: 8px;
@@ -54,7 +54,7 @@ body {
 
 .form .header {
 	padding: .5em;
-	background: #735980;
+	background: #9499D7;
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
 	font-size: 1.4em;
