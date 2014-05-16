@@ -21,9 +21,6 @@ passport.use(new BasicStrategy({
 
 			User.findOne({username: username}, function(err, user) {
 
-				console.log(err);
-				console.log(user);
-
 				if (err) { 
 					return done(err); 
 				}
@@ -47,7 +44,7 @@ passport.use(new BasicStrategy({
 mongoose.connect('mongodb://localhost:27017/rgf');
 
 var users = require('./routes/user');
-var contacts = require('./routes/contacts');
+var contacts = require('./routes/contact');
 
 var app = express();
 app.use(favicon(__dirname + '/public/favicon.ico'));

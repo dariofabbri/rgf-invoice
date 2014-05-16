@@ -1,9 +1,10 @@
 define([
 	'jquery',
 	'underscore',
-	'backbone'
+	'backbone',
+	'utils/base64',
 ],
-function ($, _, Backbone) {
+function ($, _, Backbone, Base64) {
 	var LoginInfo = Backbone.Model.extend({
 
 		defaults: {
@@ -13,6 +14,10 @@ function ($, _, Backbone) {
 		doLogout: function() {
 
 			this.set('loggedOn', false);
+		},
+
+		getAuthorization: function() {
+			return 'Basic ' + Base64.encode(this.get('username') + ':' + this.get('password'));
 		}
 
 	});

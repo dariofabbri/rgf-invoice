@@ -2,7 +2,29 @@ var User = require('../models/user');
 
 exports.list = function(req, res) {
 
-	User.find({}, function(err, docs) {
+	var query = User
+		.find({});
+
+	if(req.query.username) {
+		query.where('username', new RegExp(req.query.username, "i"));
+	}
+
+	if(req.query.name) {
+		query.where('name', new RegExp(req.query.name, "i"));
+	}
+
+	if(req.query.surname) {
+		query.where('surname', new RegExp(req.query.surname, "i"));
+	}
+
+	if(req.query.sort) {
+
+		var sort = {};
+		sort[req.query.sort] = req.query.sortDirection || 'asc';
+		query.sort(sort);
+	}
+
+	query.exec(function(err, docs) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);

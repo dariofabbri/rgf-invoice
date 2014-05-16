@@ -3,11 +3,10 @@ define([
 	'underscore',
 	'backbone',
 	'views/form/form',
-	'utils/base64',
 	'models/login-info',
 	'text!templates/login.html'
 ],
-function ($, _, Backbone, FormView, Base64, loginInfo, loginHtml) {
+function ($, _, Backbone, FormView, loginInfo, loginHtml) {
 	
 	var LoginView = FormView.extend({
 
@@ -60,7 +59,7 @@ function ($, _, Backbone, FormView, Base64, loginInfo, loginHtml) {
 
 			// Try to execute the login on the server.
 			//
-			var authorization = 'Basic ' + Base64.encode(loginInfo.get('username') + ':' + loginInfo.get('password'));
+			var authorization = loginInfo.getAuthorization();
 			$.ajax('login', {
 				headers: {
 					'Authorization': authorization
