@@ -2,34 +2,58 @@ var User = require('../models/user');
 
 exports.list = function(req, res) {
 
-	var query = User
-		.find({});
+	var response = {};
+	var listQuery = User.find({});
+	var countQuery = User.count({});
 
 	if(req.query.username) {
-		query.where('username', new RegExp(req.query.username, "i"));
+		listQuery.where('username', new RegExp(req.query.username, "i"));
+		countQuery.where('username', new RegExp(req.query.username, "i"));
 	}
 
 	if(req.query.name) {
-		query.where('name', new RegExp(req.query.name, "i"));
+		listQuery.where('name', new RegExp(req.query.name, "i"));
+		countQuery.where('name', new RegExp(req.query.name, "i"));
 	}
 
 	if(req.query.surname) {
-		query.where('surname', new RegExp(req.query.surname, "i"));
+		listQuery.where('surname', new RegExp(req.query.surname, "i"));
+		countQuery.where('surname', new RegExp(req.query.surname, "i"));
 	}
-
-	if(req.query.sort) {
-
-		var sort = {};
-		sort[req.query.sort] = req.query.sortDirection || 'asc';
-		query.sort(sort);
-	}
-
-	query.exec(function(err, docs) {
+	
+	// Count the filtered results.
+	//
+	countQuery.count(function(err, count) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
 		}
-  	res.send(docs);
+		response.total = count;
+	});
+
+	if(req.query._sort) {
+		var sort = {};
+		sort[req.query._sort] = req.query._sortDirection || 'asc';
+		sort._id = 'asc'; // Stable sorting required for consistent pagination.
+		listQuery.sort(sort);
+	}
+
+	if(req.query._length) {
+		listQuery.limit(req.query._length);
+	}
+
+	if(req.query._start) {
+		listQuery.skip(req.query._start);
+	}
+
+	listQuery.exec(function(err, docs) {
+		if(err) {
+			res.statusCode = 500;
+			return res.send(err);
+		}
+		response.data = docs;
+		response.length = docs.length;
+  	res.send(response);
 	});
 };
 

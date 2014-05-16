@@ -28,8 +28,10 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 					queryArguments[column.name] = column.search.value;
 				}
 			});
-			queryArguments.sort = data.columns[data.order[0].column].name;
-			queryArguments.sortDirection = data.order[0].dir;
+			queryArguments._sort = data.columns[data.order[0].column].name;
+			queryArguments._sortDirection = data.order[0].dir;
+			queryArguments._length = data.length;
+			queryArguments._start = data.start;
 
 			$.ajax({
 				headers: {
@@ -41,9 +43,9 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				success: function(response) {
 					callback({
 						draw: data.draw,
-						recordsTotal: response.length,
-						recordsFiltered: response.length,
-						data: response
+						recordsTotal: response.total,
+						recordsFiltered: response.total,
+						data: response.data
 					});
 				}
 			});
@@ -58,18 +60,19 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			this.$('#list').dataTable({
 				serverSide: true,
 				ajax: this.ajaxSearch,
+				dom: 'tipr',
 				columns: [
 					{
 						name: 'username',
 						data: 'username'
 					},
 					{
-						name: 'name',
-						data: 'name'
-					},
-					{
 						name: 'surname',
 						data: 'surname'
+					},
+					{
+						name: 'name',
+						data: 'name'
 					},
 					{
 						data: null,
