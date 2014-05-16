@@ -16,6 +16,7 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 		events: {
 			'click #logout': 	'onLogoutClick',
 			'click #home': 		'onHomeClick',
+			'click #chuck': 	'onChuckClick'
 		},
 
 		initialize: function () {
@@ -39,6 +40,13 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 			var homeButton = this.$('#home').button({
 				icons: {
 					primary: 'ui-icon-home',
+					text: false
+				}
+			});
+
+			var chuckButton = this.$('#chuck').button({
+				icons: {
+					primary: 'ui-icon-notice',
 					text: false
 				}
 			});
@@ -66,6 +74,22 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 		onHomeClick: function() {
 
 			Backbone.history.navigate('mainMenu', true);
+		},
+
+		onChuckClick: function() {
+
+			$.ajax({
+				url: 'http://api.icndb.com/jokes/random',
+				type: 'GET',
+				success: function(response) {
+					console.log(response);
+
+					$('<div>' + response.value.joke + '</div>').dialog({
+						title: 'Chuck Norris',
+						modal: true
+					});
+				}
+			});
 		}
 
 	});
