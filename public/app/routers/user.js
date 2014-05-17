@@ -2,10 +2,10 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
-	'views/user/main',
+	'views/user/search',
 	'utils/view-manager'
 ],
-function ($, _, Backbone, MainUserView, viewManager) {
+function ($, _, Backbone, SearchUserView, viewManager) {
 	
 	var UserRouter = Backbone.Router.extend({
 
@@ -15,8 +15,8 @@ function ($, _, Backbone, MainUserView, viewManager) {
 
 		users: function() {
 
-			var mainUserView = new MainUserView();
-			viewManager.setView('#main-content', mainUserView);
+			var searchUserView = new SearchUserView();
+			viewManager.setView('#main-content', searchUserView);
 		}
 	});
 
