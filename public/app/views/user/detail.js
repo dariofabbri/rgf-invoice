@@ -2,11 +2,12 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'views/form/form',
 	'text!templates/user/detail.html'
 ],
-function ($, _, Backbone, detailHtml) {
+function ($, _, Backbone, FormView, detailHtml) {
 	
-	var DetailView = Backbone.View.extend({
+	var DetailView = FormView.extend({
 
 		template: _.template(detailHtml),
 
@@ -39,6 +40,8 @@ function ($, _, Backbone, detailHtml) {
 			this.model.set('username', this.$('#username').val());
 			this.model.set('surname', this.$('#surname').val());
 			this.model.set('name', this.$('#name').val());
+			this.model.set('password', this.$('#password').val());
+			this.model.set('confirmPassword', this.$('#confirmPassword').val());
 		},
 
 		onClickBack: function() {
@@ -50,7 +53,7 @@ function ($, _, Backbone, detailHtml) {
 
 			this.formToModel();
 
-			if (!this.model.save({}, {
+			var valid = this.model.save({}, {
 				success: function() {
 
 					// Put out a message box for confirmation.
@@ -73,11 +76,24 @@ function ($, _, Backbone, detailHtml) {
 						Backbone.history.navigate('users', true);
 					});
 				}
-			})) {
+			});
 
-				// Manage model validation error.
-				//
+			// Manage model validation error.
+			//
+			this.resetFieldErrors();
+			if(!valid) {
+				this.setFormErrors(this.model.validationError);
 			}
+		},
+
+		// Clear previous validation errors from form fields.
+		//
+		resetFieldErrors: function () {
+			this.resetFieldError('#username');
+			this.resetFieldError('#name');
+			this.resetFieldError('#surname');
+			this.resetFieldError('#password');
+			this.resetFieldError('#confirmPassword');
 		}
 	});
 

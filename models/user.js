@@ -6,7 +6,9 @@ var userSchema = new Schema({
 	password: String,
 	name: String,
 	surname: String,
+	createdBy: String,
 	createdOn: { type: Date, default: Date.now },
+	updatedBy: String,
 	updatedOn: { type: Date, default: Date.now }
 }, {
 	collection: 'users'

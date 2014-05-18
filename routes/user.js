@@ -105,6 +105,7 @@ exports.create = function(req, res) {
 			username: req.body.username,
 			name: req.body.name,
 			surname: req.body.surname,
+			password: req.body.password,
 			createdOn: now,
 			updatedOn: now
 		});
@@ -146,7 +147,9 @@ exports.update = function(req, res) {
 		user.username = req.body.username ? req.body.username : user.username;
 		user.name = req.body.name ? req.body.name : user.name;
 		user.surname = req.body.surname ? req.body.surname : user.surname;
+		user.password = req.body.password ? req.body.password : user.password;
 		user.updatedOn = new Date();
+		user.updatedBy = req.user.username;
 
 		// Update the user in the db collection.
 		//

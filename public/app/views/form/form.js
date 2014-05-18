@@ -76,6 +76,31 @@ function ($, _, Backbone, ParentView, messageHtml) {
 			return this.$(selector)
 				.removeClass('field-error')
 				.data('savedTitle', null);
+		},
+
+		setFormErrors: function(errors, mapping) {
+
+			var field, firstInError, selector;
+			var that = this;
+
+			// Manage model validation error.
+			//
+			if (errors) {
+
+				_.each(errors, function(value, key, list) {
+
+					selector = (mapping && mapping[key]) || '#' + key;
+
+					field = that.setFieldError(selector, value);
+					firstInError = firstInError || field;
+					that.showMessage('Errore', value);
+				});
+
+			}
+
+			// Set the focus on the first field in error.
+			//
+			firstInError && firstInError.focus();
 		}
 	});
 

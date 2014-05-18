@@ -52,6 +52,12 @@ function ($, _, Backbone, loginInfo) {
 			'Authorization': loginInfo.getAuthorization()
 		});
 
+		options.error = function(jqxhr, status, error) {
+			$('<div>Il server ha risposto con un errore.<br><b>' + error + '</b><br>' + jqxhr.responseText + '</div>').dialog({
+				modal: true
+			});
+		}
+
 		backboneSync(method, model, options);
 	}
 
