@@ -107,7 +107,9 @@ exports.create = function(req, res) {
 			surname: req.body.surname,
 			password: req.body.password,
 			createdOn: now,
-			updatedOn: now
+			createdBy: req.user.username,
+			updatedOn: now,
+			updatedBy: req.user.username
 		});
 
 		// Insert the user in the db collection.
