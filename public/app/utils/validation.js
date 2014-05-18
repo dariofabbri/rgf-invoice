@@ -126,6 +126,36 @@ function (_) {
 			// Compare with declared check char.
 			//
 			return calc === check;
+		},
+
+		isValidPartitaIVA: function(piva) {
+
+			var i, c, k;
+
+			piva = piva.trim();
+
+			if(!piva.match(/\d{11}/)) {
+				return false;
+			}
+
+			var x = 0;
+			for(i = 0; i < 10; i += 2) {
+				c = piva.charAt(i);
+				x += Number.parseInt(c, 10);
+			}
+
+			var y = 0;
+			for(i = 1; i < 10; i += 2) {
+				c = piva.charAt(i);
+				k = Number.parseInt(c, 10) * 2;
+				k = k > 9 ? k - 9 : k;
+				y += k;
+			}
+
+			var t = (x + y) % 10;
+			var c = (10 - t) % 10;
+
+			return c === Number.parseInt(piva.charAt(10));
 		}
 	});
 
