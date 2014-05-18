@@ -82,7 +82,6 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 				url: 'http://api.icndb.com/jokes/random',
 				type: 'GET',
 				success: function(response) {
-					console.log(response);
 
 					$('<div>' + response.value.joke + '</div>').dialog({
 						title: 'Chuck Norris',

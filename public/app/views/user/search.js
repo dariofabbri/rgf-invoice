@@ -14,7 +14,9 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		template: _.template(searchHtml),
 
 		events: {
-			'keyup input': 'onKeyup'
+			'keyup input': 	'onKeyup',
+			'click #new':		'onClickNew',
+			'click table button': 'onEditRecord'
 		},
 
 		render: function () {
@@ -27,7 +29,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 
 			// Restore form state.
 			//
-			this.searchModelToForm();
+			this.modelToForm();
 
 			// Configure data table.
 			//
@@ -54,7 +56,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 						defaultContent: '',
 						orderable: false,
 						render: function(data, type, row, meta) {
-							return '<button id="edit_' + row[0] + '"></button>';
+							return '<button id="edit_' + row._id + '"></button>';
 						},
 						targets: -1
 					}
@@ -76,7 +78,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 					zeroRecords: 'Nessun risultato trovato',
 					info: 'Pagina _PAGE_ di _PAGES_',
 					infoEmpty: 'Nessun risultato trovato',
-					infoFiltered: '(filtered from _MAX_ total records)',
+					infoFiltered: '',
 					paginate: {
 						first:		'Inizio',
 						last:			'Fine',
@@ -149,7 +151,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			
 			// Load model from view.
 			//
-			this.formToSearchModel();
+			this.formToModel();
 
 			// Execute query again.
 			//
@@ -165,18 +167,31 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			datatable.draw();
 		},
 
-		formToSearchModel: function() {
+		formToModel: function() {
 
 			userSearch.set('username', this.$('#username').val());
 			userSearch.set('surname', this.$('#surname').val());
 			userSearch.set('name', this.$('#name').val());
 		},
 
-		searchModelToForm: function() {
+		modelToForm: function() {
 
 			this.$('#username').val(userSearch.get('username'));
 			this.$('#surname').val(userSearch.get('surname'));
 			this.$('#name').val(userSearch.get('name'));
+		},
+
+		onClickNew: function() {
+
+			Backbone.history.navigate('newUser', true);
+		},
+
+		onEditRecord: function(e) {
+
+			var re = /^edit_([0-9a-f]+)$/i;
+			var id = e.currentTarget.id.match(re)[1];
+
+			Backbone.history.navigate('user/' + id, true);
 		}
 	});
 

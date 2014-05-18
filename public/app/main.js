@@ -28,11 +28,12 @@ requirejs([
 	'jquery',
 	'underscore',
 	'backbone',
+	'models/login-info',
 
 	'jquery-ui',
 	'datatables'
 ],
-function ($, _, Backbone) {
+function ($, _, Backbone, loginInfo) {
 
 	// Customize underscore's templates to mimic mustache style
 	// field replacing.
@@ -40,6 +41,19 @@ function ($, _, Backbone) {
 	_.templateSettings = {
 		interpolate: /\{\{(.+?)\}\}/g
 	};
+
+
+	// Customize Backbone.sync function.
+	//
+	var backboneSync = Backbone.sync;
+	Backbone.sync = function(method, model, options) {
+
+		options.headers = _.extend(options.headers || {}, {
+			'Authorization': loginInfo.getAuthorization()
+		});
+
+		backboneSync(method, model, options);
+	}
 
 
 	$(document).ready(function() {
