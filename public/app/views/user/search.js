@@ -16,7 +16,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		events: {
 			'keyup input': 	'onKeyup',
 			'click #new':		'onClickNew',
-			'click table tr': 'onEditRecord'
+			'click table tbody tr': 'onEditRecord'
 		},
 
 		render: function () {
@@ -79,7 +79,6 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				}
 			});
 
-			/*
 			datatable.find('tbody').on('click', 'tr', function() {
 				if ($(this).hasClass('selected')) {
 					$(this).removeClass('selected');
@@ -88,7 +87,6 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 					$(this).addClass('selected');
 				}
 			});
-			*/
 
 			// Apply search filters.
 			//
