@@ -33,7 +33,11 @@ function (_) {
 					// Clean up previous view including
 					// subviews, if present.
 					//
-					that.removeView(prev);
+					if(prev.removeView && _.isFunction(prev.removeView)) {
+						prev.removeView();
+					} else {
+						prev.remove();
+					}
 
 					// Transition in new view.
 					//
@@ -56,7 +60,11 @@ function (_) {
 				if(tUse) {
 					prev.$el.hide(tOut);
 				} else {
-					that.removeView(prev);
+					if(prev.removeView && _.isFunction(prev.removeView)) {
+						prev.removeView();
+					} else {
+						prev.remove();
+					}
 				}
 
 			} else {
@@ -73,21 +81,6 @@ function (_) {
 			// Set the new view.
 			//
 			this.views[selector] = view;
-		},
-
-		removeView: function(view) {
-
-			var that = this;
-
-			// Check if the view has subviews.
-			//
-			if (view.subviews) {
-				_.each(view.subviews, that.removeView, that);
-			}
-
-			// Remove the view.
-			//
-			view.remove();
 		}
 	});
 

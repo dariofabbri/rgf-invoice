@@ -23,12 +23,14 @@ function ($, _, Backbone) {
 			}
 		},
 
-		addSubview: function(subview) {
+		addSubview: function (subview) {
 
 			this.subviews.push(subview);
 		},
 
 		removeView: function (view) {
+
+			view = view || this;
 
 			// Process subviews, if needed.
 			//
@@ -38,6 +40,11 @@ function ($, _, Backbone) {
 
 			// Remove the view.
 			//
+			if(view.onRemove && _.isFunction(view.onRemove)) {
+				view.onRemove();
+			}
+			view.$el.off();
+			view.$('*').off();
 			view.remove();
 		}
 	});

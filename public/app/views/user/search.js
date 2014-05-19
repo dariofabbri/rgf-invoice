@@ -16,7 +16,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		events: {
 			'keyup input': 	'onKeyup',
 			'click #new':		'onClickNew',
-			'click table button': 'onEditRecord'
+			'click table tr': 'onEditRecord'
 		},
 
 		render: function () {
@@ -50,15 +50,6 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 					{
 						name: 'name',
 						data: 'name'
-					},
-					{
-						data: null,
-						defaultContent: '',
-						orderable: false,
-						render: function(data, type, row, meta) {
-							return '<button id="edit_' + row._id + '"></button>';
-						},
-						targets: -1
 					}
 				],
 				searchCols: [
@@ -70,8 +61,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 					},
 					{
 						search: userSearch.get('name')
-					},
-					null
+					}
 				],
 				language: {
 					lengthMenu: 'Mostra _MENU_ righe',
@@ -88,17 +78,17 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 					search: 'Cerca'
 				}
 			});
-			
-			// Every time the gris is redrawn, enable its buttons.
-			//
-			datatable.on('draw.dt', function() {
-				datatable.find('button').button({
-					icons: {
-						primary: 'ui-icon-document',
-						text: false
-					}
-				}).width('35px').height('20px');
+
+			/*
+			datatable.find('tbody').on('click', 'tr', function() {
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					datatable.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
 			});
+			*/
 
 			// Apply search filters.
 			//
@@ -147,6 +137,11 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			});
 		},
 
+		onRemove: function() {
+
+			this.$('#list').DataTable().destroy();
+		},
+
 		onKeyup: function() {
 			
 			// Load model from view.
@@ -164,6 +159,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			datatable.column('username:name').search(userSearch.get('username'));
 			datatable.column('name:name').search(userSearch.get('name'));
 			datatable.column('surname:name').search(userSearch.get('surname'));
+
 			datatable.draw();
 		},
 
@@ -188,9 +184,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 
 		onEditRecord: function(e) {
 
-			var re = /^edit_([0-9a-f]+)$/i;
-			var id = e.currentTarget.id.match(re)[1];
-
+			var id = this.$('#list').DataTable().row(e.currentTarget).data()._id;
 			Backbone.history.navigate('user/' + id, true);
 		}
 	});
