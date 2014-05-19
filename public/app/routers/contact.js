@@ -30,7 +30,7 @@ function ($, _, Backbone, SearchContactView, DetailContactView, ContactModel, vi
 			viewManager.setView('#main-content', detailContactView);
 		},
 
-		user: function(id) {
+		contact: function(id) {
 
 			var model = new ContactModel({ _id: id });
 			model.fetch();

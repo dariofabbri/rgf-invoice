@@ -6,28 +6,88 @@
 		<div class="subheader"><span>Inserire i dati del contatto</span></div>
 
 		<div class="row">
-			<div class="c4"><span>Nome utente:<span></div>
-			<div class="c8"><input id="username" type="text" placeholder="Inserire il campo username" value="{{username}}"/></div>
+			<div class="c4"><span>Tipo contatto:<span></div>
+			<div class="c8">
+				<div id="isCompany">
+					<input type="radio" id="company" name="isCompany" value="company"><label for="company">Azienda</label>
+					<input type="radio" id="person" name="isCompany" value="person"><label for="person">Persona fisica</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Partita IVA:<span></div>
+			<div class="c8"><input id="vatCode" type="text" placeholder="Inserire il codice di partita IVA" value="{{vatCode}}"/></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Codice fiscale:<span></div>
+			<div class="c8"><input id="cfCode" type="text" placeholder="Inserire il codice fiscale" value="{{cfCode}}"/></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Ragione sociale:<span></div>
+			<div class="c8"><input id="description" type="text" placeholder="Inserire la ragione sociale" value="{{description}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Titolo:<span></div>
+			<div class="c8"><input id="salutation" type="text" placeholder="Inserire il titolo del contatto" value="{{salutation}}" /></div>
 		</div>
 
 		<div class="row">
 			<div class="c4"><span>Nome:<span></div>
-			<div class="c8"><input id="name" type="text" placeholder="Inserire il nome dell'utente" value="{{name}}" /></div>
+			<div class="c8"><input id="firstName" type="text" placeholder="Inserire il nome del contatto" value="{{firstName}}" /></div>
 		</div>
 
 		<div class="row">
 			<div class="c4"><span>Cognome:<span></div>
-			<div class="c8"><input id="surname" type="text" placeholder="Inserire il cognome dell'utente" value="{{surname}}" /></div>
+			<div class="c8"><input id="lastName" type="text" placeholder="Inserire il cognome del contatto" value="{{lastName}}" /></div>
 		</div>
 
 		<div class="row">
-			<div class="c4"><span>Password:<span></div>
-			<div class="c8"><input id="password" type="password" placeholder="Inserire la password" /></div>
+			<div class="c4"><span>Indirizzo (1):<span></div>
+			<div class="c8"><input id="address1" type="text" placeholder="Inserire la prima riga dell'indirizzo" value="{{address1}}" /></div>
 		</div>
 
 		<div class="row">
-			<div class="c4"><span>Conferma password:<span></div>
-			<div class="c8"><input id="confirmPassword" type="password" placeholder="Ripetere la password" /></div>
+			<div class="c4"><span>Indirizzo (2):<span></div>
+			<div class="c8"><input id="address2" type="text" placeholder="Inserire la seconda riga dell'indirizzo" value="{{address2}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Città:<span></div>
+			<div class="c8"><input id="city" type="text" placeholder="Inserire la città" value="{{city}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Provincia:<span></div>
+			<div class="c8"><input id="county" type="text" placeholder="Inserire la provincia" value="{{county}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>CAP:<span></div>
+			<div class="c8"><input id="zipCode" type="text" placeholder="Inserire il CAP" value="{{zipCode}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Paese:<span></div>
+			<div class="c8"><input id="country" type="text" placeholder="Inserire la nazione" value="{{country}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Telefono:<span></div>
+			<div class="c8"><input id="phone" type="text" placeholder="Inserire il numero di telefono" value="{{phone}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Fax:<span></div>
+			<div class="c8"><input id="fax" type="text" placeholder="Inserire il numero di fax" value="{{fax}}" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c4"><span>Email:<span></div>
+			<div class="c8"><input id="email" type="text" placeholder="Inserire l'indirizzo di posta elettronica" value="{{email}}" /></div>
 		</div>
 
 		<div class="row">

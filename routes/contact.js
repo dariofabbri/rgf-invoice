@@ -75,10 +75,7 @@ exports.retrieve = function(req, res) {
 
 	var id = req.params.id;
 
-	var query = Observation
-		.findOne({_id: new mongoose.Types.ObjectId(id)});
-
-	query.exec(function(err, doc) {
+	Contact.findById(id, function(err, doc) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);

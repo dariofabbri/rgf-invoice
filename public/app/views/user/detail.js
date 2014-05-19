@@ -58,7 +58,7 @@ function ($, _, Backbone, FormView, detailHtml) {
 
 					// Put out a message box for confirmation.
 					//
-					$('<div>Le modifiche sono state apportate con successo.</div>').dialog({
+					$('<div>Le modifiche sono state applicate con successo.</div>').dialog({
 						title: 'Dettaglio utente',
 						modal: true,
 						buttons: [
