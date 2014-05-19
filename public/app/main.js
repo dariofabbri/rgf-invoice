@@ -69,9 +69,10 @@ function ($, _, Backbone, loginInfo) {
 			'views/header/header',
 			'views/footer/footer',
 			'routers/home',
-			'routers/user'
+			'routers/user',
+			'routers/contact'
 		], 
-		function(viewManager, HeaderView, FooterView, HomeRouter, UserRouter) {
+		function(viewManager, HeaderView, FooterView, HomeRouter, UserRouter, ContactRouter) {
 
 			// Set up header view. It will stay there for the whole application
 			// lifetime.
@@ -90,6 +91,7 @@ function ($, _, Backbone, loginInfo) {
 			//
 			var homeRouter = new HomeRouter();
 			var userRouter = new UserRouter();
+			var contactRouter = new ContactRouter();
 
 			// Kick off the application.
 			//

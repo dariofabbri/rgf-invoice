@@ -11,7 +11,8 @@ function ($, _, Backbone, html) {
 		template: _.template(html),
 
 		events: {
-			'click #users': 'onUsersClick'
+			'click #users': 'onUsersClick',
+			'click #contacts': 'onContactsClick'
 		},
 
 		render: function () {
@@ -30,7 +31,12 @@ function ($, _, Backbone, html) {
 
 		onUsersClick: function() {
 
-			Backbone.history.navigate("users", true);
+			Backbone.history.navigate('users', true);
+		},
+
+		onContactsClick: function() {
+
+			Backbone.history.navigate('contacts', true);
 		}
 	});
 

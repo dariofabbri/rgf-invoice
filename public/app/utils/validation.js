@@ -156,6 +156,12 @@ function (_) {
 			var c = (10 - t) % 10;
 
 			return c === Number.parseInt(piva.charAt(10));
+		},
+
+		isValidEmail: function(email) {
+			
+			var re = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+			return email.match(re);
 		}
 	});
 

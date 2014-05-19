@@ -2,38 +2,71 @@ var moment = require('moment');
 var mongoose = require('mongoose');
 var Contact = require('../models/contact');
 
+
 exports.list = function(req, res) {
 
-	var query = Observation
-		.find({})
-		.sort('lastName');
+	var response = {};
+	var listQuery = Contact.find({});
+	var countQuery = Contact.count({});
 
-	/*
-	if(req.query.startDate) {
-		var startDate = moment(req.query.startDate);
-		if(!startDate.isValid()) {
-			res.statusCode = 400;
-			return res.send('Invalid startDate query parameter.');
-		}
-		query.where('observationDate').gte(startDate.toDate());
+	if(req.query.vatCode) {
+		listQuery.where('vatCode', new RegExp(req.query.vatCode, "i"));
+		countQuery.where('vatCode', new RegExp(req.query.vatCode, "i"));
 	}
 
-	if(req.query.endDate) {
-		var endDate = moment(req.query.endDate);
-		if(!endDate.isValid()) {
-			res.statusCode = 400;
-			return res.send('Invalid endDate query parameter.');
-		}
-		query.where('observationDate').lte(endDate.toDate());
+	if(req.query.cfCode) {
+		listQuery.where('cfCode', new RegExp(req.query.cfCode, "i"));
+		countQuery.where('cfCode', new RegExp(req.query.cfCode, "i"));
 	}
-	*/
 
-	query.exec(function(err, docs) {
+	if(req.query.description) {
+		listQuery.where('description', new RegExp(req.query.description, "i"));
+		countQuery.where('description', new RegExp(req.query.description, "i"));
+	}
+
+	if(req.query.firstName) {
+		listQuery.where('firstName', new RegExp(req.query.firstName, "i"));
+		countQuery.where('firstName', new RegExp(req.query.firstName, "i"));
+	}
+
+	if(req.query.lastName) {
+		listQuery.where('lastName', new RegExp(req.query.lastName, "i"));
+		countQuery.where('lastName', new RegExp(req.query.lastName, "i"));
+	}
+	
+	// Count the filtered results.
+	//
+	countQuery.count(function(err, count) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
 		}
-  	res.send(docs);
+		response.total = count;
+	});
+
+	if(req.query._sort) {
+		var sort = {};
+		sort[req.query._sort] = req.query._sortDirection || 'asc';
+		sort._id = 'asc'; // Stable sorting required for consistent pagination.
+		listQuery.sort(sort);
+	}
+
+	if(req.query._length) {
+		listQuery.limit(req.query._length);
+	}
+
+	if(req.query._start) {
+		listQuery.skip(req.query._start);
+	}
+
+	listQuery.exec(function(err, docs) {
+		if(err) {
+			res.statusCode = 500;
+			return res.send(err);
+		}
+		response.data = docs;
+		response.length = docs.length;
+  	res.send(response);
 	});
 };
 
@@ -61,96 +94,136 @@ exports.retrieve = function(req, res) {
 
 exports.create = function(req, res) {
 
-	// The weight field is mandatory.
+	// The isCompany flag is mandatory.
 	//
-	if(!req.body.weight) {
+	if(req.body.isCompany === undefined) {
 		res.statusCode = 400;
-		return res.send('Missing weight in request.');
+		return res.send('Missing isCompany flag in request.');
 	}
-
-	// The observation date field is mandatory.
+	
+	// If the contact is a company, the VAT code is mandatory.
 	//
-	if(!req.body.observationDate) {
+	if(req.body.isCompany && !req.body.vatCode) {
 		res.statusCode = 400;
-		return res.send('Missing observationDate in request.');
+		return res.send('Missing vatCode in request with isCompany flag set.');
 	}
-	var observationDate = moment(req.body.observationDate);
-	if(!observationDate.isValid()) {
+	
+	// If the contact is not a company, the CF code is mandatory.
+	//
+	if(!req.body.isCompany && !req.body.cfCode) {
 		res.statusCode = 400;
-		return res.send('Invalid observationDate in request.');
+		return res.send('Missing cfCode in request with isCompany flag unset.');
 	}
-	observationDate = observationDate.startOf('day');
 
-	var userid = req.params.userid;
-
-	User.findById(userid, function(err, doc) {
+	// Check if the contact is already present.
+	//
+	var clause = {};
+	if(req.body.isCompany) {
+		clause.isCompany = true;
+		clause.vatCode = req.body.vatCode;
+	} else {
+		clause.isCompany = false;
+		clause.cfCode = req.body.cfCode;
+	}
+	Contact.findOne(clause, function(err, result) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
 		}
-		if(!doc) {
-			res.statusCode = 404;
-			return res.send('User not found.');
+
+		if(result) {
+			res.statusCode = 409;
+			return res.send('Contact already present.');
 		}
 
-
-		// Prepare obervation object to insert in the DB.
+		// Prepare contact object to be inserted in the DB.
 		//
 		var now = new Date();
-		var observation = new Observation({
-			userId: userid,
-			weight: req.body.weight,
-			observationDate: observationDate.toDate(),
+		var contact = new Contact({
+			isCompany: req.body.isCompany,
+			vatCode: req.body.vatCode,
+			cfCode: req.body.cfCode,
+			description: req.body.description,
+			salutation: req.body.salutation,
+			firstName: req.body.firstName,
+			lastName: req.body.lastName,
+			address1: req.body.address1,
+			address2: req.body.address2,
+			city: req.body.city,
+			county: req.body.county,
+			zipCode: req.body.zipCode,
+			country: req.body.country,
+			phone: req.body.phone,
+			fax: req.body.fax,
+			email: req.body.email,
 			createdOn: now,
-			updatedOn: now
+			createdBy: req.user.username,
+			updatedOn: now,
+			updatedBy: req.user.username
 		});
 
-		// Insert the observation in the db collection.
+		// Insert the contact in the db collection.
 		//
-		observation.save(function(err, observation) {
+		contact.save(function(err, contact) {
 			if(err) {
 				res.statusCode = 500;
 				return res.send(err);
 			}
 			
-			return res.send(observation);
+			return res.send(contact);
 		});
+
 	});
 };
 
 
 exports.update = function(req, res) {
 
-	var userid = req.params.userid;
 	var id = req.params.id;
 
-	var query = Observation
-		.findOne({userId: new mongoose.Types.ObjectId(userid), _id: new mongoose.Types.ObjectId(id)});
-
-	query.exec(function(err, observation) {
+	// Retrieve the specified contact using the provided id.
+	//
+	Contact.findById(id, function(err, contact) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
 		}
-		if(!observation) {
+
+		if(!contact) {
 			res.statusCode = 404;
-			return res.send('Observation not found.');
+			return res.send('Contact not found.');
 		}
 
-		// Prepare observation object for database update.
+		// Prepare contact object for database update.
 		//
-		observation.weight = req.body.weight ? req.body.weight : observation.weight;
-		observation.updatedOn = new Date();
+		contact.isCompany = req.body.isCompany ? req.body.isCompany : contact.isCompany;
+		contact.vatCode = req.body.vatCode ? req.body.vatCode : contact.vatCode;
+		contact.cfCode = req.body.cfCode ? req.body.cfCode : contact.cfCode;
+		contact.description = req.body.description ? req.body.description : contact.description;
+		contact.salutation = req.body.salutation ? req.body.salutation : contact.salutation;
+		contact.firstName = req.body.firstName ? req.body.firstName : contact.firstName;
+		contact.lastName = req.body.lastName ? req.body.lastName : contact.lastName;
+		contact.address1 = req.body.address1 ? req.body.address1 : contact.address1;
+		contact.address2 = req.body.address2 ? req.body.address2 : contact.address2;
+		contact.city = req.body.city ? req.body.city : contact.city;
+		contact.county = req.body.county ? req.body.county : contact.county;
+		contact.zipCode = req.body.zipCode ? req.body.zipCode : contact.zipCode;
+		contact.country = req.body.country ? req.body.country : contact.country;
+		contact.phone = req.body.phone ? req.body.phone : contact.phone;
+		contact.fax = req.body.fax ? req.body.fax : contact.fax;
+		contact.email = req.body.email ? req.body.email : contact.email;
+		contact.updatedOn = new Date();
+		contact.updatedBy = req.user.username;
 
-		// Update the observation in the db collection.
+		// Update the contact in the db collection.
 		//
-		observation.save(function(err, observation) {
+		contact.save(function(err, contact) {
 			if(err) {
 				res.statusCode = 500;
 				return res.send(err);
 			}
 
-			return res.send(observation);
+			return res.send(contact);
 		});
 
 	});
@@ -159,21 +232,21 @@ exports.update = function(req, res) {
 
 exports.delete = function(req, res) {
 
-	var userid = req.params.userid;
 	var id = req.params.id;
 
-	var query = Observation
-		.findOneAndRemove({userId: new mongoose.Types.ObjectId(userid), _id: new mongoose.Types.ObjectId(id)});
-
-	query.exec(function(err, doc) {
+	// Remove the contact from the database.
+	//
+	Contact.findByIdAndRemove(id, function(err, result) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
 		}
-		if(!doc) {
+
+		if(!result) {
 			res.statusCode = 404;
-			return res.send('Observation not found.');
+			return res.send('Contact not found.');
 		}
-  	res.send('Observation removed');
+
+		return res.send('Contact removed.');
 	});
 };
