@@ -3,9 +3,10 @@ define([
 	'underscore',
 	'backbone',
 	'views/form/form',
+	'collections/contact-names',
 	'text!templates/contact/detail.html'
 ],
-function ($, _, Backbone, FormView, detailHtml) {
+function ($, _, Backbone, FormView, contactNames, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -25,6 +26,12 @@ function ($, _, Backbone, FormView, detailHtml) {
 			//
 			this.$('#save').button();
 			this.$('#back').button();
+
+			// Set up autocomplete fields.
+			//
+			this.$('#firstName').autocomplete({
+				source: contactNames.list
+			});
 
 			// Set up buttonset for isCompany radio.
 			//
