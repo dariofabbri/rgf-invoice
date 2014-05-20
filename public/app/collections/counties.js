@@ -5,9 +5,9 @@ define([
 	'collections/autocomplete-items'
 ],
 function ($, _, Backbone, AutocompleteItems) {
-	var ContactNames = AutocompleteItems.extend({
+	var Counties = AutocompleteItems.extend({
 
-		url: '/lists/names'
+		url: '/lists/counties'
 	});
-	return new ContactNames();
+	return new Counties();
 });

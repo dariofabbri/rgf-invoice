@@ -76,6 +76,10 @@ app.put('/contacts/:id', passport.authenticate('basic', { session: false }), con
 app.delete('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.delete);
 
 app.get('/lists/names', lists.listNames);
+app.get('/lists/salutations', lists.listSalutations);
+app.get('/lists/cities', lists.listCities);
+app.get('/lists/counties', lists.listCounties);
+app.get('/lists/countries', lists.listCountries);
 
 
 // Catch 404 and forwarding to error handler

@@ -29,7 +29,7 @@ function ($, _, Backbone, AutocompleteItem, regExp) {
 				// requests on the server.
 				//
 				var jitter = Math.random() * 10 - 5;
-				setTimeout(refreshFn + jitter, that.refreshTimeout);
+				setTimeout(refreshFn, that.refreshTimeout + jitter);
 			}
 			refreshFn();
 		},

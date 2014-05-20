@@ -3,10 +3,14 @@ define([
 	'underscore',
 	'backbone',
 	'views/form/form',
-	'collections/contact-names',
+	'collections/names',
+	'collections/salutations',
+	'collections/cities',
+	'collections/counties',
+	'collections/countries',
 	'text!templates/contact/detail.html'
 ],
-function ($, _, Backbone, FormView, contactNames, detailHtml) {
+function ($, _, Backbone, FormView, names, salutations, cities, counties, countries, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -31,7 +35,27 @@ function ($, _, Backbone, FormView, contactNames, detailHtml) {
 			//
 			this.$('#firstName').autocomplete({
 				source: function(request, response) {
-					response(contactNames.list(request.term));
+					response(names.list(request.term));
+				}
+			});
+			this.$('#salutation').autocomplete({
+				source: function(request, response) {
+					response(salutations.list(request.term));
+				}
+			});
+			this.$('#city').autocomplete({
+				source: function(request, response) {
+					response(cities.list(request.term));
+				}
+			});
+			this.$('#county').autocomplete({
+				source: function(request, response) {
+					response(counties.list(request.term));
+				}
+			});
+			this.$('#country').autocomplete({
+				source: function(request, response) {
+					response(countries.list(request.term));
 				}
 			});
 
