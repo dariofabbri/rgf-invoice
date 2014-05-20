@@ -2,26 +2,50 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
-	'models/autocomplete-item'
+	'models/autocomplete-item',
+	'utils/regexp'
 ],
-function ($, _, Backbone, AutocompleteItem) {
+function ($, _, Backbone, AutocompleteItem, regExp) {
 	var AutocompleteItems = Backbone.Collection.extend({
-		model: AutocompleteItems,
+
+		model: AutocompleteItem,
 
 		refreshTimeout: 60000,
 
-		escapeRegExp: function(s) {
-			return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-		},
+		lastUpdate: null,
 
 		initialize: function(options) {
 
 			var that = this;
 			var refreshFn = function() {
-				that.fetch({reset: true});
-				setTimeout(refreshFn, that.refreshTimeout);
+				that.fetch({
+					reset: true,
+					success: function() {
+						that.lastUpdate = new Date();
+					}
+				});
+
+				// Add a bit of jitter to avoid continuos clash of update
+				// requests on the server.
+				//
+				var jitter = Math.random() * 10 - 5;
+				setTimeout(refreshFn + jitter, that.refreshTimeout);
 			}
 			refreshFn();
+		},
+
+		list: function (filter) {
+
+			// Apply the filter.
+			//
+			var filterRe = new RegExp(regExp.escapeRegExp(filter), 'i');
+			var filtered = this.filter(function (model) {
+				return model.get('description') && model.get('description').match(filterRe);
+			});
+
+			return _.map(filtered, function(model) {
+				return model.get('description');
+			});
 		}
 	});
 	return AutocompleteItems;

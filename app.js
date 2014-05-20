@@ -45,6 +45,7 @@ mongoose.connect('mongodb://localhost:27017/rgf');
 
 var users = require('./routes/user');
 var contacts = require('./routes/contact');
+var lists = require('./routes/list');
 
 var app = express();
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -73,6 +74,8 @@ app.get('/contacts/:id', passport.authenticate('basic', { session: false }), con
 app.post('/contacts', passport.authenticate('basic', { session: false }), contacts.create);
 app.put('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.update);
 app.delete('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.delete);
+
+app.get('/lists/names', lists.listNames);
 
 
 // Catch 404 and forwarding to error handler

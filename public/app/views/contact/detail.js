@@ -30,7 +30,9 @@ function ($, _, Backbone, FormView, contactNames, detailHtml) {
 			// Set up autocomplete fields.
 			//
 			this.$('#firstName').autocomplete({
-				source: contactNames.list
+				source: function(request, response) {
+					response(contactNames.list(request.term));
+				}
 			});
 
 			// Set up buttonset for isCompany radio.
