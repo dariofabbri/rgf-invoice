@@ -28,7 +28,7 @@ function ($, _, Backbone, AutocompleteItem, regExp) {
 				// Add a bit of jitter to avoid continuos clash of update
 				// requests on the server.
 				//
-				var jitter = Math.random() * 10 - 5;
+				var jitter = Math.random() * 10000 - 5000;
 				setTimeout(refreshFn, that.refreshTimeout + jitter);
 			}
 			refreshFn();
