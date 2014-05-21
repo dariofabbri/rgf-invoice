@@ -21,17 +21,22 @@ function ($, _, Backbone, footerHtml) {
 
 		updateClock: function() {
 
-			var now = new Date();
-			var formattedTime = 
-				(now.getHours() < 10 ? "0" + now.getHours() : now.getHours()) +
-				":" +
-				(now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes()) +
-				":" +
-				(now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds());
-				
-			this.$("#clock").text(formattedTime);
+			var that = this;
 
-			setInterval(this.updateClock, 1000);
+			var doIt = function () {
+				var now = new Date();
+				var formattedTime = 
+					(now.getHours() < 10 ? "0" + now.getHours() : now.getHours()) +
+					":" +
+					(now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes()) +
+					":" +
+					(now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds());
+					
+				that.$("#clock").text(formattedTime);
+
+				setTimeout(doIt, 1000);
+			};
+			doIt();
 		}
 
 	});
