@@ -85,6 +85,11 @@ function (_) {
 			'Y': 24,
 			'Z': 25
 		},
+		
+		reCf: /([a-z0-9]{15})([a-z0-9]{1})/i,
+		rePiva: /^\d{11}$/,
+		reEmail: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+		reZip: /^\d{5}$/,
 
 		isValidCodiceFiscale: function(cf) {
 
@@ -98,8 +103,7 @@ function (_) {
 
 			// Split code from check character.
 			//
-			var re = /([a-z0-9]{15})([a-z0-9]{1})/i;
-			var matches = cf.match(re);
+			var matches = cf.match(this.reCf);
 			if(!matches) {
 				return false;
 			}
@@ -134,7 +138,7 @@ function (_) {
 
 			piva = piva.trim();
 
-			if(!piva.match(/\d{11}/)) {
+			if(!piva.match(this.rePiva)) {
 				return false;
 			}
 
@@ -160,8 +164,12 @@ function (_) {
 
 		isValidEmail: function(email) {
 			
-			var re = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-			return email.match(re);
+			return email.match(this.reEmail);
+		},
+
+		isValidZipCode: function(zip) {
+
+			return zip.match(this.reZip);
 		}
 	});
 

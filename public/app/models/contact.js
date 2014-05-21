@@ -71,6 +71,12 @@ function ($, _, Backbone, validation) {
 				errors['email'] = 'L\'indirizzo email inserito non è valido.';
 			}
 
+			// Check the validity of the zip code field, if present.
+			//
+			if (this.get('zipCode') && !validation.isValidZipCode(this.get('zipCode'))) {
+				errors['zipCode'] = 'Il CAP immesso non è valido.';
+			}
+
 			if(!_.isEmpty(errors)) {
 				return errors;
 			}
