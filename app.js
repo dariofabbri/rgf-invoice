@@ -45,6 +45,7 @@ mongoose.connect('mongodb://localhost:27017/rgf');
 
 var users = require('./routes/user');
 var contacts = require('./routes/contact');
+var invoices = require('./routes/invoice');
 var lists = require('./routes/list');
 
 var app = express();
@@ -63,18 +64,32 @@ app.get('/login', passport.authenticate('basic', { session: false }), function(r
 	res.send(req.user);
 });
 
+// User related routes.
+//
 app.get('/users', passport.authenticate('basic', { session: false }), users.list);
 app.get('/users/:id', passport.authenticate('basic', { session: false }), users.retrieve);
 app.post('/users', passport.authenticate('basic', { session: false }), users.create);
 app.put('/users/:id', passport.authenticate('basic', { session: false }), users.update);
 app.delete('/users/:id', passport.authenticate('basic', { session: false }), users.delete);
 
+// Contact related routes.
+//
 app.get('/contacts', passport.authenticate('basic', { session: false }), contacts.list);
 app.get('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.retrieve);
 app.post('/contacts', passport.authenticate('basic', { session: false }), contacts.create);
 app.put('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.update);
 app.delete('/contacts/:id', passport.authenticate('basic', { session: false }), contacts.delete);
 
+// Invoice related routes.
+//
+app.get('/invoices', passport.authenticate('basic', { session: false }), invoices.list);
+app.get('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.retrieve);
+app.post('/invoices', passport.authenticate('basic', { session: false }), invoices.create);
+app.put('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.update);
+app.delete('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.delete);
+
+// Lists for autocomplete related routes.
+//
 app.get('/lists/names', lists.listNames);
 app.get('/lists/salutations', lists.listSalutations);
 app.get('/lists/cities', lists.listCities);
