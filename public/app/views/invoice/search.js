@@ -3,11 +3,11 @@ define([
 	'underscore',
 	'backbone',
 	'views/parent/parent',
-	'models/user-search',
+	'models/invoice-search',
 	'models/login-info',
-	'text!templates/user/search.html'
+	'text!templates/invoice/search.html'
 ],
-function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
+function ($, _, Backbone, ParentView, invoiceSearch, loginInfo, searchHtml) {
 	
 	var SearchView = ParentView.extend({
 
@@ -40,27 +40,41 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				deferLoading: 1,
 				columns: [
 					{
-						name: 'username',
-						data: 'username'
+						name: 'number',
+						data: 'number'
 					},
 					{
-						name: 'surname',
-						data: 'surname'
+						name: 'date',
+						data: 'date'
 					},
 					{
-						name: 'name',
-						data: 'name'
+						name: 'vatCode',
+						data: 'addressee.vatCode'
+					},
+					{
+						name: 'cfCode',
+						data: 'addressee.cfCode'
+					},
+					{
+						name: 'description',
+						data: 'addressee.description'
 					}
 				],
 				searchCols: [
 					{
-						search: userSearch.get('username')
+						search: invoiceSearch.get('number')
 					},
 					{
-						search: userSearch.get('surname')
+						search: invoiceSearch.get('date')
 					},
 					{
-						search: userSearch.get('name')
+						search: invoiceSearch.get('vatCode')
+					},
+					{
+						search: invoiceSearch.get('cfCode')
+					},
+					{
+						search: invoiceSearch.get('description')
 					}
 				],
 				language: {
@@ -95,7 +109,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			// Set up focus on the first form field.
 			//
 			_.defer(function () {
-				this.$('#username').focus();
+				this.$('#number').focus();
 			});
 
 			return this;
@@ -104,9 +118,11 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		ajaxSearch: function(data, callback, settings) {
 			var authorization = loginInfo.getAuthorization();
 
-			// Prepare query arguments.
+			// Prepare query arguments. The type is always "invoices".
 			//
-			var queryArguments = {};
+			var queryArguments = {
+				type: 'I'
+			};
 			_.each(data.columns, function(column) {
 				if(column.search.value) {
 					queryArguments[column.name] = column.search.value;
@@ -121,7 +137,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				headers: {
 					'Authorization': authorization
 				},
-				url: 'users',
+				url: 'invoices',
 				data: queryArguments,
 				type: 'GET',
 				success: function(response) {
@@ -154,36 +170,42 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		doSearch: function() {
 
 			var datatable = this.$('#list').DataTable();
-			datatable.column('username:name').search(userSearch.get('username'));
-			datatable.column('name:name').search(userSearch.get('name'));
-			datatable.column('surname:name').search(userSearch.get('surname'));
+			datatable.column('number:name').search(invoiceSearch.get('number'));
+			datatable.column('date:name').search(invoiceSearch.get('date'));
+			datatable.column('vatCode:name').search(invoiceSearch.get('vatCode'));
+			datatable.column('cfCode:name').search(invoiceSearch.get('cfCode'));
+			datatable.column('description:name').search(invoiceSearch.get('description'));
 
 			datatable.draw();
 		},
 
 		formToModel: function() {
 
-			userSearch.set('username', this.$('#username').val());
-			userSearch.set('surname', this.$('#surname').val());
-			userSearch.set('name', this.$('#name').val());
+			invoiceSearch.set('number', this.$('#number').val());
+			invoiceSearch.set('date', this.$('#date').val());
+			invoiceSearch.set('vatCode', this.$('#vatCode').val());
+			invoiceSearch.set('cfCode', this.$('#cfCode').val());
+			invoiceSearch.set('description', this.$('#description').val());
 		},
 
 		modelToForm: function() {
 
-			this.$('#username').val(userSearch.get('username'));
-			this.$('#surname').val(userSearch.get('surname'));
-			this.$('#name').val(userSearch.get('name'));
+			this.$('#number').val(invoiceSearch.get('number'));
+			this.$('#date').val(invoiceSearch.get('date'));
+			this.$('#vatCode').val(invoiceSearch.get('vatCode'));
+			this.$('#cfCode').val(invoiceSearch.get('cfCode'));
+			this.$('#description').val(invoiceSearch.get('description'));
 		},
 
 		onClickNew: function() {
 
-			Backbone.history.navigate('newUser', true);
+			Backbone.history.navigate('newInvoice', true);
 		},
 
 		onEditRecord: function(e) {
 
 			var id = this.$('#list').DataTable().row(e.currentTarget).data()._id;
-			Backbone.history.navigate('user/' + id, true);
+			Backbone.history.navigate('invoice/' + id, true);
 		}
 	});
 

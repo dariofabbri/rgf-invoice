@@ -26,7 +26,7 @@ function ($, _, Backbone, FormView, detailHtml) {
 			this.$('#save').button();
 			this.$('#back').button();
 
-			// Set up focus on the first search field.
+			// Set up focus on the first form field.
 			//
 			_.defer(function () {
 				this.$('#username').focus();

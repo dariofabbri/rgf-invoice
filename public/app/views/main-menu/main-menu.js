@@ -12,7 +12,8 @@ function ($, _, Backbone, html) {
 
 		events: {
 			'click #users': 'onUsersClick',
-			'click #contacts': 'onContactsClick'
+			'click #contacts': 'onContactsClick',
+			'click #invoices': 'onInvoicesClick'
 		},
 
 		render: function () {
@@ -37,6 +38,11 @@ function ($, _, Backbone, html) {
 		onContactsClick: function() {
 
 			Backbone.history.navigate('contacts', true);
+		},
+
+		onInvoicesClick: function() {
+
+			Backbone.history.navigate('invoices', true);
 		}
 	});
 

@@ -106,7 +106,7 @@ function ($, _, Backbone, ParentView, contactSearch, loginInfo, searchHtml) {
 			//
 			this.doSearch();
 
-			// Set up focus on the first search field.
+			// Set up focus on the first form field.
 			//
 			_.defer(function () {
 				this.$('#vatCode').focus();

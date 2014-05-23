@@ -10,13 +10,14 @@ var invoiceSchema = new Schema({
 		address: String,
 		zipCode: String,
 		city: String,
+		county: String,
 		cfCode: String,
 		vatCode: String,
 		reaCode: String,
 		stock: String
 	},
 	addressee: {
-		idContact: ObjectId,
+		idContact: Schema.Types.ObjectId,
 		description: String,
 		address1: String,
 		address2: String,

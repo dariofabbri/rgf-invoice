@@ -3,14 +3,11 @@ define([
 	'underscore',
 	'backbone',
 	'views/form/form',
-	'collections/names',
-	'collections/salutations',
 	'collections/cities',
 	'collections/counties',
-	'collections/countries',
-	'text!templates/contact/detail.html'
+	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, FormView, names, salutations, cities, counties, countries, detailHtml) {
+function ($, _, Backbone, FormView, cities, counties, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -33,40 +30,24 @@ function ($, _, Backbone, FormView, names, salutations, cities, counties, countr
 
 			// Set up autocomplete fields.
 			//
-			this.$('#firstName').autocomplete({
-				source: function(request, response) {
-					response(names.list(request.term));
-				}
-			});
-			this.$('#salutation').autocomplete({
-				source: function(request, response) {
-					response(salutations.list(request.term));
-				}
-			});
-			this.$('#city').autocomplete({
+			this.$('#issuerCity').autocomplete({
 				source: function(request, response) {
 					response(cities.list(request.term));
 				}
 			});
-			this.$('#county').autocomplete({
+			this.$('#issuerCounty').autocomplete({
 				source: function(request, response) {
 					response(counties.list(request.term));
 				}
 			});
-			this.$('#country').autocomplete({
-				source: function(request, response) {
-					response(countries.list(request.term));
-				}
-			});
 
-			// Set up buttonset for isCompany radio.
+			// Set up the accordions.
 			//
-			if(this.model.get('isCompany')) {
-				this.$('#company').attr('checked', 'checked');
-			} else {
-				this.$('#person').attr('checked', 'checked');
-			}
-			this.$('#isCompany').buttonset();
+			this.$('#accordion1').accordion({collapsible: true, heightStyle: 'content', active:  false});
+			this.$('#accordion2').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion3').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion4').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion5').accordion({collapsible: true, heightStyle: 'content', active:  0});
 
 			// Set up focus on the first form field.
 			//

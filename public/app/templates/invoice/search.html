@@ -1,0 +1,57 @@
+<div class="grid">
+
+	<div class="form c12">
+
+		<div class="header"><span>Ricerca fatture</span></div>
+		<div class="subheader"><span>Inserire i campi di ricerca</span></div>
+
+		<div class="row">
+			<div class="c2"><span>Numero:<span></div>
+			<div class="c4"><input id="number" type="text" placeholder="Inserire il numero della fattura" /></div>
+			<div class="c2"><span>Data:<span></div>
+			<div class="c4"><input id="date" type="text" placeholder="Inserire la data della fattura" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c2"><span>Destinatario:<span></div>
+			<div class="c10"><input id="description" type="text" placeholder="Inserire parte del destinatario della fattura" /></div>
+		</div>
+
+		<div class="row">
+			<div class="c2"><span>Partita IVA:<span></div>
+			<div class="c4"><input id="vatCode" type="text" placeholder="Inserire parte del codice di partita IVA" /></div>
+			<div class="c2"><span>Codice fiscale:<span></div>
+			<div class="c4"><input id="cfCode" type="text" placeholder="Inserire parte del codice fiscale" /></div>
+		</div>
+
+		<div class="row buttons">
+			<div class="c12 right">
+				<button id="new">Crea nuova fattura</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="c12">
+		<table id="list" class="stripe hover row-border" width="100%">
+			<thead>
+				<tr>
+					<th>Numero</th>
+					<th>Date</th>
+					<th>Destinatario</th>
+					<th>Partita IVA</th>
+					<th>Codice fiscale</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th>Numero</th>
+					<th>Data</th>
+					<th>Destinatario</th>
+					<th>Partita IVA</th>
+					<th>Codice fiscale</th>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+
+</div>
