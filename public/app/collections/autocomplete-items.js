@@ -12,6 +12,8 @@ function ($, _, Backbone, AutocompleteItem, regExp) {
 
 		refreshTimeout: 60000,
 
+		refreshJitterMagnitude: 5000,
+
 		lastUpdate: null,
 
 		initialize: function(options) {
@@ -28,7 +30,7 @@ function ($, _, Backbone, AutocompleteItem, regExp) {
 				// Add a bit of jitter to avoid continuos clash of update
 				// requests on the server.
 				//
-				var jitter = Math.random() * 10000 - 5000;
+				var jitter = Math.random() * that.refreshJitterMagnitude * 2 - that.refreshJitterMagnutude;
 				setTimeout(refreshFn, that.refreshTimeout + jitter);
 			}
 			refreshFn();
