@@ -46,6 +46,7 @@ mongoose.connect('mongodb://localhost:27017/rgf');
 var users = require('./routes/user');
 var contacts = require('./routes/contact');
 var invoices = require('./routes/invoice');
+var companies = require('./routes/company');
 var lists = require('./routes/list');
 
 var app = express();
@@ -87,6 +88,10 @@ app.get('/invoices/:id', passport.authenticate('basic', { session: false }), inv
 app.post('/invoices', passport.authenticate('basic', { session: false }), invoices.create);
 app.put('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.update);
 app.delete('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.delete);
+
+// Companies related routes.
+//
+app.get('/companies/default', passport.authenticate('basic', { session: false }), companies.retrieveDefault);
 
 // Lists for autocomplete related routes.
 //
