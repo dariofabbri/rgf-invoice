@@ -23,6 +23,14 @@ function ($, _, Backbone, validation) {
 			updatedOn: null
 		},
 
+		setIssuer: function(data) {
+			
+			issuer = _.extend({}, data);
+			this.set('issuer', issuer);
+		},
+
+		// TODO: copied from contacts!
+		//
 		validate: function(attributes, options) {
 
 			errors = {};

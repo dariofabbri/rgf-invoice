@@ -16,7 +16,7 @@ exports.retrieveDefault = function(req, res) {
 			res.statusCode = 404;
 			return res.send('Default company not found.');
 		}
-		if(docs.length > 0) {
+		if(docs.length > 1) {
 			res.statusCode = 500;
 			return res.send('Data error: too many default companies found.');
 		}

@@ -23,6 +23,7 @@ var invoiceSchema = new Schema({
 		address2: String,
 		zipCode: String,
 		city: String,
+		county: String,
 		cfCode: String,
 		vatCode: String
 	},

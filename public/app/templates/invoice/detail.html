@@ -1,3 +1,56 @@
+<div id="contactPicker" class="picker" title="Selezione del contatto">
+
+	<div class="grid">
+
+		<div class="form c12">
+
+			<div class="subheader"><span>Inserire i campi di ricerca</span></div>
+
+			<div class="row">
+				<div class="c4"><span>Ragione sociale:<span></div>
+				<div class="c8"><input id="searchDescription" type="text" placeholder="Inserire parte della ragione sociale" /></div>
+			</div>
+
+			<div class="row">
+				<div class="c4"><span>Cognome:<span></div>
+				<div class="c8"><input id="searchLastName" type="text" placeholder="Inserire parte del cognome" /></div>
+			</div>
+
+			<div class="row">
+				<div class="c4"><span>Nome:<span></div>
+				<div class="c8"><input id="searchFirstName" type="text" placeholder="Inserire parte del nome" /></div>
+			</div>
+
+		</div>
+
+		<div class="c12">
+			<table id="list" class="stripe hover row-border" width="100%">
+				<thead>
+					<tr>
+						<th>Partita IVA</th>
+						<th>Codice fiscale</th>
+						<th>Ragione sociale</th>
+						<th>Cognome</th>
+						<th>Nome</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th>Partita IVA</th>
+						<th>Codice fiscale</th>
+						<th>Ragione sociale</th>
+						<th>Cognome</th>
+						<th>Nome</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+
+	</div>
+
+</div>
+
+
 <div class="grid">
 
 	<div class="form c12">
@@ -63,13 +116,58 @@
 
 			<h3>Destinatario</h3>
 			<div>
+
+				<div class="row">
+					<div class="c12"><button id="selectAddressee">Seleziona</button></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Intestazione:<span></div>
+					<div class="c8"><input id="addresseeDescription" type="text" placeholder="Inserire l'intestazione del destinatario della fattura" value="{{addressee.description}}"/></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Indirizzo (1):<span></div>
+					<div class="c8"><input id="addresseeAddress1" type="text" placeholder="Inserire la prima riga dell'indirizzo del destinatario della fattura" value="{{addressee.address1}}" /></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Indirizzo (2):<span></div>
+					<div class="c8"><input id="addresseeAddress2" type="text" placeholder="Inserire la seconda riga dell'indirizzo del destinatario della fattura" value="{{addressee.address2}}" /></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Città:<span></div>
+					<div class="c8"><input id="addresseeCity" type="text" placeholder="Inserire la città del destinatario della fattura" value="{{addressee.city}}" /></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Provincia:<span></div>
+					<div class="c8"><input id="addresseeCounty" type="text" placeholder="Inserire la provincia del destinatario della fattura" value="{{addressee.county}}" /></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>CAP:<span></div>
+					<div class="c8"><input id="addresseeZipCode" type="text" placeholder="Inserire la CAP del destinatario della fattura" value="{{addressee.zipCode}}" /></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Partita IVA:<span></div>
+					<div class="c8"><input id="addresseeVatCode" type="text" placeholder="Inserire il codice di partita IVA del destinatario della fattura" value="{{addressee.vatCode}}"/></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Codice fiscale:<span></div>
+					<div class="c8"><input id="addresseeCfCode" type="text" placeholder="Inserire il codice fiscale del destinatario della fattura" value="{{addressee.cfCode}}"/></div>
+				</div>
+
 			</div>
 
 		</div>
 
 		<div id="accordion3">
 
-			<h3>Intestazione</h3>
+			<h3>Testata</h3>
 			<div>
 			</div>
 

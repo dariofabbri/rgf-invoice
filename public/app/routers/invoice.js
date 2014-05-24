@@ -4,10 +4,11 @@ define([
 	'backbone',
 	'views/invoice/search',
 	'views/invoice/detail',
+	'models/company',
 	'models/invoice',
 	'utils/view-manager'
 ],
-function ($, _, Backbone, SearchInvoiceView, DetailInvoiceView, InvoiceModel, viewManager) {
+function ($, _, Backbone, SearchInvoiceView, DetailInvoiceView, CompanyModel, InvoiceModel, viewManager) {
 	
 	var InvoiceRouter = Backbone.Router.extend({
 
@@ -25,9 +26,25 @@ function ($, _, Backbone, SearchInvoiceView, DetailInvoiceView, InvoiceModel, vi
 
 		newInvoice: function() {
 
-			var model = new InvoiceModel();
-			var detailInvoiceView = new DetailInvoiceView({ model: model });
-			viewManager.setView('#main-content', detailInvoiceView);
+			// First fetch the default company's data.
+			//
+			var company = new CompanyModel({ _id: 'default' });
+			company.fetch({
+
+				success: function() {
+
+					// The company model has been loaded, create the invoice model
+					// and set the issuer's data.
+					//
+					var model = new InvoiceModel();
+					model.setIssuer(company.toJSON());
+
+					// Create the detail view and show it.
+					//
+					var detailInvoiceView = new DetailInvoiceView({ model: model });
+					viewManager.setView('#main-content', detailInvoiceView);
+				}
+			});
 		},
 
 		invoice: function(id) {
