@@ -13,7 +13,8 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 		template: _.template(pickerHtml),
 
 		events: {
-			'keyup input': 'onKeyup'
+			'keyup input': 'onKeyup',
+			'click table tbody tr': 'onSelectRow'
 		},
 
 		initialize: function() {
@@ -164,6 +165,13 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 			// Execute query again.
 			//
 			this.doSearch();
+		},
+
+		onSelectRow: function(e) {
+
+			var id = this.$('table').DataTable().row(e.currentTarget).data()._id;
+			Backbone.trigger('invoice:contact-picker-select', id);
+			this.$el.dialog('close');
 		}
 	});
 

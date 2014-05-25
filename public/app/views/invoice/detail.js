@@ -2,13 +2,14 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'models/contact',
 	'views/form/form',
 	'views/invoice/contact-picker',
 	'collections/cities',
 	'collections/counties',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, FormView, ContactPickerView, cities, counties, detailHtml) {
+function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, counties, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -18,6 +19,11 @@ function ($, _, Backbone, FormView, ContactPickerView, cities, counties, detailH
 			'click #selectAddressee': 'onClickSelectAddressee',
 			'click #back': 'onClickBack',
 			'click #save': 'onClickSave'
+		},
+
+		initialize: function() {
+
+			Backbone.on('invoice:contact-picker-select', this.onContactPickerSelect, this);
 		},
 
 		render: function () {
@@ -93,6 +99,27 @@ function ($, _, Backbone, FormView, ContactPickerView, cities, counties, detailH
 			this.model.set('email', this.$('#email').val());
 		},
 
+		modelToForm: function() {
+			this.$('#issuerDescription').val(this.model.get('issuer').description);
+			this.$('#issuerAddress').val(this.model.get('issuer').address);
+			this.$('#issuerCity').val(this.model.get('issuer').city);
+			this.$('#issuerCounty').val(this.model.get('issuer').county);
+			this.$('#issuerZipCode').val(this.model.get('issuer').zipCode);
+			this.$('#issuerVatCode').val(this.model.get('issuer').vatCode);
+			this.$('#issuerCfCode').val(this.model.get('issuer').cfCode);
+			this.$('#issuerReaCode').val(this.model.get('issuer').reaCode);
+			this.$('#issuerStock').val(this.model.get('issuer').stock);
+
+			this.$('#addresseeDescription').val(this.model.get('addressee').description);
+			this.$('#addresseeAddress1').val(this.model.get('addressee').address1);
+			this.$('#addresseeAddress2').val(this.model.get('addressee').address2);
+			this.$('#addresseeCity').val(this.model.get('addressee').city);
+			this.$('#addresseeCounty').val(this.model.get('addressee').county);
+			this.$('#addresseeZipCode').val(this.model.get('addressee').zipCode);
+			this.$('#addresseeVatCode').val(this.model.get('addressee').vatCode);
+			this.$('#addresseeCfCode').val(this.model.get('addressee').cfCode);
+		},
+
 		onRemove: function() {
 
 			this.$('#issuerCity').autocomplete('destroy');
@@ -144,6 +171,36 @@ function ($, _, Backbone, FormView, ContactPickerView, cities, counties, detailH
 			if(!valid) {
 				this.setFormErrors(this.model.validationError);
 			}
+		},
+
+		onContactPickerSelect: function(id) {
+
+			var that = this;
+
+			// Fetch the selected contact.
+			//
+			var contact = new ContactModel({ _id: id});
+			contact.fetch({
+				success: function() {
+
+					// Update the model.
+					//
+					addressee = {
+						idContact: id,
+						description: contact.get('description') || (contact.get('firstName') + ' ' + contact.get('lastName')),
+						address1: contact.get('address1'),
+						address2: contact.get('address2'),
+						zipCode: contact.get('zipCode'),
+						city: contact.get('city'),
+						county: contact.get('county'),
+						cfCode: contact.get('cfCode'),
+						vatCode: contact.get('vatCode')
+					};
+
+					that.model.set('addressee', addressee);
+					that.modelToForm();
+				}
+			})
 		},
 
 		// Clear previous validation errors from form fields.
