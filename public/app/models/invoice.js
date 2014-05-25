@@ -12,10 +12,41 @@ function ($, _, Backbone, validation) {
 			type: null,
 			number: null,
 			date: new Date(),
-			issuer: {},
-			addressee: {},
-			receipt: {},
-			totals: {},
+			issuer: {
+				description: null,
+				address: null,
+				zipCode: null,
+				city: null,
+				county: null,
+				cfCode: null,
+				vatCode: null,
+				reaCode: null,
+				stock: null	
+			},
+			addressee: {
+				idContact: null,
+				description: null,
+				address1: null,
+				address2: null,
+				zipCode: null,
+				city: null,
+				county: null,
+				cfCode: null,
+				vatCode: null
+			},
+			receipt: {
+				cashRegister: {
+					model: null,
+					serial: null
+				},
+				number: null,
+				date: null
+			},
+			totals: {
+				taxable: null,
+				tax: null,
+				total: null
+			},
 			payment: null,
 			createdBy: null,
 			createdOn: null,

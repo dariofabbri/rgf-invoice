@@ -5,7 +5,26 @@
 		<div class="header"><span>Dettaglio fattura</span></div>
 		<div class="subheader"><span>Inserire i dati della fattura</span></div>
 
-		<div id="accordion1">
+		<div id="accordion-header">
+
+			<h3>Testata</h3>
+			<div>
+
+				<div class="row">
+					<div class="c4"><span>Numero fattura:<span></div>
+					<div class="c8"><input id="number" type="text" placeholder="Inserire il numero della fattura" value="{{number}}"/></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Data fattura:<span></div>
+					<div class="c8"><input id="date" type="text" placeholder="Inserire la data della fattura" value="{{date}}"/></div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div id="accordion-issuer">
 
 			<h3>Emittente</h3>
 			<div>
@@ -59,7 +78,7 @@
 
 		</div>
 
-		<div id="accordion2">
+		<div id="accordion-addressee">
 
 			<h3>Destinatario</h3>
 			<div>
@@ -112,15 +131,36 @@
 
 		</div>
 
-		<div id="accordion3">
+		<div id="accordion-receipt">
 
-			<h3>Testata</h3>
+			<h3>Scontrino</h3>
 			<div>
+
+				<div class="row">
+					<div class="c4"><span>Numero scontrino:<span></div>
+					<div class="c8"><input id="receiptNumber" type="text" placeholder="Inserire il numero dello scontrino" value="{{receipt.number}}"/></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Data scontrino:<span></div>
+					<div class="c8"><input id="receiptDate" type="text" placeholder="Inserire la data dello scontrino" value="{{receipt.date}}"/></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Ricevitore fiscale:<span></div>
+					<div class="c8"><input id="cashRegisterModel" type="text" placeholder="Inserire il modello del ricevitore fiscale" value="{{receipt.cashRegister.model}}"/></div>
+				</div>
+
+				<div class="row">
+					<div class="c4"><span>Matricola ricevitore:<span></div>
+					<div class="c8"><input id="cashRegisterSerial" type="text" placeholder="Inserire la matricola del ricevitore fiscale" value="{{receipt.cashRegister.serial}}"/></div>
+				</div>
+
 			</div>
 
 		</div>
 
-		<div id="accordion4">
+		<div id="accordion-detail">
 
 			<h3>Dettaglio</h3>
 			<div>
@@ -128,7 +168,7 @@
 
 		</div>
 
-		<div id="accordion5">
+		<div id="accordion-totals">
 
 			<h3>Totali</h3>
 			<div>

@@ -52,11 +52,12 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 			// Set up the accordions.
 			//
-			this.$('#accordion1').accordion({collapsible: true, heightStyle: 'content', active:  false});
-			this.$('#accordion2').accordion({collapsible: true, heightStyle: 'content', active:  0});
-			this.$('#accordion3').accordion({collapsible: true, heightStyle: 'content', active:  0});
-			this.$('#accordion4').accordion({collapsible: true, heightStyle: 'content', active:  0});
-			this.$('#accordion5').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion-header').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion-issuer').accordion({collapsible: true, heightStyle: 'content', active:  false});
+			this.$('#accordion-addressee').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion-receipt').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion-detail').accordion({collapsible: true, heightStyle: 'content', active:  0});
+			this.$('#accordion-totals').accordion({collapsible: true, heightStyle: 'content', active:  0});
 
 			// Set focus on the first form field.
 			//
