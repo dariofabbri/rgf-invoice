@@ -3,19 +3,18 @@ define([
 	'underscore',
 	'backbone',
 	'views/form/form',
+	'views/invoice/contact-picker',
 	'collections/cities',
 	'collections/counties',
-	'models/login-info',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, FormView, cities, counties, loginInfo, detailHtml) {
+function ($, _, Backbone, FormView, ContactPickerView, cities, counties, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
 		template: _.template(detailHtml),
 
 		events: {
-			'keyup #contactPicker input': 'onKeyup',
 			'click #selectAddressee': 'onClickSelectAddressee',
 			'click #back': 'onClickBack',
 			'click #save': 'onClickSave'
@@ -45,73 +44,6 @@ function ($, _, Backbone, FormView, cities, counties, loginInfo, detailHtml) {
 				}
 			});
 
-			// Configure data table.
-			//
-			var datatable = this.$('#contactPicker table').dataTable({
-				serverSide: true,
-				ajax: this.ajaxSearch,
-				dom: 'tipr',
-				deferLoading: 1,
-				columns: [
-					{
-						name: 'vatCode',
-						data: 'vatCode'
-					},
-					{
-						name: 'cfCode',
-						data: 'cfCode'
-					},
-					{
-						name: 'description',
-						data: 'description'
-					},
-					{
-						name: 'lastName',
-						data: 'lastName'
-					},
-					{
-						name: 'firstName',
-						data: 'firstName'
-					}
-				],
-				language: {
-					lengthMenu: 'Mostra _MENU_ righe',
-					zeroRecords: 'Nessun risultato trovato',
-					info: 'Pagina _PAGE_ di _PAGES_',
-					infoEmpty: 'Nessun risultato trovato',
-					infoFiltered: '',
-					paginate: {
-						first:		'Inizio',
-						last:			'Fine',
-						next:			'Successivo',
-						previous:	'Precedente'
-					},
-					search: 'Cerca'
-				}
-			});
-
-			datatable.find('tbody').on('click', 'tr', function() {
-				if ($(this).hasClass('selected')) {
-					$(this).removeClass('selected');
-				} else {
-					datatable.$('tr.selected').removeClass('selected');
-					$(this).addClass('selected');
-				}
-			});
-
-			// Apply search filters.
-			//
-			this.doSearch();
-
-			// Set up contact picker dialog.
-			//
-			this.$('#contactPicker').dialog({
-				autoOpen: false,
-				modal: true,
-				height: 600,
-				width: 800
-			});
-
 			// Set up the accordions.
 			//
 			this.$('#accordion1').accordion({collapsible: true, heightStyle: 'content', active:  false});
@@ -126,56 +58,13 @@ function ($, _, Backbone, FormView, cities, counties, loginInfo, detailHtml) {
 				this.$('#addresseeDescription').focus();
 			});
 
-			return this;
-		},
-		
-		doSearch: function() {
-
-			var datatable = this.$('#contactPicker table').DataTable();
-			datatable.column('description:name').search(this.$('searchDescription').val());
-			datatable.column('lastName:name').search(this.$('searchLastName').val());
-			datatable.column('firstName:name').search(this.$('searchFirstName').val());
-
-			datatable.draw();
-		},
-
-		ajaxSearch: function(data, callback, settings) {
-			var authorization = loginInfo.getAuthorization();
-
-			// Prepare query arguments.
+			// Create the contact picker subview.
 			//
-			var queryArguments = {};
-			_.each(data.columns, function(column) {
-				if(column.search.value) {
-					queryArguments[column.name] = column.search.value;
-				}
-			});
-			queryArguments._sort = data.columns[data.order[0].column].name;
-			queryArguments._sortDirection = data.order[0].dir;
-			queryArguments._length = data.length;
-			queryArguments._start = data.start;
+			var contactPicker = new ContactPickerView();
+			this.addSubview(contactPicker);
+			contactPicker.render();
 
-			$.ajax({
-				headers: {
-					'Authorization': authorization
-				},
-				url: 'contacts',
-				data: queryArguments,
-				type: 'GET',
-				success: function(response) {
-					callback({
-						draw: data.draw,
-						recordsTotal: response.total,
-						recordsFiltered: response.total,
-						data: response.data
-					});
-				}
-			});
-		},
-
-		onRemove: function() {
-
-			this.$('#contactPicker table').DataTable().destroy();
+			return this;
 		},
 
 		formToModel: function() {
@@ -204,22 +93,15 @@ function ($, _, Backbone, FormView, cities, counties, loginInfo, detailHtml) {
 			this.model.set('email', this.$('#email').val());
 		},
 
-		onKeyup: function() {
+		onRemove: function() {
 
-			// Execute query again.
-			//
-			this.doSearch();
+			this.$('#issuerCity').autocomplete('destroy');
+			this.$('#issuerCounty').autocomplete('destroy');
 		},
 
 		onClickSelectAddressee: function() {
 
-			$('#contactPicker').dialog('open');
-
-			// Set focus on the first field of the search form.
-			//
-			_.defer(function () {
-				this.$('#searchDescription').focus();
-			});
+			Backbone.trigger('invoice:open-contact-picker');
 		},
 
 		onClickBack: function() {

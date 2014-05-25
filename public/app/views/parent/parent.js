@@ -35,7 +35,7 @@ function ($, _, Backbone) {
 			// Process subviews, if needed.
 			//
 			if (view.subviews) {
-				_.each(view.subviews, this.removeView);
+				_.each(view.subviews, this.removeView, this);
 			}
 
 			// Remove the view.
