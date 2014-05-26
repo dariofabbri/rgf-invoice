@@ -17,6 +17,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 		events: {
 			'click #selectAddressee': 'onClickSelectAddressee',
+			'click #addRow': 'onClickAddRow',
 			'click #back': 'onClickBack',
 			'click #save': 'onClickSave'
 		},
@@ -34,6 +35,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			// Set up form buttons.
 			//
 			this.$('#selectAddressee').button();
+			this.$('#addRow').button();
 			this.$('#save').button();
 			this.$('#back').button();
 
@@ -58,6 +60,58 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			this.$('#accordion-receipt').accordion({collapsible: true, heightStyle: 'content', active:  0});
 			this.$('#accordion-detail').accordion({collapsible: true, heightStyle: 'content', active:  0});
 			this.$('#accordion-totals').accordion({collapsible: true, heightStyle: 'content', active:  0});
+
+			// Configure detail data table.
+			//
+			var datatable = this.$('#rows').dataTable({
+				serverSide: false,
+				data: this.model.get('detail'),
+				dom: 'tr',
+				columns: [
+					{
+						name: 'position',
+						data: 'position'
+					},
+					{
+						name: 'description',
+						data: 'description'
+					},
+					{
+						name: 'uom',
+						data: 'uom'
+					},
+					{
+						name: 'quantity',
+						data: 'quantity'
+					},
+					{
+						name: 'price',
+						data: 'price'
+					},
+					{
+						name: 'taxable',
+						data: 'taxable'
+					},
+					{
+						name: 'vatPercentage',
+						data: 'vatPercentage'
+					}
+				],
+				language: {
+					lengthMenu: 'Mostra _MENU_ righe',
+					zeroRecords: 'Nessuna riga presente',
+					info: 'Pagina _PAGE_ di _PAGES_',
+					infoEmpty: 'Nessuna riga presente',
+					infoFiltered: '',
+					paginate: {
+						first:		'Inizio',
+						last:			'Fine',
+						next:			'Successivo',
+						previous:	'Precedente'
+					},
+					search: 'Cerca'
+				}
+			});
 
 			// Set focus on the first form field.
 			//
@@ -125,6 +179,21 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 			this.$('#issuerCity').autocomplete('destroy');
 			this.$('#issuerCounty').autocomplete('destroy');
+		},
+
+		onClickAddRow: function() {
+
+			var datatable = this.$('#rows').DataTable();
+			datatable.row.add({
+				position: null,
+				description: null,
+				uom: null,
+				quantity: null,
+				price: null,
+				taxable: null,
+				vatPercentage: null
+			});
+			datatable.draw();
 		},
 
 		onClickSelectAddressee: function() {
