@@ -58,6 +58,10 @@ function ($, _, Backbone, validation) {
 			
 			issuer = _.extend({}, data);
 			this.set('issuer', issuer);
+
+			this.set('receipt', {
+				cashRegister: data.cashRegister
+			});
 		},
 
 		// TODO: copied from contacts!

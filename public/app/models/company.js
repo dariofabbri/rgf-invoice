@@ -21,6 +21,10 @@ function ($, _, Backbone, validation) {
 			cfCode: null,
 			reaCode: null,
 			stock: null,
+			cashRegister: {
+				model: null,
+				serial: null
+			},
 			createdBy: null,
 			createdOn: null,
 			updatedBy: null,

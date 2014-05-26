@@ -13,6 +13,10 @@ var companySchema = new Schema({
 	cfCode: String,
 	reaCode: String,
 	stock: String,
+	cashRegister: {
+		model: String,
+		serial: String
+	},
 	createdBy: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedBy: String,
