@@ -4,6 +4,8 @@ require.config({
 		jquery: 				'../libs/jquery',
 		'jquery-ui':		'../libs/jquery-ui',
 		'datatables': 	'../libs/jquery.dataTables',
+		'jqgrid':				'../libs/jquery.jqGrid.src',
+		'jqgrid-it':		'../libs/grid.locale-it',
 		underscore: 		'../libs/underscore',
 		backbone: 			'../libs/backbone',
 		text: 					'../libs/text'
@@ -20,6 +22,10 @@ require.config({
 
 		'jquery-dataTables': {
 			deps: ['jquery']
+		},
+
+		'jqgrid': {
+			deps: ['jquery', 'jqgrid-it']
 		}
 	}
 });
@@ -31,7 +37,8 @@ requirejs([
 	'models/login-info',
 
 	'jquery-ui',
-	'datatables'
+	'datatables',
+	'jqgrid'
 ],
 function ($, _, Backbone, loginInfo) {
 
