@@ -37,9 +37,9 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				datatype: this.ajaxSearch,
 				colNames: [ 'Username', 'Cognome', 'Nome' ],
 				colModel: [
-					{ name: 'username', index: 'username' },
-					{ name: 'surname', index: 'surname' },
-					{ name: 'name', index: 'name' },
+					{ name: 'username', index: 'username', autowidth: true },
+					{ name: 'surname', index: 'surname', autowidth: true },
+					{ name: 'name', index: 'name', autowidth: true }
 				],
 				rowNum: 10,
 				rowList: [ 10, 20, 50 ],
@@ -47,6 +47,10 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				sortorder: 'asc',
 				viewrecords: true,
 				caption: 'Utenti'
+			});
+
+			this.$('#list').closest('.c12').on('resize', function() {
+				console.log(arguments);
 			});
 
 			// Set up focus on the first form field.
@@ -58,21 +62,24 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			return this;
 		},
 
-		ajaxSearch: function(data, callback, settings) {
+		ajaxSearch: function(args) {
+			var that = this;
+			var value;
 			var authorization = loginInfo.getAuthorization();
 
 			// Prepare query arguments.
 			//
 			var queryArguments = {};
-			_.each(data.columns, function(column) {
-				if(column.search.value) {
-					queryArguments[column.name] = column.search.value;
+			_.each(userSearch.keys(), function(key) {
+				value = userSearch.get(key);
+				if(value) {
+					queryArguments[key] = value;
 				}
 			});
-			queryArguments._sort = data.columns[data.order[0].column].name;
-			queryArguments._sortDirection = data.order[0].dir;
-			queryArguments._length = data.length;
-			queryArguments._start = data.start;
+			queryArguments._sort = args.sidx;
+			queryArguments._sortDirection = args.sord;
+			queryArguments._length = args.rows;
+			queryArguments._start = (args.page - 1) * args.rows;
 
 			$.ajax({
 				headers: {
@@ -82,12 +89,8 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				data: queryArguments,
 				type: 'GET',
 				success: function(response) {
-					callback({
-						draw: data.draw,
-						recordsTotal: response.total,
-						recordsFiltered: response.total,
-						data: response.data
-					});
+					var grid = $(that)[0];
+					grid.addJSONData(response.data);
 				}
 			});
 		},
