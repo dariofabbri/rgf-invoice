@@ -28,7 +28,22 @@
 	</div>
 
 	<div class="c12">
-		<table id="list" width="100%"></table>
+		<table id="list" class="stripe hover row-border" width="100%">
+			<thead>
+				<tr>
+					<th>Username</th>
+					<th>Cognome</th>
+					<th>Nome</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th>Username</th>
+					<th>Cognome</th>
+					<th>Nome</th>
+				</tr>
+			</tfoot>
+		</table>
 	</div>
 
 </div>

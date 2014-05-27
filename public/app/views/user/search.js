@@ -33,64 +33,21 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 
 			// Configure data table.
 			//
-			var datatable = this.$('#list').dataTable({
-				serverSide: true,
-				ajax: this.ajaxSearch,
-				dom: 'tipr',
-				deferLoading: 1,
-				columns: [
-					{
-						name: 'username',
-						data: 'username'
-					},
-					{
-						name: 'surname',
-						data: 'surname'
-					},
-					{
-						name: 'name',
-						data: 'name'
-					}
+			this.$('#list').jqGrid({
+				datatype: this.ajaxSearch,
+				colNames: [ 'Username', 'Cognome', 'Nome' ],
+				colModel: [
+					{ name: 'username', index: 'username' },
+					{ name: 'surname', index: 'surname' },
+					{ name: 'name', index: 'name' },
 				],
-				searchCols: [
-					{
-						search: userSearch.get('username')
-					},
-					{
-						search: userSearch.get('surname')
-					},
-					{
-						search: userSearch.get('name')
-					}
-				],
-				language: {
-					lengthMenu: 'Mostra _MENU_ righe',
-					zeroRecords: 'Nessun risultato trovato',
-					info: 'Pagina _PAGE_ di _PAGES_',
-					infoEmpty: 'Nessun risultato trovato',
-					infoFiltered: '',
-					paginate: {
-						first:		'Inizio',
-						last:			'Fine',
-						next:			'Successivo',
-						previous:	'Precedente'
-					},
-					search: 'Cerca'
-				}
+				rowNum: 10,
+				rowList: [ 10, 20, 50 ],
+				sortname: 'username',
+				sortorder: 'asc',
+				viewrecords: true,
+				caption: 'Utenti'
 			});
-
-			datatable.find('tbody').on('click', 'tr', function() {
-				if ($(this).hasClass('selected')) {
-					$(this).removeClass('selected');
-				} else {
-					datatable.$('tr.selected').removeClass('selected');
-					$(this).addClass('selected');
-				}
-			});
-
-			// Apply search filters.
-			//
-			this.doSearch();
 
 			// Set up focus on the first form field.
 			//
