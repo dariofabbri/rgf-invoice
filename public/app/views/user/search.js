@@ -49,7 +49,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				caption: 'Utenti'
 			});
 
-			this.$('#list').closest('.c12').on('resize', function() {
+			this.$('#list').closest('.c12').resize(function() {
 				console.log(arguments);
 			});
 
@@ -97,7 +97,9 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 
 		onRemove: function() {
 
-			this.$('#list').DataTable().destroy();
+			// TODO: clean up the jqGrid.
+			//
+			//this.$('#list').DataTable().destroy();
 		},
 
 		onKeyup: function() {
@@ -113,12 +115,16 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		
 		doSearch: function() {
 
+			// TODO: trigger jqGrid reload.
+			//
+			/*
 			var datatable = this.$('#list').DataTable();
 			datatable.column('username:name').search(userSearch.get('username'));
 			datatable.column('name:name').search(userSearch.get('name'));
 			datatable.column('surname:name').search(userSearch.get('surname'));
 
 			datatable.draw();
+			*/
 		},
 
 		formToModel: function() {
