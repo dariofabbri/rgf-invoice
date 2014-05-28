@@ -44,14 +44,19 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 					{ name: 'surname', index: 'surname' },
 					{ name: 'name', index: 'name' }
 				],
-				rowNum: 30,
+				loadonce: false,
+				height: '100%',
+				rowNum: 10,
 				rowList: [ 10, 20, 50 ],
 				sortname: 'username',
 				sortorder: 'asc',
 				viewrecords: true,
 				caption: 'Utenti',
-				onSelectRow: this.onSelectRow
-			});
+				scroll: false,
+				onSelectRow: this.onSelectRow,
+				pager: '#pager'
+			}).navGrid('#pager', {});
+
 
 			$(window).resize(function() {
 				var width = that.$('#list').closest('.c12').width();
