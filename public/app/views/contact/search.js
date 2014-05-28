@@ -13,10 +13,13 @@ function ($, _, Backbone, ParentView, contactSearch, loginInfo, searchHtml) {
 
 		template: _.template(searchHtml),
 
+		editing: null,
+
 		events: {
-			'keyup input': 	'onKeyup',
-			'click #new':		'onClickNew',
-			'click table tbody tr': 'onEditRecord'
+			'keyup .form input': 'onKeyup',
+			'click #new': 'onClickNew',
+			//'click table tbody tr': 'onEditRecord'
+			'click table tbody td': 'onEditCell'
 		},
 
 		render: function () {
@@ -204,6 +207,45 @@ function ($, _, Backbone, ParentView, contactSearch, loginInfo, searchHtml) {
 
 			var id = this.$('#list').DataTable().row(e.currentTarget).data()._id;
 			Backbone.history.navigate('contact/' + id, true);
+		},
+
+		resetEditCell: function(target) {
+			var data = $(target).find('input').val();
+			$(target)
+				.empty()
+				.closest('table')
+				.DataTable()
+				.cell(target)
+				.data(data);
+		},
+
+		setEditCell: function(target) {
+
+			var data = $(target).closest('table').DataTable().cell(target).data();
+			$(target)
+				.empty()
+				.append('<input type="text" id="abcd" style="width: 100%; height: 100%;"/>')
+				.find('input')
+				.val(data)
+				.on('blur', function() {
+					this.resetEditCell(this.editing);
+					this.editing = null;
+				})
+				.focus();
+		},
+
+		onEditCell: function (e) {
+
+			if(this.editing && this.editing === e.currentTarget) {
+				return;
+			}
+
+			if(this.editing && this.editing !== e.currentTarget) {
+				this.resetEditCell(this.editing);
+			}
+
+			this.setEditCell(e.currentTarget);
+			this.editing = e.currentTarget;
 		}
 	});
 
