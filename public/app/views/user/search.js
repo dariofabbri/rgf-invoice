@@ -52,10 +52,10 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				sortorder: 'asc',
 				viewrecords: true,
 				caption: 'Utenti',
-				scroll: false,
 				onSelectRow: this.onSelectRow,
 				pager: '#pager'
-			}).navGrid('#pager', {});
+			});
+			this.$('#list').jqGrid('navGrid','#pager',{add: false, del: false, edit: false, search: false});
 
 
 			$(window).resize(function() {

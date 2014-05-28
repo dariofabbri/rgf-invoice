@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Gestionale RGF</title>
+		<link href="assets/css/ui-lightness/jquery-ui.css" rel="stylesheet">
+		<link href="assets/css/ui.jqgrid.css" rel="stylesheet" type="text/css" media="screen">
+
+		<script src="libs/jquery.js"></script>
+		<script src="libs/grid.locale-it.js"></script>
+		<script src="libs/jquery.jqGrid.src.js"></script>
+		<script>
+			$(document).ready(function() {
+
+				// Configure data table.
+				//
+				$('#list').jqGrid({
+					datatype: function(args) {
+						var data = [
+							{ _id: 1, username: 'username1', surname: 'surname1', name: 'name1' },
+							{ _id: 2, username: 'username2', surname: 'surname2', name: 'name2' },
+							{ _id: 3, username: 'username3', surname: 'surname3', name: 'name3' },
+							{ _id: 4, username: 'username4', surname: 'surname4', name: 'name4' },
+							{ _id: 5, username: 'username5', surname: 'surname5', name: 'name5' },
+							{ _id: 6, username: 'username6', surname: 'surname6', name: 'name6' },
+							{ _id: 7, username: 'username7', surname: 'surname7', name: 'name7' },
+							{ _id: 8, username: 'username8', surname: 'surname8', name: 'name8' },
+							{ _id: 9, username: 'username9', surname: 'surname9', name: 'name9' }
+						];
+						$(this)[0].addJSONData(data);
+					},
+					autowidth: true,
+					shrinkToFit: true,
+					colNames: [ 'ID', 'Username', 'Cognome', 'Nome' ],
+					colModel: [
+						{ name: '_id', index: '_id', hidden: true },
+						{ name: 'username', index: 'username' },
+						{ name: 'surname', index: 'surname' },
+						{ name: 'name', index: 'name' }
+					],
+					height: '100%',
+					rowNum: 10,
+					rowList: [ 10, 20, 50 ],
+					sortname: 'username',
+					sortorder: 'asc',
+					viewrecords: true,
+					caption: 'Utenti',
+					//onSelectRow: this.onSelectRow,
+					pager: '#pager'
+				});
+				$('#list').jqGrid('navGrid','#pager',{add: false, del: false, edit: false, search: false});
+
+			});
+
+		</script>
+	</head>
+	<body>
+		<table id="list"></table>
+		<div id="pager"></div>
+	</body>
+</html>
