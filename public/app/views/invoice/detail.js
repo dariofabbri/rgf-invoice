@@ -435,12 +435,20 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				})
 				.on('keydown', function(e) {
 					if(e.keyCode === 13) {
+
 						e.preventDefault();
 						that.resetEditCell();
+
 					} else if(e.keyCode === 9) {
+
 						e.preventDefault();
 
-						var next = $(e.currentTarget).closest('td').next();
+						var next = null;
+						if(e.shiftKey) {
+							next = $(e.currentTarget).closest('td').prev();
+						} else {
+							next = $(e.currentTarget).closest('td').next();
+						}
 
 						that.resetEditCell();
 
