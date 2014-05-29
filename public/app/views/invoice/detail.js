@@ -232,7 +232,13 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			datatable.draw();
 		},
 
-		onClickMoveUp: function() {
+		moveRow: function(direction) {
+
+			// Check passed parameter.
+			//
+			if(!direction || (direction !== 'up' && direction != 'down')) {
+				throw "Parameter direction needs to be properly specified.";
+			}
 
 			// Find the selected table row.
 			//
@@ -248,28 +254,43 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			// Get the index of the selected row.
 			//
 			var selIdx = datatable.row(selected).index();
-			if(!selIdx || selIdx <= 0) {
+			if(direction === 'up' && selIdx <= 0) {
+				return;
+			}
+			if(direction === 'down' && selIdx >= datatable.data().length - 1) {
 				return;
 			}
 
-			// Swap with the row above the selected one.
+			// Swap with the row adjacent the selected one.
 			//
-			var above = datatable.row(selIdx - 1).data();
-			var current = datatable.row(selIdx).data();
+			var other = direction === 'up' ? datatable.row(selIdx - 1).data() : datatable.row(selIdx + 1).data();
+			current = datatable.row(selIdx).data();
 			var tmppos = current.position;
-			current.position = above.position;
-			above.position = tmppos;
-			datatable.row(selIdx - 1).data(current);
-			datatable.row(selIdx).data(above);
+			current.position = other.position;
+			other.position = tmppos;
+			datatable.row(selIdx + (direction === 'up' ? -1 : 1)).data(current);
+			datatable.row(selIdx).data(other);
 
 			// Manage row selection.
 			//
 			selected.removeClass('selected');
-			selected.prev().addClass('selected');
+			if(direction === 'up') {
+				selected.prev().addClass('selected');
+			} else {
+				selected.next().addClass('selected');
+			}
 
 			// Redraw.
 			//
 			datatable.draw();
+		},
+
+		onClickMoveUp: function() {
+			this.moveRow('up');
+		},
+
+		onClickMoveDown: function() {
+			this.moveRow('down');
 		},
 
 		onClickSelectAddressee: function() {
