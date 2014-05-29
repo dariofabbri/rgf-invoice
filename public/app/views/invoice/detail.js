@@ -16,8 +16,11 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 		template: _.template(detailHtml),
 
 		events: {
+			'click #rows tbody tr': 'onSelectRow',
 			'click #selectAddressee': 'onClickSelectAddressee',
 			'click #addRow': 'onClickAddRow',
+			'click #moveUp': 'onClickMoveUp',
+			'click #moveDown': 'onClickMoveDown',
 			'click #back': 'onClickBack',
 			'click #save': 'onClickSave'
 		},
@@ -36,6 +39,8 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			//
 			this.$('#selectAddressee').button();
 			this.$('#addRow').button();
+			this.$('#moveUp').button({ disabled: true });
+			this.$('#moveDown').button({ disabled: true });
 			this.$('#save').button();
 			this.$('#back').button();
 
@@ -70,31 +75,38 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				columns: [
 					{
 						name: 'position',
-						data: 'position'
+						data: 'position',
+						orderable: false
 					},
 					{
 						name: 'description',
-						data: 'description'
+						data: 'description',
+						orderable: false
 					},
 					{
 						name: 'uom',
-						data: 'uom'
+						data: 'uom',
+						orderable: false
 					},
 					{
 						name: 'quantity',
-						data: 'quantity'
+						data: 'quantity',
+						orderable: false
 					},
 					{
 						name: 'price',
-						data: 'price'
+						data: 'price',
+						orderable: false
 					},
 					{
 						name: 'taxable',
-						data: 'taxable'
+						data: 'taxable',
+						orderable: false
 					},
 					{
 						name: 'vatPercentage',
-						data: 'vatPercentage'
+						data: 'vatPercentage',
+						orderable: false
 					}
 				],
 				language: {
@@ -181,18 +193,82 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			this.$('#issuerCounty').autocomplete('destroy');
 		},
 
+		onSelectRow: function(e) {
+
+			if ($(e.currentTarget).hasClass('selected')) {
+				$(e.currentTarget).removeClass('selected');
+				this.$('#moveUp').button('option', 'disabled', true);
+				this.$('#moveDown').button('option', 'disabled', true);
+			} else {
+				$(e.currentTarget).siblings('tr.selected').removeClass('selected');
+				$(e.currentTarget).addClass('selected');
+				this.$('#moveUp').button('option', 'disabled', false);
+				this.$('#moveDown').button('option', 'disabled', false);
+			}
+		},
+
 		onClickAddRow: function() {
 
+			// Get the data table object.
+			//
 			var datatable = this.$('#rows').DataTable();
+
+			// Retrieve the last position added.
+			//
+			var lastRow = this.$('#rows tr:last');
+			var data = datatable.row(lastRow).data();
+
+			var position = (data && data.position) ? data.position + 10 : 10;
+
 			datatable.row.add({
-				position: null,
-				description: null,
+				position: position,
+				description: new Date(),
 				uom: null,
 				quantity: null,
 				price: null,
 				taxable: null,
 				vatPercentage: null
 			});
+			datatable.draw();
+		},
+
+		onClickMoveUp: function() {
+
+			// Find the selected table row.
+			//
+			var selected = this.$('#rows tr.selected');
+			if(!selected) {
+				return;
+			}
+
+			// Get the rows data table.
+			//
+			var datatable = this.$('#rows').DataTable();
+
+			// Get the index of the selected row.
+			//
+			var selIdx = datatable.row(selected).index();
+			if(!selIdx || selIdx <= 0) {
+				return;
+			}
+
+			// Swap with the row above the selected one.
+			//
+			var above = datatable.row(selIdx - 1).data();
+			var current = datatable.row(selIdx).data();
+			var tmppos = current.position;
+			current.position = above.position;
+			above.position = tmppos;
+			datatable.row(selIdx - 1).data(current);
+			datatable.row(selIdx).data(above);
+
+			// Manage row selection.
+			//
+			selected.removeClass('selected');
+			selected.prev().addClass('selected');
+
+			// Redraw.
+			//
 			datatable.draw();
 		},
 

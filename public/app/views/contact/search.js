@@ -224,7 +224,7 @@ function ($, _, Backbone, ParentView, contactSearch, loginInfo, searchHtml) {
 			var data = $(target).closest('table').DataTable().cell(target).data();
 			$(target)
 				.empty()
-				.append('<input type="text" id="abcd" style="width: 100%; height: 100%;"/>')
+				.append('<input type="text" style="width: 100%; height: 100%;"/>')
 				.find('input')
 				.val(data)
 				.on('blur', function() {
