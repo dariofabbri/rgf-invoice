@@ -15,8 +15,10 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 		template: _.template(detailHtml),
 
+		editing: null,
+
 		events: {
-			'click #rows tbody tr': 'onSelectRow',
+			'click #rows tbody td': 'onCellClick',
 			'click #selectAddressee': 'onClickSelectAddressee',
 			'click #addRow': 'onClickAddRow',
 			'click #moveUp': 'onClickMoveUp',
@@ -72,6 +74,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				serverSide: false,
 				data: this.model.get('detail'),
 				dom: 'tr',
+				paging: false,
 				columns: [
 					{
 						name: 'position',
@@ -222,7 +225,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 			datatable.row.add({
 				position: position,
-				description: new Date(),
+				description: null,
 				uom: null,
 				quantity: null,
 				price: null,
@@ -390,6 +393,113 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			this.resetFieldError('#phone');
 			this.resetFieldError('#fax');
 			this.resetFieldError('#email');
+		},
+
+		resetEditCell: function() {
+
+			if(!this.editing) {
+				throw "Unexpected call to this function with no cell currently editing.";
+			}
+
+			var data = $(this.editing).find('input').val();
+			$(this.editing)
+				.empty()
+				.closest('table')
+				.DataTable()
+				.cell(this.editing)
+				.data(data);
+
+			this.editing = null;
+		},
+
+		setEditCell: function(target) {
+
+			var that = this;
+
+			var cell = $(target).closest('table').DataTable().cell(target);
+			var indexes = cell.index();
+
+			if(indexes.column === 0 || indexes.column === 5) {
+				return;
+			}
+
+			var data = cell.data();
+
+			$(target)
+				.empty()
+				.append('<input type="text" style="width: 100%; height: 100%;"/>')
+				.find('input')
+				.val(data)
+				.on('blur', function() {
+					that.resetEditCell();
+				})
+				.on('keydown', function(e) {
+					if(e.keyCode === 13) {
+						e.preventDefault();
+						that.resetEditCell();
+					} else if(e.keyCode === 9) {
+						e.preventDefault();
+
+						var next = $(e.currentTarget).closest('td').next();
+
+						that.resetEditCell();
+
+						if(next) {
+							that.setEditCell(next);
+						}
+					}
+				})
+				.focus();
+
+			var tr = $(target).closest('tr');
+			if (!tr.hasClass('selected')) {
+				tr.siblings('tr.selected').removeClass('selected');
+				tr.addClass('selected');
+				this.$('#moveUp').button('option', 'disabled', false);
+				this.$('#moveDown').button('option', 'disabled', false);
+			}
+
+			this.editing = target;
+		},
+
+		onCellClick: function (e) {
+
+			var indexes = $(e.currentTarget).closest('table').DataTable().cell(e.currentTarget).index();
+
+			// Manage row selection: it only happens if the first column is clicked.
+			//
+			if(indexes.column === 0) {
+
+				var tr = $(e.currentTarget).closest('tr');
+
+				if (tr.hasClass('selected')) {
+					tr.removeClass('selected');
+					this.$('#moveUp').button('option', 'disabled', true);
+					this.$('#moveDown').button('option', 'disabled', true);
+				} else {
+					tr.siblings('tr.selected').removeClass('selected');
+					tr.addClass('selected');
+					this.$('#moveUp').button('option', 'disabled', false);
+					this.$('#moveDown').button('option', 'disabled', false);
+				}
+			}
+
+			// If we are already editing the clicked cell, just do nothing.
+			//
+			if(this.editing && this.editing === e.currentTarget) {
+				return;
+			}
+
+			// If the user elected to edit a different cell, the previously edited needs
+			// to be reseted.
+			//
+			if(this.editing && this.editing !== e.currentTarget) {
+				this.resetEditCell();
+			}
+
+			// If the user clicked on an editable cell, turn it in an input control.
+			//
+			this.setEditCell(e.currentTarget);
 		}
 	});
 
