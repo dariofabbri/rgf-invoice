@@ -17,6 +17,8 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 		editing: null,
 
+		editableColumns: [ 1, 2, 3, 4, 6 ],
+
 		events: {
 			'click #rows tbody td': 'onClickCell',
 			'click #selectAddressee': 'onClickSelectAddressee',
@@ -131,7 +133,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			// Set focus on the first form field.
 			//
 			_.defer(function () {
-				this.$('#addresseeDescription').focus();
+				this.$('#number').focus();
 			});
 
 			// Create the contact picker subview.
@@ -463,13 +465,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 						if(e.shiftKey) {
 							next = $(e.currentTarget).closest('td').prev();
 						} else {
-							next = $(e.currentTarget).closest('td').next();
-						}
-
-						that.resetEditCell();
-
-						if(next) {
-							that.setEditCell(next);
+							that.tabToNext(e.currentTarget, true);
 						}
 					}
 				})
@@ -484,6 +480,34 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			}
 
 			this.editing = target;
+		},
+
+		tabToNext: function (input, forward) {
+
+			var datatable = $(input).closest('table').DataTable();
+			var indexes = datatable.cell($(input).closest('td')).index();
+			var idx = indexes.column + 1;
+			var max = _.max(this.editableColumns, function(column) { return column});
+
+			var next = null;
+
+			while(true) {
+				if(idx > max) {
+					break;
+				}
+
+				if(_.indexOf(this.editableColumns, idx) >= 0) {
+					next = $(input).closest('tr').find('td:nth-child(' + idx + ')');
+					break;
+				}
+
+				idx += 1;
+			}
+
+			if(next) {
+				this.resetEditCell();
+				this.setEditCell(next);
+			}
 		},
 
 		onClickCell: function (e) {
