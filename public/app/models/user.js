@@ -8,9 +8,9 @@ function ($, _, Backbone) {
 		idAttribute: '_id',
 
 		defaults: {
-			username: '',
-			name: '',
-			surname: '',
+			username: null,
+			name: null,
+			surname: null,
 			createdBy: null,
 			createdOn: null,
 			updatedBy: null,

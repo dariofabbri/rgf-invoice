@@ -165,6 +165,26 @@ function ($, _, Backbone, FormView, names, salutations, cities, counties, countr
 			this.resetFieldError('#phone');
 			this.resetFieldError('#fax');
 			this.resetFieldError('#email');
+		},
+
+		onRemove: function() {
+
+			// Destroy button widgets.
+			//
+			this.$('#save').button('destroy');
+			this.$('#back').button('destroy');
+
+			// Destroy autocomplete fields.
+			//
+			this.$('#firstName').autocomplete('destroy');
+			this.$('#salutation').autocomplete('destroy');
+			this.$('#city').autocomplete('destroy');
+			this.$('#county').autocomplete('destroy');
+			this.$('#country').autocomplete('destroy');
+
+			// Destroy buttonset widgets.
+			//
+			this.$('#isCompany').buttonset('destroy');
 		}
 	});
 

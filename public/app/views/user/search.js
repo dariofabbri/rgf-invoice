@@ -14,9 +14,9 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		template: _.template(searchHtml),
 
 		events: {
-			'keyup input': 	'onKeyup',
-			'click #new':		'onClickNew',
-			'click table tbody tr': 'onEditRecord'
+			'keyup input': 'onKeyup',
+			'click #new': 'onClickNew',
+			'click table tbody tr': 'onClickRow'
 		},
 
 		render: function () {
@@ -76,15 +76,6 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 						previous:	'Precedente'
 					},
 					search: 'Cerca'
-				}
-			});
-
-			datatable.find('tbody').on('click', 'tr', function() {
-				if ($(this).hasClass('selected')) {
-					$(this).removeClass('selected');
-				} else {
-					datatable.$('tr.selected').removeClass('selected');
-					$(this).addClass('selected');
 				}
 			});
 
@@ -180,10 +171,28 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			Backbone.history.navigate('newUser', true);
 		},
 
-		onEditRecord: function(e) {
+		onClickRow: function(e) {
 
+			// Manage row selection for the visual cue of the operation.
+			//
+			var tr = $(e.currentTarget);
+			if (tr.hasClass('selected')) {
+				tr.removeClass('selected');
+			} else {
+				tr.siblings('tr.selected').removeClass('selected');
+				tr.addClass('selected');
+			}
+
+			// Extract selected id and navigate to detail route.
+			//
 			var id = this.$('#list').DataTable().row(e.currentTarget).data()._id;
 			Backbone.history.navigate('user/' + id, true);
+		},
+
+		onRemove: function () {
+
+			this.$('#new').button('destroy');
+			this.$('#list').DataTable().destroy();
 		}
 	});
 

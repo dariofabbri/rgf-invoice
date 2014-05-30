@@ -14,7 +14,7 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 
 		events: {
 			'keyup input': 'onKeyup',
-			'click table tbody tr': 'onSelectRow'
+			'click table tbody tr': 'onClickRow'
 		},
 
 		initialize: function() {
@@ -40,12 +40,6 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 				height: 600
 			});
 			this.delegateEvents(this.events);
-
-			// Set up form buttons.
-			//
-			// this.$('#selectAddressee').button();
-			// this.$('#save').button();
-			// this.$('#back').button();
 
 			// Configure data table.
 			//
@@ -89,15 +83,6 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 						previous:	'Precedente'
 					},
 					search: 'Cerca'
-				}
-			});
-
-			datatable.find('tbody').on('click', 'tr', function() {
-				if ($(this).hasClass('selected')) {
-					$(this).removeClass('selected');
-				} else {
-					datatable.$('tr.selected').removeClass('selected');
-					$(this).addClass('selected');
 				}
 			});
 
@@ -167,7 +152,17 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 			this.doSearch();
 		},
 
-		onSelectRow: function(e) {
+		onClickRow: function(e) {
+
+			// Manage row selection for the visual cue of the operation.
+			//
+			var tr = $(e.currentTarget);
+			if (tr.hasClass('selected')) {
+				tr.removeClass('selected');
+			} else {
+				tr.siblings('tr.selected').removeClass('selected');
+				tr.addClass('selected');
+			}
 
 			var id = this.$('table').DataTable().row(e.currentTarget).data()._id;
 			Backbone.trigger('invoice:contact-picker-select', id);

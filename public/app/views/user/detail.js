@@ -94,6 +94,12 @@ function ($, _, Backbone, FormView, detailHtml) {
 			this.resetFieldError('#surname');
 			this.resetFieldError('#password');
 			this.resetFieldError('#confirmPassword');
+		},
+
+		onRemove: function () {
+
+			this.$('#save').button('destroy');
+			this.$('#back').button('destroy');
 		}
 	});
 

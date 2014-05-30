@@ -120,6 +120,11 @@ function ($, _, Backbone, FormView, loginInfo, loginHtml) {
 		resetFieldErrors: function () {
 			this.resetFieldError('#username');
 			this.resetFieldError('#password');
+		},
+
+		onRemove: function () {
+
+			this.$('#login').button('destroy');
 		}
 	});
 

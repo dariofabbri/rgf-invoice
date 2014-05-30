@@ -18,7 +18,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 		editing: null,
 
 		events: {
-			'click #rows tbody td': 'onCellClick',
+			'click #rows tbody td': 'onClickCell',
 			'click #selectAddressee': 'onClickSelectAddressee',
 			'click #addRow': 'onClickAddRow',
 			'click #moveUp': 'onClickMoveUp',
@@ -192,8 +192,24 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 		onRemove: function() {
 
+			this.$('#selectAddressee').button('destroy');
+			this.$('#addRow').button('destroy');
+			this.$('#moveUp').button('destroy');
+			this.$('#moveDown').button('destroy');
+			this.$('#save').button('destroy');
+			this.$('#back').button('destroy');
+
 			this.$('#issuerCity').autocomplete('destroy');
 			this.$('#issuerCounty').autocomplete('destroy');
+
+			this.$('#accordion-header').accordion('destroy');
+			this.$('#accordion-issuer').accordion('destroy');
+			this.$('#accordion-addressee').accordion('destroy');
+			this.$('#accordion-receipt').accordion('destroy');
+			this.$('#accordion-detail').accordion('destroy');
+			this.$('#accordion-totals').accordion('destroy');
+
+			this.$('#rows').DataTable().destroy();
 		},
 
 		onSelectRow: function(e) {
@@ -470,7 +486,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			this.editing = target;
 		},
 
-		onCellClick: function (e) {
+		onClickCell: function (e) {
 
 			var indexes = $(e.currentTarget).closest('table').DataTable().cell(e.currentTarget).index();
 

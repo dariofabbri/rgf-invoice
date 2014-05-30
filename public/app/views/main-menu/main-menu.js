@@ -43,6 +43,16 @@ function ($, _, Backbone, html) {
 		onInvoicesClick: function() {
 
 			Backbone.history.navigate('invoices', true);
+		},
+
+		onRemove: function() {
+
+			this.$('#users').button('destroy');
+			this.$('#contacts').button('destroy');
+			this.$('#invoices').button('destroy');
+			this.$('#creditNotes').button('destroy');
+			this.$('#deliveryNotes').button('destroy');
+			this.$('#repairs').button('destroy');
 		}
 	});
 
