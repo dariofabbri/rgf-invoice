@@ -15,11 +15,11 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 
 		events: {
 			'keyup input': 	'onKeyup',
-			'click #new':		'onClickNew'
+			'click #new':		'onClickNew',
+			'click table tbody tr': 'onEditRecord'
 		},
 
 		render: function () {
-			var that = this;
 			var html = this.template();
 			this.$el.html(html);
 
@@ -33,71 +33,89 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 
 			// Configure data table.
 			//
-			this.$('#list').jqGrid({
-				datatype: this.ajaxSearch,
-				autowidth: true,
-				shrinkToFit: true,
-				colNames: [ 'ID', 'Username', 'Cognome', 'Nome' ],
-				colModel: [
-					{ name: '_id', index: '_id', hidden: true },
-					{ name: 'username', index: 'username' },
-					{ name: 'surname', index: 'surname' },
-					{ name: 'name', index: 'name' }
+			var datatable = this.$('#list').dataTable({
+				serverSide: true,
+				ajax: this.ajaxSearch,
+				dom: 'tipr',
+				deferLoading: 1,
+				columns: [
+					{
+						name: 'username',
+						data: 'username'
+					},
+					{
+						name: 'surname',
+						data: 'surname'
+					},
+					{
+						name: 'name',
+						data: 'name'
+					}
 				],
-				loadonce: false,
-				height: '100%',
-				rowNum: 10,
-				rowList: [ 10, 20, 50 ],
-				sortname: 'username',
-				sortorder: 'asc',
-				viewrecords: true,
-				caption: 'Utenti',
-				onSelectRow: this.onSelectRow,
-				pager: '#pager'
+				searchCols: [
+					{
+						search: userSearch.get('username')
+					},
+					{
+						search: userSearch.get('surname')
+					},
+					{
+						search: userSearch.get('name')
+					}
+				],
+				language: {
+					lengthMenu: 'Mostra _MENU_ righe',
+					zeroRecords: 'Nessun risultato trovato',
+					info: 'Pagina _PAGE_ di _PAGES_',
+					infoEmpty: 'Nessun risultato trovato',
+					infoFiltered: '',
+					paginate: {
+						first:		'Inizio',
+						last:			'Fine',
+						next:			'Successivo',
+						previous:	'Precedente'
+					},
+					search: 'Cerca'
+				}
 			});
-			this.$('#list').jqGrid('navGrid','#pager',{add: false, del: false, edit: false, search: false});
 
-
-			$(window).resize(function() {
-				var width = that.$('#list').closest('.c12').width();
-				that.$('#list').jqGrid('setGridWidth', width, true);
+			datatable.find('tbody').on('click', 'tr', function() {
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					datatable.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
 			});
 
-			// After the rendering...
+			// Apply search filters.
+			//
+			this.doSearch();
+
+			// Set up focus on the first form field.
 			//
 			_.defer(function () {
-
-				// Resize the grid to its container's width.
-				//
-				var width = this.$('#list').closest('.c12').width();
-				this.$('#list').jqGrid('setGridWidth', width, true);
-
-				// Set up focus on the first form field.
-				//
 				this.$('#username').focus();
 			});
 
 			return this;
 		},
 
-		ajaxSearch: function(args) {
-			var that = this;
-			var value;
+		ajaxSearch: function(data, callback, settings) {
 			var authorization = loginInfo.getAuthorization();
 
 			// Prepare query arguments.
 			//
 			var queryArguments = {};
-			_.each(userSearch.keys(), function(key) {
-				value = userSearch.get(key);
-				if(value) {
-					queryArguments[key] = value;
+			_.each(data.columns, function(column) {
+				if(column.search.value) {
+					queryArguments[column.name] = column.search.value;
 				}
 			});
-			queryArguments._sort = args.sidx;
-			queryArguments._sortDirection = args.sord;
-			queryArguments._length = args.rows;
-			queryArguments._start = (args.page - 1) * args.rows;
+			queryArguments._sort = data.columns[data.order[0].column].name;
+			queryArguments._sortDirection = data.order[0].dir;
+			queryArguments._length = data.length;
+			queryArguments._start = data.start;
 
 			$.ajax({
 				headers: {
@@ -107,16 +125,19 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				data: queryArguments,
 				type: 'GET',
 				success: function(response) {
-					$(that)[0].addJSONData(response.data);
+					callback({
+						draw: data.draw,
+						recordsTotal: response.total,
+						recordsFiltered: response.total,
+						data: response.data
+					});
 				}
 			});
 		},
 
 		onRemove: function() {
 
-			// TODO: clean up the jqGrid.
-			//
-			//this.$('#list').DataTable().destroy();
+			this.$('#list').DataTable().destroy();
 		},
 
 		onKeyup: function() {
@@ -132,9 +153,12 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 		
 		doSearch: function() {
 
-			// TODO: trigger jqGrid reload.
-			//
-			this.$('#list').trigger('reloadGrid');
+			var datatable = this.$('#list').DataTable();
+			datatable.column('username:name').search(userSearch.get('username'));
+			datatable.column('name:name').search(userSearch.get('name'));
+			datatable.column('surname:name').search(userSearch.get('surname'));
+
+			datatable.draw();
 		},
 
 		formToModel: function() {
@@ -156,10 +180,10 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 			Backbone.history.navigate('newUser', true);
 		},
 
-		onSelectRow: function(rowid, status, e) {
+		onEditRecord: function(e) {
 
-			var rowData = $(this).jqGrid('getRowData', rowid);
-			Backbone.history.navigate('user/' + rowData._id, true);
+			var id = this.$('#list').DataTable().row(e.currentTarget).data()._id;
+			Backbone.history.navigate('user/' + id, true);
 		}
 	});
 
