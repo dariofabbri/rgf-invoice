@@ -214,20 +214,6 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			this.$('#rows').DataTable().destroy();
 		},
 
-		onSelectRow: function(e) {
-
-			if ($(e.currentTarget).hasClass('selected')) {
-				$(e.currentTarget).removeClass('selected');
-				this.$('#moveUp').button('option', 'disabled', true);
-				this.$('#moveDown').button('option', 'disabled', true);
-			} else {
-				$(e.currentTarget).siblings('tr.selected').removeClass('selected');
-				$(e.currentTarget).addClass('selected');
-				this.$('#moveUp').button('option', 'disabled', false);
-				this.$('#moveDown').button('option', 'disabled', false);
-			}
-		},
-
 		onClickAddRow: function() {
 
 			// Get the data table object.
@@ -460,13 +446,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 					} else if(e.keyCode === 9) {
 
 						e.preventDefault();
-
-						var next = null;
-						if(e.shiftKey) {
-							next = $(e.currentTarget).closest('td').prev();
-						} else {
-							that.tabToNext(e.currentTarget, true);
-						}
+						that.tabToNext(e.currentTarget, !e.shiftKey);
 					}
 				})
 				.focus();
@@ -486,22 +466,30 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 			var datatable = $(input).closest('table').DataTable();
 			var indexes = datatable.cell($(input).closest('td')).index();
-			var idx = indexes.column + 1;
-			var max = _.max(this.editableColumns, function(column) { return column});
+			var idx = indexes.column;
+
+			var limit = (forward ? _.max : _.min).call(this, this.editableColumns, function(c) { return c; });
 
 			var next = null;
 
 			while(true) {
-				if(idx > max) {
-					break;
+
+				idx += forward ? 1 : -1;
+
+				if(forward) {
+					if(idx > limit) {
+						break;
+					}
+				} else {
+					if(idx < limit) {
+						break;
+					}
 				}
 
 				if(_.indexOf(this.editableColumns, idx) >= 0) {
-					next = $(input).closest('tr').find('td:nth-child(' + idx + ')');
+					next = $(input).closest('tr').find('td:nth-child(' + (idx + 1) + ')');
 					break;
 				}
-
-				idx += 1;
 			}
 
 			if(next) {
