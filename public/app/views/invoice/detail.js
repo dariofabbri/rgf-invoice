@@ -19,6 +19,8 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 		editableColumns: [ 1, 2, 3, 4, 6 ],
 
+		selectableColumns: [ 0 ],
+
 		events: {
 			'click #rows tbody td': 'onClickCell',
 			'click #selectAddressee': 'onClickSelectAddressee',
@@ -420,10 +422,17 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 			var that = this;
 
+		
+			// Get the cell associated to the passed target argument.
+			//
 			var cell = $(target).closest('table').DataTable().cell(target);
-			var indexes = cell.index();
 
-			if(indexes.column === 0 || indexes.column === 5) {
+			// Check if the selected target cell is a valid table cell.
+			//
+			if(cell.length != 1) {
+				return;
+			}
+			if(!this.isEditable(cell.index().column)) {
 				return;
 			}
 
@@ -462,6 +471,16 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			this.editing = target;
 		},
 
+		isEditable: function(idx) {
+			
+			return _.indexOf(this.editableColumns, idx) >= 0;
+		},
+
+		isSelectable: function(idx) {
+			
+			return _.indexOf(this.selectableColumns, idx) >= 0;
+		},
+
 		tabToNext: function (input, forward) {
 
 			var datatable = $(input).closest('table').DataTable();
@@ -486,7 +505,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 					}
 				}
 
-				if(_.indexOf(this.editableColumns, idx) >= 0) {
+				if(this.isEditable(idx)) {
 					next = $(input).closest('tr').find('td:nth-child(' + (idx + 1) + ')');
 					break;
 				}
@@ -504,7 +523,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 
 			// Manage row selection: it only happens if the first column is clicked.
 			//
-			if(indexes.column === 0) {
+			if(this.isSelectable(indexes.column)) {
 
 				var tr = $(e.currentTarget).closest('tr');
 
