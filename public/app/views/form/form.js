@@ -51,6 +51,7 @@ function ($, _, Backbone, ParentView, messageHtml) {
 				//
 				var title = this.$(selector).attr('title');
 				this.$(selector).data('savedTitle', title);
+				this.$(selector).data('hasTooltip', true);
 
 				this.$(selector)
 					.addClass('field-error', this.fldDelay)
@@ -71,6 +72,13 @@ function ($, _, Backbone, ParentView, messageHtml) {
 			if(savedTitle) {
 				this.$(selector)
 					.attr('title', savedTitle);
+			}
+
+			// Destroy tooltip widget, in case.
+			//
+			var hasTooltip = this.$(selector).data('hasTooltip');
+			if(hasTooltip) {
+				this.$(selector).tooltip('destroy');
 			}
 
 			return this.$(selector)

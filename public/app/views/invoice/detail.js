@@ -8,9 +8,10 @@ define([
 	'collections/cities',
 	'collections/counties',
 	'collections/uoms',
+	'collections/vats',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, counties, uoms, detailHtml) {
+function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, counties, uoms, vats, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -402,6 +403,61 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			this.resetFieldError('#email');
 		},
 
+		validateEditingCell: function() {
+
+			if(!this.editing) {
+				throw "Unexpected call to this function with no cell currently editing.";
+			}
+
+			// Extract some cell info.
+			//
+			var datatable = $(this.editing).closest('table').DataTable();
+			var cell = datatable.cell(this.editing);
+			var column = cell.index().column;
+			var val = $(this.editing).find('input').val();
+
+			// Process each column in a specialized way.
+			//
+			switch(column) {
+				
+				// Unit of measure.
+				//
+				case 2:
+					var item = uoms.find(function(item) {
+						return item.get('description') === val;
+					});
+					if(!item) {
+						return 'L\'unità di misura specificata non è valida.';
+					}
+				break;
+
+				// Quantity.
+				//
+				case 3:
+				break;
+
+				// Price.
+				//
+				case 4:
+				break;
+
+				// VAT percentage.
+				//
+				case 6:
+					var item = vats.find(function(item) {
+						return item.get('description') === val;
+					});
+					if(!item) {
+						return 'La percentuale IVA indicata non è valida.';
+					}
+				break;
+			}
+
+			// No validation problem detected.
+			//
+			return false;
+		},
+
 		resetEditCell: function() {
 
 			if(!this.editing) {
@@ -413,11 +469,35 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			var input = $(this.editing).find('input');
 			var data = input.val();
 
-			// If the widget had previousle been enhanced as an autocomplete,
+			// Perform validation.
+			//
+			var validationError = this.validateEditingCell();
+			if(validationError) {
+
+				// Set the field error style and the tooltip.
+				//
+				input
+					.removeClass('field-error')
+					.addClass('field-error')
+					.data('hasTooltip', true)
+					.attr('title', validationError)
+					.tooltip();
+
+				return false;
+			}
+
+			// If the widget had previously been enhanced as an autocomplete,
 			// destroy it to avoid memory leaks.
 			//
 			if(input.hasClass('ui-autocomplete-input')) {
 				input.autocomplete('destroy');
+			}
+
+			// If the tooltip had been previously activated on the
+			// input field, remove it to prevent memory leaks.
+			//
+			if(input.data('hasTooltip')) {
+				input.tooltip('destroy');
 			}
 
 			// Restore the control data in the table cell content.
@@ -430,6 +510,8 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				.data(data);
 
 			this.editing = null;
+
+			return true;
 		},
 
 		setEditCell: function(target) {
@@ -461,8 +543,8 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				.append('<input type="text" style="width: 100%; height: 100%;"/>')
 				.find('input')
 				.val(data)
-				.on('blur', function() {
-					
+				.on('blur', function(e) {
+
 					that.resetEditCell();
 				})
 				.on('keydown', function(e) {
@@ -479,9 +561,17 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				})
 				.focus();
 
-			if(cell.index().column === 2) {
-				this.autocompletize(input, uoms);
-			} 
+			// Specialize the field in certain cases.
+			//
+			switch(cell.index().column) {
+				case 2:
+					this.autocompletize(input, uoms);
+					break;
+
+				case 6:
+					this.autocompletize(input, vats);
+					break;
+			}
 
 			// Manage row selection.
 			//
@@ -553,8 +643,9 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 			}
 
 			if(next) {
-				this.resetEditCell();
-				this.setEditCell(next);
+				if(this.resetEditCell()) {
+					this.setEditCell(next);
+				}
 			}
 		},
 
