@@ -100,7 +100,10 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 					{
 						name: 'quantity',
 						data: 'quantity',
-						orderable: false
+						orderable: false,
+						render: function (data, type, row, meta) {
+							return Math.floor(data / 100) + ',' + data % 100;
+						}
 					},
 					{
 						name: 'price',
