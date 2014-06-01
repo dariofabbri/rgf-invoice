@@ -7,9 +7,10 @@ define([
 	'views/invoice/contact-picker',
 	'collections/cities',
 	'collections/counties',
+	'collections/uoms',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, counties, detailHtml) {
+function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, counties, uoms, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -407,7 +408,20 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				throw "Unexpected call to this function with no cell currently editing.";
 			}
 
-			var data = $(this.editing).find('input').val();
+			// Access inner input widget.
+			//
+			var input = $(this.editing).find('input');
+			var data = input.val();
+
+			// If the widget had previousle been enhanced as an autocomplete,
+			// destroy it to avoid memory leaks.
+			//
+			if(input.hasClass('ui-autocomplete-input')) {
+				input.autocomplete('destroy');
+			}
+
+			// Restore the control data in the table cell content.
+			//
 			$(this.editing)
 				.empty()
 				.closest('table')
@@ -436,14 +450,19 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				return;
 			}
 
+			// Save existing data.
+			//
 			var data = cell.data();
 
-			$(target)
+			// Turn the cell into an input control.
+			//
+			var input = $(target)
 				.empty()
 				.append('<input type="text" style="width: 100%; height: 100%;"/>')
 				.find('input')
 				.val(data)
 				.on('blur', function() {
+					
 					that.resetEditCell();
 				})
 				.on('keydown', function(e) {
@@ -460,6 +479,12 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				})
 				.focus();
 
+			if(cell.index().column === 2) {
+				this.autocompletize(input, uoms);
+			} 
+
+			// Manage row selection.
+			//
 			var tr = $(target).closest('tr');
 			if (!tr.hasClass('selected')) {
 				tr.siblings('tr.selected').removeClass('selected');
@@ -468,7 +493,23 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 				this.$('#moveDown').button('option', 'disabled', false);
 			}
 
+			// Set editing indicator.
+			//
 			this.editing = target;
+		},
+
+		autocompletize: function(input, collection) {
+
+			input.autocomplete({
+				source: function(request, response) {
+					response(collection.list(request.term));
+				},
+				minLength: 0
+			})
+			.on('click', function(e) {
+				$(e.target).autocomplete('search');
+			});
+			input.autocomplete('search');
 		},
 
 		isEditable: function(idx) {
