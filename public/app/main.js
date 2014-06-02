@@ -6,7 +6,8 @@ require.config({
 		'datatables': 	'../libs/jquery.dataTables',
 		underscore: 		'../libs/underscore',
 		backbone: 			'../libs/backbone',
-		text: 					'../libs/text'
+		text: 					'../libs/text',
+		big:						'../libs/big'
 	},
 	shim: {
 		backbone: {
@@ -28,12 +29,13 @@ requirejs([
 	'jquery',
 	'underscore',
 	'backbone',
+	'big',
 	'models/login-info',
 
 	'jquery-ui',
 	'datatables'
 ],
-function ($, _, Backbone, loginInfo) {
+function ($, _, Backbone, Big, loginInfo) {
 
 	// Customize underscore's templates to mimic mustache style
 	// field replacing.
@@ -60,6 +62,16 @@ function ($, _, Backbone, loginInfo) {
 
 		backboneSync(method, model, options);
 	}
+
+
+	// Add format function to Big class.
+	//
+	Big.prototype.toFormat = function (ts, ds, dp) {
+	    var arr = this.toFixed(dp || 2).split('.');
+	    arr[0] = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, ts == null ? '.' : ts + '');
+	
+	    return arr.join(ds == null ? ',' : ds + '');
+	};
 
 
 	$(document).ready(function() {

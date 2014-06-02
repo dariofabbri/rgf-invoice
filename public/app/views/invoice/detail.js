@@ -2,6 +2,7 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'big',
 	'models/contact',
 	'views/form/form',
 	'views/invoice/contact-picker',
@@ -11,7 +12,7 @@ define([
 	'collections/vats',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, counties, uoms, vats, detailHtml) {
+function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities, counties, uoms, vats, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -102,7 +103,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, cities, cou
 						data: 'quantity',
 						orderable: false,
 						render: function (data, type, row, meta) {
-							return Math.floor(data / 100) + ',' + data % 100;
+							return data ? Big(data).toFormat() : data;
 						}
 					},
 					{
