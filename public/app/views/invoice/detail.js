@@ -38,6 +38,7 @@ function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities
 		initialize: function() {
 
 			Backbone.on('invoice:contact-picker-select', this.onContactPickerSelect, this);
+			this.on('rowchanged', this.updateTotals, this);
 		},
 
 		render: function () {
@@ -102,10 +103,7 @@ function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities
 					{
 						name: 'quantity',
 						data: 'quantity',
-						orderable: false,
-						render: function (data, type, row, meta) {
-							return data ? Big(data).toFormat() : data;
-						}
+						orderable: false
 					},
 					{
 						name: 'price',
@@ -464,9 +462,26 @@ function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities
 				break;
 			}
 
-			// No validation problem detected.
+			// No validation problems detected.
 			//
 			return false;
+		},
+
+		updateTotals: function(td) {
+
+			var row = $(this.editing)
+				.closest('table')
+				.DataTable()
+				.row($(this.editing).closest('tr'));
+
+			var data = row.data();
+
+			if(data.quantity && data.price) {
+				data.taxable = Big(data.quantity.replace(',', '.'))
+					.times(data.price.replace(',', '.'))
+					.toFormat();
+				row.data(data);
+			}
 		},
 
 		resetEditCell: function() {
@@ -511,18 +526,21 @@ function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities
 				input.tooltip('destroy');
 			}
 
-			// TODO: perform transformations.
-			//
-
 			// Restore the control data in the table cell content.
 			//
-			$(this.editing)
+			var datatable = $(this.editing)
 				.empty()
 				.closest('table')
 				.DataTable()
 				.cell(this.editing)
 				.data(data);
 
+			// Update the totals in the row.
+			//
+			this.trigger('rowchanged');
+
+			// Reset editing flag variable.
+			//
 			this.editing = null;
 
 			return true;
@@ -575,7 +593,7 @@ function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities
 				})
 				.focus();
 
-			// Specialize the field in certain cases.
+			// Specialize the field user interface in certain cases.
 			//
 			switch(cell.index().column) {
 				case 2:
