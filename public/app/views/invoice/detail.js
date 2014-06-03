@@ -10,9 +10,10 @@ define([
 	'collections/counties',
 	'collections/uoms',
 	'collections/vats',
+	'utils/validation',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities, counties, uoms, vats, detailHtml) {
+function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities, counties, uoms, vats, validation, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -438,11 +439,17 @@ function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities
 				// Quantity.
 				//
 				case 3:
+					if(!validation.isValidNumber(val)) {
+						return 'La quantità immessa non rappresenta un numero valido.';
+					}
 				break;
 
 				// Price.
 				//
 				case 4:
+					if(!validation.isValidNumber(val)) {
+						return 'Il prezzo immesso non rappresenta un numero valido.';
+					}
 				break;
 
 				// VAT percentage.
@@ -503,6 +510,9 @@ function ($, _, Backbone, Big, ContactModel, FormView, ContactPickerView, cities
 			if(input.data('hasTooltip')) {
 				input.tooltip('destroy');
 			}
+
+			// TODO: perform transformations.
+			//
 
 			// Restore the control data in the table cell content.
 			//

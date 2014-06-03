@@ -90,6 +90,7 @@ function (_) {
 		rePiva: /^\d{11}$/,
 		reEmail: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
 		reZip: /^\d{5}$/,
+		reNumber: /^([+-])?\d+(,\d+)?$/,
 
 		isValidCodiceFiscale: function(cf) {
 
@@ -170,6 +171,11 @@ function (_) {
 		isValidZipCode: function(zip) {
 
 			return zip.match(this.reZip);
+		},
+
+		isValidNumber: function(number) {
+
+			return number.match(this.reNumber);
 		}
 	});
 
