@@ -23,6 +23,7 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 		events: {
 			'click #rows tbody td': 'onClickCell',
 			'click #addRow': 'onClickAddRow',
+			'click #removeRow': 'onClickRemoveRow',
 			'click #moveUp': 'onClickMoveUp',
 			'click #moveDown': 'onClickMoveDown'
 		},
@@ -30,6 +31,7 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 		initialize: function() {
 
 			this.on('rowchanged', this.updateTotals, this);
+			this.on('rowselectionchange', this.onRowSelectionChange, this);
 		},
 
 		render: function () {
@@ -40,6 +42,7 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			// Set up form buttons.
 			//
 			this.$('#addRow').button();
+			this.$('#removeRow').button({ disabled: true });
 			this.$('#moveUp').button({ disabled: true });
 			this.$('#moveDown').button({ disabled: true });
 
@@ -109,10 +112,18 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 		onRemove: function() {
 
 			this.$('#addRow').button('destroy');
+			this.$('#removeRow').button('destroy');
 			this.$('#moveUp').button('destroy');
 			this.$('#moveDown').button('destroy');
 
 			this.$('#rows').DataTable().destroy();
+		},
+
+		onRowSelectionChange: function(row) {
+
+			this.$('#moveUp').button('option', 'disabled', !row);
+			this.$('#moveDown').button('option', 'disabled', !row);
+			this.$('#removeRow').button('option', 'disabled', !row);
 		},
 
 		onClickAddRow: function() {
@@ -126,8 +137,12 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			var lastRow = this.$('#rows tr:last');
 			var data = datatable.row(lastRow).data();
 
+			// Autoincrement the row position.
+			//
 			var position = (data && data.position) ? data.position + 10 : 10;
 
+			// Add the newly created row.
+			//
 			datatable.row.add({
 				position: position,
 				description: null,
@@ -137,6 +152,45 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 				taxable: null,
 				vatPercentage: null
 			});
+			datatable.draw();
+
+			// Edit the first cell of the new row.
+			//
+			this.setEditCell(this.$('#rows tr:last td:eq(1)'));
+		},
+
+		onClickRemoveRow: function() {
+
+			// Find the selected row.
+			//
+			var selected = this.$('#rows tr.selected');
+			if(!selected) {
+				return;
+			}
+
+			// Access the selected row in the datatable.
+			//
+			var datatable = this.$('#rows').DataTable();
+			var row = datatable.row(selected);
+
+			// Renumber the positions.
+			//
+			var position = 10;
+			for(var i = 0; i < datatable.data().length; i += 1) {
+				var data = datatable.row(i).data();
+				data.position = position;
+				datatable.row(i).data(data);
+
+				// Double-number the row that will be removed.
+				//
+				if(i != row.index()) {
+					position += 10;
+				}
+			}
+
+			// Remove the selected row from the data table.
+			//
+			row.remove();
 			datatable.draw();
 		},
 
@@ -406,8 +460,7 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			if (!tr.hasClass('selected')) {
 				tr.siblings('tr.selected').removeClass('selected');
 				tr.addClass('selected');
-				this.$('#moveUp').button('option', 'disabled', false);
-				this.$('#moveDown').button('option', 'disabled', false);
+				this.trigger('rowselectionchange', tr);
 			}
 
 			// Set editing indicator.
@@ -488,13 +541,11 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 
 				if (tr.hasClass('selected')) {
 					tr.removeClass('selected');
-					this.$('#moveUp').button('option', 'disabled', true);
-					this.$('#moveDown').button('option', 'disabled', true);
+					this.trigger('rowselectionchange');
 				} else {
 					tr.siblings('tr.selected').removeClass('selected');
 					tr.addClass('selected');
-					this.$('#moveUp').button('option', 'disabled', false);
-					this.$('#moveDown').button('option', 'disabled', false);
+					this.trigger('rowselectionchange', tr);
 				}
 			}
 
