@@ -2,13 +2,14 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'moment',
 	'views/invoice/search',
 	'views/invoice/detail',
 	'models/company',
 	'models/invoice',
 	'utils/view-manager'
 ],
-function ($, _, Backbone, SearchInvoiceView, DetailInvoiceView, CompanyModel, InvoiceModel, viewManager) {
+function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, CompanyModel, InvoiceModel, viewManager) {
 	
 	var InvoiceRouter = Backbone.Router.extend({
 
@@ -38,6 +39,10 @@ function ($, _, Backbone, SearchInvoiceView, DetailInvoiceView, CompanyModel, In
 					//
 					var model = new InvoiceModel();
 					model.setIssuer(company.toJSON());
+
+					// Preset today's date.
+					//
+					model.set('date', moment().format('DD/MM/YYYY'));
 
 					// Create the detail view and show it.
 					//

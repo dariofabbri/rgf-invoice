@@ -11,7 +11,7 @@ function ($, _, Backbone, validation) {
 		defaults: {
 			type: null,
 			number: null,
-			date: new Date(),
+			date: null,
 			issuer: {
 				description: null,
 				address: null,

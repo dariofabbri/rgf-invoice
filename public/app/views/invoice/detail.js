@@ -42,6 +42,17 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 			this.$('#save').button();
 			this.$('#back').button();
 
+			// Set up date picker fields.
+			//
+			this.$('#date').datepicker({
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				showOn: 'both',
+				buttonImage: 'assets/images/calendar.gif',
+				buttonImageOnly: true
+			});
+			this.$('#date').datepicker($.datepicker.regional['it']);
+
 			// Set up autocomplete fields.
 			//
 			this.$('#issuerCity').autocomplete({
@@ -144,6 +155,8 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 			this.$('#selectAddressee').button('destroy');
 			this.$('#save').button('destroy');
 			this.$('#back').button('destroy');
+
+			this.$('#date').datepicker('destroy');
 
 			this.$('#issuerCity').autocomplete('destroy');
 			this.$('#issuerCounty').autocomplete('destroy');
