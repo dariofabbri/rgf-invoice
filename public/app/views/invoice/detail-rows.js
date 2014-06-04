@@ -157,6 +157,10 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			// Edit the first cell of the new row.
 			//
 			this.setEditCell(this.$('#rows tr:last td:eq(1)'));
+
+			// Signal the system that the invoice totals have changed.
+			//
+			Backbone.trigger('invoice:totalschanged', this.calculateTotals());
 		},
 
 		onClickRemoveRow: function() {
@@ -192,6 +196,10 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			//
 			row.remove();
 			datatable.draw();
+
+			// Signal the system that the invoice totals have changed.
+			//
+			Backbone.trigger('invoice:totalschanged', this.calculateTotals());
 		},
 
 		moveRow: function(direction) {
@@ -245,6 +253,10 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			// Redraw.
 			//
 			datatable.draw();
+
+			// Signal the system that the invoice totals have changed.
+			//
+			Backbone.trigger('invoice:totalschanged', this.calculateTotals());
 		},
 
 		onClickMoveUp: function() {
@@ -387,6 +399,10 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			// Update the totals in the row.
 			//
 			this.trigger('rowchanged');
+
+			// Signal the system that the invoice totals have changed.
+			//
+			Backbone.trigger('invoice:totalschanged', this.calculateTotals());
 
 			// Reset editing flag variable.
 			//
@@ -565,6 +581,44 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			// If the user clicked on an editable cell, turn it in an input control.
 			//
 			this.setEditCell(e.currentTarget);
+		},
+
+		calculateTotals: function() {
+			
+			var totals = {
+				taxable: Big(0),
+				tax: Big(0),
+				total: Big(0)
+			};
+
+			var data = this.$('#rows').DataTable().data();
+
+			_.each(data, function(row) {
+
+				var tmp, perc;
+				
+				if(row.quantity && row.price) {
+					tmp = Big(row.quantity.replace(',', '.'))
+						.times(row.price.replace(',', '.'));
+					totals.taxable = totals.taxable.plus(tmp.toFixed(2));
+
+					tax = Big(0);
+					if(row.vatPercentage) {
+
+						perc = Big(row.vatPercentage.replace('%', '').replace(',', '.').trim());
+						tax = tmp.times(perc).div(100).toFixed(2); 
+						totals.tax = totals.tax.plus(tax);
+					}
+
+					totals.total = totals.total.plus(tmp).plus(tax);
+				}
+			});
+
+			totals.taxable = totals.taxable.toFormat();
+			totals.tax = totals.tax.toFormat();
+			totals.total = totals.total.toFormat();
+
+			return totals;
 		}
 	});
 

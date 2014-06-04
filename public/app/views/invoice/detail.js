@@ -24,7 +24,8 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 
 		initialize: function() {
 
-			Backbone.on('invoice:contact-picker-select', this.onContactPickerSelect, this);
+			Backbone.on('invoice:contactpickerselect', this.onContactPickerSelect, this);
+			Backbone.on('invoice:totalschanged', this.onTotalsChanged, this);
 		},
 
 		render: function () {
@@ -135,6 +136,11 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 
 		onRemove: function() {
 
+			// Unregister event handlers.
+			//
+			Backbone.off('invoice:contactpickerselect', this.onContactPickerSelect, this);
+			Backbone.off('invoice:totalschanged', this.onTotalsChanged, this);
+
 			this.$('#selectAddressee').button('destroy');
 			this.$('#save').button('destroy');
 			this.$('#back').button('destroy');
@@ -152,7 +158,7 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 
 		onClickSelectAddressee: function() {
 
-			Backbone.trigger('invoice:open-contact-picker');
+			Backbone.trigger('invoice:opencontactpicker');
 		},
 
 		onClickBack: function() {
@@ -225,6 +231,13 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 					that.modelToForm();
 				}
 			})
+		},
+
+		onTotalsChanged: function(totals) {
+
+			this.$('#totalsTaxable').val(totals.taxable);
+			this.$('#totalsTax').val(totals.tax);
+			this.$('#totalsTotal').val(totals.total);
 		},
 
 		// Clear previous validation errors from form fields.

@@ -19,7 +19,7 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 
 		initialize: function() {
 
-			Backbone.on('invoice:open-contact-picker', this.openPicker, this);
+			Backbone.on('invoice:opencontactpicker', this.openPicker, this);
 		},
 
 		openPicker: function() {
@@ -139,7 +139,7 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 
 		onRemove: function() {
 
-			Backbone.off('invoice:open-contact-picker', this.openPicker, this);
+			Backbone.off('invoice:opencontactpicker', this.openPicker, this);
 
 			this.$('table').DataTable().destroy();
 			this.$el.dialog('destroy');
@@ -165,7 +165,7 @@ function ($, _, Backbone, ParentView, loginInfo, pickerHtml) {
 			}
 
 			var id = this.$('table').DataTable().row(e.currentTarget).data()._id;
-			Backbone.trigger('invoice:contact-picker-select', id);
+			Backbone.trigger('invoice:contactpickerselect', id);
 			this.$el.dialog('close');
 		}
 	});
