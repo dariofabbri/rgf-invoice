@@ -247,3 +247,26 @@ exports.delete = function(req, res) {
 		return res.send('Contact removed.');
 	});
 };
+
+
+export.generateNextNumber = function(req, res) {
+
+	Invoice.find({}, ['number'], {limit: 1, sort: { number: -1 }}, function(err, doc) {
+		if(err) {
+			res.statusCode = 500;
+			return res.send(err);
+		}
+		if(!doc) {
+			
+			// Generate first from current year.
+			//
+		} else {
+			
+			// Generate next.
+			//
+		}
+
+  	res.send(doc);
+	});
+
+};

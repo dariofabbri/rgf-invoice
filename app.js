@@ -88,6 +88,7 @@ app.get('/invoices/:id', passport.authenticate('basic', { session: false }), inv
 app.post('/invoices', passport.authenticate('basic', { session: false }), invoices.create);
 app.put('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.update);
 app.delete('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.delete);
+app.post('/invoices/nextNumber', passport.authenticate('basic', { session: false }), invoices.generateNextNumber);
 
 // Companies related routes.
 //
