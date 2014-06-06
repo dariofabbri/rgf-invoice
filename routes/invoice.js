@@ -249,9 +249,9 @@ exports.delete = function(req, res) {
 };
 
 
-export.generateNextNumber = function(req, res) {
+exports.generateNextNumber = function(req, res) {
 
-	Invoice.find({}, ['number'], {limit: 1, sort: { number: -1 }}, function(err, doc) {
+	Invoice.findOne({}, 'number', {limit: 1, sort: { number: -1 }}, function(err, doc) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
@@ -260,13 +260,17 @@ export.generateNextNumber = function(req, res) {
 			
 			// Generate first from current year.
 			//
+			var now = new Date();
+			var year = '' + now.getFullYear();
+			var number = parseInt(year.slice(0, 1) + year.slice(2, 4) + '001');
+			res.send({ number: number });
+
 		} else {
-			
+
 			// Generate next.
 			//
+			res.send({ number: doc.number + 1 });
 		}
-
-  	res.send(doc);
 	});
 
 };
