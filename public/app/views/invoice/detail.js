@@ -2,6 +2,7 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'moment',
 	'models/contact',
 	'views/form/form',
 	'views/invoice/contact-picker',
@@ -10,7 +11,7 @@ define([
 	'collections/counties',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, detailHtml) {
+function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -36,15 +37,12 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 			// Set up form buttons.
 			//
 			this.$('#selectAddressee').button();
-			this.$('#addRow').button();
-			this.$('#moveUp').button({ disabled: true });
-			this.$('#moveDown').button({ disabled: true });
 			this.$('#save').button();
 			this.$('#back').button();
 
 			// Set up date picker fields.
 			//
-			this.$('#date').datepicker({
+			this.$('#date, #receiptDate').datepicker({
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				showOn: 'both',
@@ -96,53 +94,6 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 			this.addSubview(detailRows)
 			detailRows.render();
 			return this;
-		},
-
-		formToModel: function() {
-
-			var type = this.$('input[name=isCompany]:checked').val();
-			if(type === 'person') {
-				this.model.set('isCompany', false);
-			} else if(type === 'company') {
-				this.model.set('isCompany', true);
-			}
-
-			this.model.set('vatCode', this.$('#vatCode').val());
-			this.model.set('cfCode', this.$('#cfCode').val().toUpperCase());
-			this.model.set('description', this.$('#description').val());
-			this.model.set('salutation', this.$('#salutation').val());
-			this.model.set('firstName', this.$('#firstName').val());
-			this.model.set('lastName', this.$('#lastName').val());
-			this.model.set('address1', this.$('#address1').val());
-			this.model.set('address2', this.$('#address2').val());
-			this.model.set('city', this.$('#city').val());
-			this.model.set('county', this.$('#county').val());
-			this.model.set('zipCode', this.$('#zipCode').val());
-			this.model.set('country', this.$('#country').val());
-			this.model.set('phone', this.$('#phone').val());
-			this.model.set('fax', this.$('#fax').val());
-			this.model.set('email', this.$('#email').val());
-		},
-
-		modelToForm: function() {
-			this.$('#issuerDescription').val(this.model.get('issuer').description);
-			this.$('#issuerAddress').val(this.model.get('issuer').address);
-			this.$('#issuerCity').val(this.model.get('issuer').city);
-			this.$('#issuerCounty').val(this.model.get('issuer').county);
-			this.$('#issuerZipCode').val(this.model.get('issuer').zipCode);
-			this.$('#issuerVatCode').val(this.model.get('issuer').vatCode);
-			this.$('#issuerCfCode').val(this.model.get('issuer').cfCode);
-			this.$('#issuerReaCode').val(this.model.get('issuer').reaCode);
-			this.$('#issuerStock').val(this.model.get('issuer').stock);
-
-			this.$('#addresseeDescription').val(this.model.get('addressee').description);
-			this.$('#addresseeAddress1').val(this.model.get('addressee').address1);
-			this.$('#addresseeAddress2').val(this.model.get('addressee').address2);
-			this.$('#addresseeCity').val(this.model.get('addressee').city);
-			this.$('#addresseeCounty').val(this.model.get('addressee').county);
-			this.$('#addresseeZipCode').val(this.model.get('addressee').zipCode);
-			this.$('#addresseeVatCode').val(this.model.get('addressee').vatCode);
-			this.$('#addresseeCfCode').val(this.model.get('addressee').cfCode);
 		},
 
 		onRemove: function() {
@@ -253,26 +204,103 @@ function ($, _, Backbone, ContactModel, FormView, ContactPickerView, DetailRowsV
 			this.$('#totalsTotal').val(totals.total);
 		},
 
+		formToModel: function() {
+
+			this.model.set('number', this.$('#number').val());
+			this.model.set('date', this.$('#date').val() ? moment(this.$('#date').val(), 'DD/MM/YYYY').toDate() : null);
+
+			var issuer = {};
+			issuer.description = this.$('#issuerDescription').val();
+			issuer.address = this.$('#issuerAddress').val();
+			issuer.city = this.$('#issuerCity').val();
+			issuer.county = this.$('#issuerCounty').val();
+			issuer.zipCode = this.$('#issuerZipCode').val();
+			issuer.vatCode = this.$('#issuerVatCode').val();
+			issuer.cfCode = this.$('#issuerCfCode').val();
+			issuer.reaCode = this.$('#issuerReaCode').val();
+			issuer.stock = this.$('#issuerStock').val();
+			this.model.set('issuer', issuer);
+
+			var addressee = {};
+			addressee.description = this.$('#addresseeDescription').val();
+			addressee.address1 = this.$('#addresseeAddress1').val();
+			addressee.address2 = this.$('#addresseeAddress2').val();
+			addressee.city = this.$('#addresseeCity').val();
+			addressee.county = this.$('#addresseeCounty').val();
+			addressee.zipCode = this.$('#addresseeZipCode').val();
+			addressee.vatCode = this.$('#addresseeVatCode').val();
+			addressee.cfCode = this.$('#addresseeCfCode').val();
+			this.model.set('addressee', addressee);
+
+			var receipt = { cashRegister: {} };
+			receipt.number = this.$('#receiptNumber').val();
+			receipt.date = this.$('#receiptDate').val() ? moment(this.$('#receiptDate').val(), 'DD/MM/YYYY').toDate() : null;
+			receipt.cashRegister.model = this.$('#cashRegisterModel').val();
+			receipt.cashRegister.serial = this.$('#cashRegisterSerial').val();
+			this.model.set('receipt', receipt);
+
+			var totals = {};
+			totals.taxable = this.$('#totalsTaxable').val();
+			totals.tax = this.$('#totalsTax').val();
+			totals.total = this.$('#totalsTotal').val();
+			this.model.set('totals', totals);
+		},
+
+		modelToForm: function() {
+			this.$('#issuerDescription').val(this.model.get('issuer').description);
+			this.$('#issuerAddress').val(this.model.get('issuer').address);
+			this.$('#issuerCity').val(this.model.get('issuer').city);
+			this.$('#issuerCounty').val(this.model.get('issuer').county);
+			this.$('#issuerZipCode').val(this.model.get('issuer').zipCode);
+			this.$('#issuerVatCode').val(this.model.get('issuer').vatCode);
+			this.$('#issuerCfCode').val(this.model.get('issuer').cfCode);
+			this.$('#issuerReaCode').val(this.model.get('issuer').reaCode);
+			this.$('#issuerStock').val(this.model.get('issuer').stock);
+
+			this.$('#addresseeDescription').val(this.model.get('addressee').description);
+			this.$('#addresseeAddress1').val(this.model.get('addressee').address1);
+			this.$('#addresseeAddress2').val(this.model.get('addressee').address2);
+			this.$('#addresseeCity').val(this.model.get('addressee').city);
+			this.$('#addresseeCounty').val(this.model.get('addressee').county);
+			this.$('#addresseeZipCode').val(this.model.get('addressee').zipCode);
+			this.$('#addresseeVatCode').val(this.model.get('addressee').vatCode);
+			this.$('#addresseeCfCode').val(this.model.get('addressee').cfCode);
+		},
+
 		// Clear previous validation errors from form fields.
 		//
 		resetFieldErrors: function () {
 
-			this.resetFieldError('#isCompany');
-			this.resetFieldError('#vatCode');
-			this.resetFieldError('#cfCode');
-			this.resetFieldError('#description');
-			this.resetFieldError('#salutation');
-			this.resetFieldError('#firstName');
-			this.resetFieldError('#lastName');
-			this.resetFieldError('#address1');
-			this.resetFieldError('#address2');
-			this.resetFieldError('#city');
-			this.resetFieldError('#county');
-			this.resetFieldError('#zipCode');
-			this.resetFieldError('#country');
-			this.resetFieldError('#phone');
-			this.resetFieldError('#fax');
-			this.resetFieldError('#email');
+			this.resetFieldError('#number');
+			this.resetFieldError('#date');
+
+			this.resetFieldError('#issuerDescription');
+			this.resetFieldError('#issuerAddress');
+			this.resetFieldError('#issuerCity');
+			this.resetFieldError('#issuerCounty');
+			this.resetFieldError('#issuerZipCode');
+			this.resetFieldError('#issuerVatCode');
+			this.resetFieldError('#issuerCfCode');
+			this.resetFieldError('#issuerReaCode');
+			this.resetFieldError('#issuerStock');
+
+			this.resetFieldError('#addresseeDescription');
+			this.resetFieldError('#addresseeAddress1');
+			this.resetFieldError('#addresseeAddress2');
+			this.resetFieldError('#addresseeCity');
+			this.resetFieldError('#addresseeCounty');
+			this.resetFieldError('#addresseeZipCode');
+			this.resetFieldError('#addresseeVatCode');
+			this.resetFieldError('#addresseeCfCode');
+
+			this.resetFieldError('#receiptNumber');
+			this.resetFieldError('#receiptDate');
+			this.resetFieldError('#cashRegisterModel');
+			this.resetFieldError('#cashRegisterSerial');
+
+			this.resetFieldError('#totalsTaxable');
+			this.resetFieldError('#totalsTax');
+			this.resetFieldError('#totalsTotal');
 		}
 	});
 
