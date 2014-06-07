@@ -42,6 +42,7 @@ function ($, _, Backbone, validation) {
 				number: null,
 				date: null
 			},
+			rows: null,
 			totals: {
 				taxable: null,
 				tax: null,

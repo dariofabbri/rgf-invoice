@@ -27,6 +27,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 			Backbone.on('invoice:contactpickerselect', this.onContactPickerSelect, this);
 			Backbone.on('invoice:totalschanged', this.onTotalsChanged, this);
+			Backbone.on('invoice:readyforsave', this.onReadyForSave, this);
 		},
 
 		render: function () {
@@ -102,6 +103,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			//
 			Backbone.off('invoice:contactpickerselect', this.onContactPickerSelect, this);
 			Backbone.off('invoice:totalschanged', this.onTotalsChanged, this);
+			Backbone.off('invoice:readyforsave', this.onReadyForSave, this);
 
 			this.$('#selectAddressee').button('destroy');
 			this.$('#save').button('destroy');
@@ -131,6 +133,11 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 		},
 
 		onClickSave: function() {
+
+			Backbone.trigger('invoice:prepareforsave');
+		},
+
+		onReadyForSave: function(rows) {
 
 			this.formToModel();
 

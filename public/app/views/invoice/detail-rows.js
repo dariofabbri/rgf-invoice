@@ -32,6 +32,7 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 
 			this.on('rowchanged', this.updateTotals, this);
 			this.on('rowselectionchange', this.onRowSelectionChange, this);
+			Backbone.on('invoice:prepareforsave', this.onPrepareForSave, this);
 		},
 
 		render: function () {
@@ -111,12 +112,54 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 
 		onRemove: function() {
 
+			this.off('rowchanged', this.updateTotals, this);
+			this.off('rowselectionchange', this.onRowSelectionChange, this);
+			Backbone.off('invoice:prepareforsave', this.onPrepareForSave, this);
+
 			this.$('#addRow').button('destroy');
 			this.$('#removeRow').button('destroy');
 			this.$('#moveUp').button('destroy');
 			this.$('#moveDown').button('destroy');
 
 			this.$('#rows').DataTable().destroy();
+		},
+
+		onPrepareForSave: function() {
+
+			var datatable = this.$('#rows').DataTable();
+			var data = datatable.data();
+
+			// Remove all rows that only have the position field populated.
+			//
+			var toBeDeleted = [];
+			for(var i = 0; i < data.length; i += 1) {
+				if(
+						data[i].position &&
+						!data[i].description &&
+						!data[i].uom &&
+						!data[i].quantity &&
+						!data[i].price &&
+						!data[i].vatPercentage) {
+					toBeDeleted.push(i);
+				}
+			}
+			_.each(toBeDeleted, function(index) {
+				this.removeRow(index);
+			}, this);
+
+			// Validate row data.
+			//
+			data = datatable.data();
+			for(var i = 0; i < data.length; i += 1) {
+				
+				// Fill in a temporary invoice row model.
+				//
+				var invoiceRow = new InvoiceRow(data[i]);
+
+				// Call validation method.
+				// TODO: finish me!!!
+				invoiceRow.validate();
+			}
 		},
 
 		onRowSelectionChange: function(row) {
@@ -172,10 +215,17 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 				return;
 			}
 
-			// Access the selected row in the datatable.
+			// Remove the selected row.
+			//
+			this.removeRow(selected.index());
+		},
+
+		removeRow: function(index) {
+
+			// Access the specified row in the datatable.
 			//
 			var datatable = this.$('#rows').DataTable();
-			var row = datatable.row(selected);
+			var row = datatable.row(index);
 
 			// Renumber the positions.
 			//
@@ -192,7 +242,7 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 				}
 			}
 
-			// Remove the selected row from the data table.
+			// Remove the specified row from the data table.
 			//
 			row.remove();
 			datatable.draw();
