@@ -3,12 +3,13 @@ define([
 	'underscore',
 	'backbone',
 	'big',
+	'models/invoice-row',
 	'collections/uoms',
 	'collections/vats',
 	'utils/validation',
 	'text!templates/invoice/detail-rows.html'
 ],
-function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
+function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtml) {
 	
 	var DetailRowsView = Backbone.View.extend({
 
@@ -132,7 +133,7 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			// Remove all rows that only have the position field populated.
 			//
 			var toBeDeleted = [];
-			for(var i = 0; i < data.length; i += 1) {
+			for(var i = data.length - 1; i >= 0; i -= 1) {
 				if(
 						data[i].position &&
 						!data[i].description &&
@@ -150,16 +151,57 @@ function ($, _, Backbone, Big, uoms, vats, validation, detailRowsHtml) {
 			// Validate row data.
 			//
 			data = datatable.data();
+			var rows = [];
 			for(var i = 0; i < data.length; i += 1) {
 				
 				// Fill in a temporary invoice row model.
 				//
-				var invoiceRow = new InvoiceRow(data[i]);
+				var row = _.clone(data[i]);
+				_.extend(row, {
+					quantity: row.quantity.replace('.', '').replace(',', '.'),
+					price: row.price.replace('.', '').replace(',', '.'),
+					taxable: row.taxable.replace('.', '').replace(',', '.'),
+				})
+				var invoiceRow = new InvoiceRow(row);
 
 				// Call validation method.
-				// TODO: finish me!!!
-				invoiceRow.validate();
+				// 
+				var validationErrors = invoiceRow.validate();
+				if(validationErrors) {
+
+					var message = '<div>La riga numero ' + (i + 1) + ' contiene i seguenti errori: <ul>';
+					_.each(validationErrors, function(value) {
+						message += '<li>' + value + '</li>';
+					});
+					message += '</ul></div>';
+
+					// Put out a message box with the error messages.
+					//
+					$(message).dialog({
+						title: 'Errori nelle righe della fattura',
+						modal: true,
+						width: 600,
+						buttons: [
+							{
+								text: 'OK',
+								click: function() {
+									$(this).dialog('close');
+								}
+							}
+						]
+					}).on('dialogclose', function() {
+						$(this).dialog('destroy');
+					});
+
+					// Stop after the first row in error found.
+					//
+					return;
+				}
 			}
+
+			// No errors detected, signal that we are ready to save the invoice.
+			//
+			Backbone.trigger('invoice:readyforsave');
 		},
 
 		onRowSelectionChange: function(row) {

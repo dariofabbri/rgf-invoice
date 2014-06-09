@@ -153,7 +153,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 							{
 								text: 'OK',
 								click: function() {
-									$(this).dialog("close");
+									$(this).dialog('close');
 								}
 							}
 						]

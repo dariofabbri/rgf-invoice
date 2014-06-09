@@ -124,7 +124,7 @@ function ($, _, Backbone, FormView, names, salutations, cities, counties, countr
 							{
 								text: 'OK',
 								click: function() {
-									$(this).dialog("close");
+									$(this).dialog('close');
 								}
 							}
 						]

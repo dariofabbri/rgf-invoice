@@ -65,7 +65,7 @@ function ($, _, Backbone, FormView, detailHtml) {
 							{
 								text: 'OK',
 								click: function() {
-									$(this).dialog("close");
+									$(this).dialog('close');
 								}
 							}
 						]

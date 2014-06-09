@@ -24,6 +24,7 @@ function ($, _, Backbone, uoms, vats, validation) {
 
 			var item;
 			var errors = {};
+			var that = this;
 
 			// Position field must be present.
 			//
@@ -46,7 +47,7 @@ function ($, _, Backbone, uoms, vats, validation) {
 				// Uom field must be one of those present in the lookup table.
 				//
 				item = uoms.find(function(item) {
-					return item.get('description') === this.get('uom');
+					return item.get('description') === that.get('uom');
 				});
 				if(!item) {
 					errors['uom'] = 'L\'unità di misura specificata non è valida.';
@@ -76,10 +77,10 @@ function ($, _, Backbone, uoms, vats, validation) {
 			// Taxable field must be present.
 			//
 			if (!this.get('taxable')) {
-				errors['taxable'] = 'Il campo imponibile è obbligatorio.';
+				errors['taxable'] = 'Il campo importo è obbligatorio.';
 			} else {
 				if(!validation.isValidNumber(this.get('taxable'))) {
-					errors['taxable'] = 'L\'imponibile immesso non rappresenta un numero valido.';
+					errors['taxable'] = 'L\'importo immesso non rappresenta un numero valido.';
 				}
 			}
 
@@ -92,10 +93,10 @@ function ($, _, Backbone, uoms, vats, validation) {
 				// Vat percentage field must be one of those present in the lookup table.
 				//
 				item = vats.find(function(item) {
-					return item.get('description') === this.get('vatPercentage');
+					return item.get('description') === that.get('vatPercentage');
 				});
 				if(!item) {
-					errors['uom'] = 'La percentaule IVA indicata non è valida.';
+					errors['uom'] = 'La percentuale IVA indicata non è valida.';
 				}
 			}
 
