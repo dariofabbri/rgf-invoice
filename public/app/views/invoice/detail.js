@@ -140,6 +140,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 		onReadyForSave: function(rows) {
 
 			this.formToModel();
+			this.model.set('rows', rows);
 
 			var valid = this.model.save({}, {
 				success: function() {
@@ -147,7 +148,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 					// Put out a message box for confirmation.
 					//
 					$('<div>Le modifiche sono state applicate con successo.</div>').dialog({
-						title: 'Dettaglio contatto',
+						title: 'Dettaglio fattura',
 						modal: true,
 						buttons: [
 							{
@@ -161,7 +162,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 						// Get back to the search panel.
 						//
-						Backbone.history.navigate('contacts', true);
+						Backbone.history.navigate('invoices', true);
 					});
 				}
 			});

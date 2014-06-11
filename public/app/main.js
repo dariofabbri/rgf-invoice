@@ -49,6 +49,7 @@ function ($, _, Backbone, Big, loginInfo) {
 
 	// Customize Backbone.sync function.
 	//
+	/*
 	var backboneSync = Backbone.sync;
 	Backbone.sync = function(method, model, options) {
 
@@ -64,6 +65,23 @@ function ($, _, Backbone, Big, loginInfo) {
 
 		backboneSync(method, model, options);
 	}
+	*/
+
+
+	// Set up ajax prefilter for jQuery.
+	//
+	$.ajaxPrefilter(function(options, original, jqxhr) {
+		
+		options.headers = _.extend(options.headers || {}, {
+			'Authorization': loginInfo.getAuthorization()
+		});
+
+		options.error = function(jqxhr, status, error) {
+			$('<div>Il server ha risposto con un errore.<br><b>' + error + '</b><br>' + jqxhr.responseText + '</div>').dialog({
+				modal: true
+			});
+		}
+	});
 
 
 	// Add format function to Big class.

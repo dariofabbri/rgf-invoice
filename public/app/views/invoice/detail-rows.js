@@ -197,11 +197,15 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 					//
 					return;
 				}
+
+				// No errors on the row, add it to the list.
+				//
+				rows.push(row);
 			}
 
 			// No errors detected, signal that we are ready to save the invoice.
 			//
-			Backbone.trigger('invoice:readyforsave');
+			Backbone.trigger('invoice:readyforsave', rows);
 		},
 
 		onRowSelectionChange: function(row) {

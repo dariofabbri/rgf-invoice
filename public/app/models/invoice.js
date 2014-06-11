@@ -65,53 +65,32 @@ function ($, _, Backbone, validation) {
 			});
 		},
 
-		// TODO: copied from contacts!
-		//
 		validate: function(attributes, options) {
 
 			errors = {};
 
-			// Flag isCompany must be present.
+			// The invoice number must be present.
 			//
-			if (this.get('isCompany') === undefined) {
-				errors['isCompany'] = 'Il campo è obbligatorio';
+			if (!this.get('number')) {
+				errors['number'] = 'Il campo numero fattura è obbligatorio.';
+			} else {
+				if (!validation.isValidInvoiceNumber(this.get('number'))) {
+					errors['number'] = 'Il numero fattura immesso non è valido.';
+				}
 			}
 
-			// If isCompany flag is set, then the VAT code field is mandatory.
+			// The invoice date must be present.
 			//
-			if (this.get('isCompany') && this.get('vatCode').trim().length === 0) {
-				errors['vatCode'] = 'Per un\'azienda è obbligatorio inserire il codice di partita IVA';
+			if (!this.get('date')) {
+				errors['date'] = 'Il campo data fattura è obbligatorio.';
+			} else {
+				if (!_.isDate(this.get('date'))) {
+					errors['date'] = 'Il campo data fattura non rappresenta una data valida.';
+				}
 			}
 
-			// If isCompany flag is not set, then the CF code field is mandatory.
+			// TODO: finish validation.
 			//
-			if (!this.get('isCompany') && this.get('cfCode').trim().length === 0) {
-				errors['cfCode'] = 'Per un privato è obbligatorio inserire il codice fiscale';
-			}
-
-			// Check the validity of VAT code, if present.
-			//
-			if (this.get('vatCode') && !validation.isValidPartitaIVA(this.get('vatCode'))) {
-				errors['vatCode'] = 'Il codice di partita IVA immesso non è valido.';
-			}
-
-			// Check the validity of CF code, if present.
-			//
-			if (this.get('cfCode') && !validation.isValidCodiceFiscale(this.get('cfCode'))) {
-				errors['cfCode'] = 'Il codice fiscale immesso non è valido.';
-			}
-
-			// Check the validity of the email field, if present.
-			//
-			if (this.get('email') && !validation.isValidEmail(this.get('email'))) {
-				errors['email'] = 'L\'indirizzo email inserito non è valido.';
-			}
-
-			// Check the validity of the zip code field, if present.
-			//
-			if (this.get('zipCode') && !validation.isValidZipCode(this.get('zipCode'))) {
-				errors['zipCode'] = 'Il CAP immesso non è valido.';
-			}
 
 			if(!_.isEmpty(errors)) {
 				return errors;

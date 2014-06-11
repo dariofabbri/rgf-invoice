@@ -48,10 +48,20 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, CompanyM
 					receipt.date = now;
 					model.set('receipt', receipt);
 
-					// Create the detail view and show it.
+					// Preset invoice number.
 					//
-					var detailInvoiceView = new DetailInvoiceView({ model: model });
-					viewManager.setView('#main-content', detailInvoiceView);
+					$.ajax('invoices/nextNumber', { 
+						dataType: 'json',
+						type: 'POST',
+						success: function(data) {
+							model.set('number', data.number);
+
+							// Create the detail view and show it.
+							//
+							var detailInvoiceView = new DetailInvoiceView({ model: model });
+							viewManager.setView('#main-content', detailInvoiceView);
+						}
+					});
 				}
 			});
 		},
