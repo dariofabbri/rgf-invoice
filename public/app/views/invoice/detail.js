@@ -214,6 +214,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		formToModel: function() {
 
+			this.model.set('type', 'I');
 			this.model.set('number', this.$('#number').val());
 			this.model.set('date', this.$('#date').val() ? moment(this.$('#date').val(), 'DD/MM/YYYY').toDate() : null);
 

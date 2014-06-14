@@ -91,38 +91,12 @@ exports.retrieve = function(req, res) {
 
 exports.create = function(req, res) {
 
-	// The isCompany flag is mandatory.
+	// TODO: Add some server side validation code.
 	//
-	if(req.body.isCompany === undefined) {
-		res.statusCode = 400;
-		return res.send('Missing isCompany flag in request.');
-	}
-	
-	// If the contact is a company, the VAT code is mandatory.
-	//
-	if(req.body.isCompany && !req.body.vatCode) {
-		res.statusCode = 400;
-		return res.send('Missing vatCode in request with isCompany flag set.');
-	}
-	
-	// If the contact is not a company, the CF code is mandatory.
-	//
-	if(!req.body.isCompany && !req.body.cfCode) {
-		res.statusCode = 400;
-		return res.send('Missing cfCode in request with isCompany flag unset.');
-	}
 
-	// Check if the contact is already present.
+	// Check if the invoice is already present.
 	//
-	var clause = {};
-	if(req.body.isCompany) {
-		clause.isCompany = true;
-		clause.vatCode = req.body.vatCode;
-	} else {
-		clause.isCompany = false;
-		clause.cfCode = req.body.cfCode;
-	}
-	Contact.findOne(clause, function(err, result) {
+	Invoice.findOne({ number: req.body.number }, function(err, result) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
@@ -130,44 +104,27 @@ exports.create = function(req, res) {
 
 		if(result) {
 			res.statusCode = 409;
-			return res.send('Contact already present.');
+			return res.send('Invoice already present.');
 		}
 
-		// Prepare contact object to be inserted in the DB.
+		// Prepare invoice object to be inserted in the DB.
 		//
 		var now = new Date();
-		var contact = new Contact({
-			isCompany: req.body.isCompany,
-			vatCode: req.body.vatCode,
-			cfCode: req.body.cfCode,
-			description: req.body.description,
-			salutation: req.body.salutation,
-			firstName: req.body.firstName,
-			lastName: req.body.lastName,
-			address1: req.body.address1,
-			address2: req.body.address2,
-			city: req.body.city,
-			county: req.body.county,
-			zipCode: req.body.zipCode,
-			country: req.body.country,
-			phone: req.body.phone,
-			fax: req.body.fax,
-			email: req.body.email,
-			createdOn: now,
-			createdBy: req.user.username,
-			updatedOn: now,
-			updatedBy: req.user.username
-		});
+		var invoice = new Invoice(req.body);
+		invoice.set('createdOn', now);
+		invoice.set('createdBy', req.user.username);
+		invoice.set('updatedOn', now);
+		invoice.set('updatedBy', req.user.username);
 
-		// Insert the contact in the db collection.
+		// Insert the invoice in the db collection.
 		//
-		contact.save(function(err, contact) {
+		invoice.save(function(err, invoice) {
 			if(err) {
 				res.statusCode = 500;
 				return res.send(err);
 			}
 			
-			return res.send(contact);
+			return res.send(invoice);
 		});
 
 	});

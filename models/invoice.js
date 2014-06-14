@@ -32,13 +32,14 @@ var invoiceSchema = new Schema({
 			model: String,
 			serial: String
 		},
-		number: Number,
+		number: String,
 		date: Date
 	},
+	rows: [],
 	totals: {
-		taxable: Number,
-		tax: Number,
-		total: Number
+		taxable: String,
+		tax: String,
+		total: String
 	},
 	payment: String,
 	createdBy: String,

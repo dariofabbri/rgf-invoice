@@ -69,6 +69,16 @@ function ($, _, Backbone, validation) {
 
 			errors = {};
 
+			// Type must be present and must assume one of 'I' and 'C'.
+			//
+			if (!this.get('type')) {
+				errors['type'] = 'Il campo tipo è obbligatorio.';
+			} else {
+				if (this.get('type') !== 'C' && this.get('type') !== 'I') {
+					errors['type'] = 'Il tipo deve essere I oppure C.';
+				}
+			}
+
 			// The invoice number must be present.
 			//
 			if (!this.get('number')) {
