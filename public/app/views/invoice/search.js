@@ -2,12 +2,13 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'moment',
 	'views/parent/parent',
 	'models/invoice-search',
 	'models/login-info',
 	'text!templates/invoice/search.html'
 ],
-function ($, _, Backbone, ParentView, invoiceSearch, loginInfo, searchHtml) {
+function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHtml) {
 	
 	var SearchView = ParentView.extend({
 
@@ -45,7 +46,14 @@ function ($, _, Backbone, ParentView, invoiceSearch, loginInfo, searchHtml) {
 					},
 					{
 						name: 'date',
-						data: 'date'
+						data: 'date',
+						render: function (data, type, row, meta) {
+							return data ? moment(data).format('DD/MM/YYYY') : '';
+						}
+					},
+					{
+						name: 'description',
+						data: 'addressee.description'
 					},
 					{
 						name: 'vatCode',
@@ -54,10 +62,6 @@ function ($, _, Backbone, ParentView, invoiceSearch, loginInfo, searchHtml) {
 					{
 						name: 'cfCode',
 						data: 'addressee.cfCode'
-					},
-					{
-						name: 'description',
-						data: 'addressee.description'
 					}
 				],
 				searchCols: [

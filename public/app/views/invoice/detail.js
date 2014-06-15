@@ -249,9 +249,9 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.model.set('receipt', receipt);
 
 			var totals = {};
-			totals.taxable = this.$('#totalsTaxable').val();
-			totals.tax = this.$('#totalsTax').val();
-			totals.total = this.$('#totalsTotal').val();
+			totals.taxable = this.$('#totalsTaxable').val().replace('.', '').replace(',', '.');
+			totals.tax = this.$('#totalsTax').val().replace('.', '').replace(',', '.');
+			totals.total = this.$('#totalsTotal').val().replace('.', '').replace(',', '.');
 			this.model.set('totals', totals);
 		},
 
