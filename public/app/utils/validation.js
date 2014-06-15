@@ -1,7 +1,9 @@
 define([
-	'underscore'
+	'underscore',
+	'moment',
+	'big'
 ],
-function (_) {
+function (_, moment, Big) {
 	 
 	var Validation = function() {
 	};
@@ -182,6 +184,33 @@ function (_) {
 		isValidInvoiceNumber: function(number) {
 			
 			return number.match(this.reInvoiceNumber);
+		},
+
+		formatDate: function(d) {
+			
+			if(!d) {
+				return '';
+			}
+
+			return moment(d).format('DD/MM/YYYY');
+		},
+
+		formatBig: function(s) {
+
+			if(!s) {
+				return '';
+			}
+
+			return Big(s).toFormat();
+		},
+
+		cleanBig: function(s) {
+
+			if(!s) {
+				return '';
+			}
+
+			return s.replace('.', '').replace(',', '.');
 		}
 	});
 

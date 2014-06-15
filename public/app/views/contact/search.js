@@ -126,7 +126,7 @@ function ($, _, Backbone, ParentView, contactSearch, loginInfo, searchHtml) {
 				headers: {
 					'Authorization': authorization
 				},
-				url: 'contacts',
+				url: '/contacts',
 				data: queryArguments,
 				type: 'GET',
 				success: function(response) {

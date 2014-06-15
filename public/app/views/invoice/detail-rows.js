@@ -48,11 +48,18 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 			this.$('#moveUp').button({ disabled: true });
 			this.$('#moveDown').button({ disabled: true });
 
+			var data = _.clone(this.model.get('rows'));
+			_.each(data, function(row) {
+				row.taxable = validation.formatBig(row.taxable);
+				row.price = validation.formatBig(row.price);
+				row.quantity = validation.formatBig(row.quantity);
+			});
+
 			// Configure detail data table.
 			//
 			var datatable = this.$('#rows').dataTable({
 				serverSide: false,
-				data: this.model.get('detail'),
+				data: data,
 				dom: 'tr',
 				paging: false,
 				columns: [

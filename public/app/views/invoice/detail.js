@@ -9,9 +9,10 @@ define([
 	'views/invoice/detail-rows',
 	'collections/cities',
 	'collections/counties',
+	'utils/validation',
 	'text!templates/invoice/detail.html'
 ],
-function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, detailHtml) {
+function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, validation, detailHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -47,7 +48,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 				showOtherMonths: true,
 				selectOtherMonths: true,
 				showOn: 'both',
-				buttonImage: 'assets/images/calendar.gif',
+				buttonImage: '/assets/images/calendar.gif',
 				buttonImageOnly: true
 			});
 			this.$('#date').datepicker($.datepicker.regional['it']);
@@ -94,6 +95,11 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			});
 			this.addSubview(detailRows)
 			detailRows.render();
+
+			// Align view to model content.
+			//
+			this.modelToForm();
+
 			return this;
 		},
 
@@ -249,13 +255,17 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.model.set('receipt', receipt);
 
 			var totals = {};
-			totals.taxable = this.$('#totalsTaxable').val().replace('.', '').replace(',', '.');
-			totals.tax = this.$('#totalsTax').val().replace('.', '').replace(',', '.');
-			totals.total = this.$('#totalsTotal').val().replace('.', '').replace(',', '.');
+			totals.taxable = validation.cleanBig(this.$('#totalsTaxable').val());
+			totals.tax = validation.cleanBig(this.$('#totalsTax').val());
+			totals.total = validation.cleanBig(this.$('#totalsTotal').val());
 			this.model.set('totals', totals);
 		},
 
 		modelToForm: function() {
+
+			this.$('#number').val(this.model.get('number'));
+			this.$('#date').val(validation.formatDate(this.model.get('date')));
+
 			this.$('#issuerDescription').val(this.model.get('issuer').description);
 			this.$('#issuerAddress').val(this.model.get('issuer').address);
 			this.$('#issuerCity').val(this.model.get('issuer').city);
@@ -274,6 +284,15 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.$('#addresseeZipCode').val(this.model.get('addressee').zipCode);
 			this.$('#addresseeVatCode').val(this.model.get('addressee').vatCode);
 			this.$('#addresseeCfCode').val(this.model.get('addressee').cfCode);
+
+			this.$('#receiptNumber').val(this.model.get('receipt').number);
+			this.$('#receiptDate').val(validation.formatDate(this.model.get('receipt').date));
+			this.$('#cashRegisterModel').val(this.model.get('receipt').cashRegister.model);
+			this.$('#cashRegisterSerial').val(this.model.get('receipt').cashRegister.serial);
+
+			this.$('#totalsTaxable').val(validation.formatBig(this.model.get('totals').taxable));
+			this.$('#totalsTax').val(validation.formatBig(this.model.get('totals').tax));
+			this.$('#totalsTotal').val(validation.formatBig(this.model.get('totals').total));
 		},
 
 		// Clear previous validation errors from form fields.

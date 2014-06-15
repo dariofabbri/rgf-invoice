@@ -132,7 +132,7 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHt
 				headers: {
 					'Authorization': authorization
 				},
-				url: 'invoices',
+				url: '/invoices',
 				data: queryArguments,
 				type: 'GET',
 				success: function(response) {

@@ -112,7 +112,7 @@ function ($, _, Backbone, ParentView, userSearch, loginInfo, searchHtml) {
 				headers: {
 					'Authorization': authorization
 				},
-				url: 'users',
+				url: '/users',
 				data: queryArguments,
 				type: 'GET',
 				success: function(response) {
