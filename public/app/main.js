@@ -1,14 +1,15 @@
 require.config({
 	baseUrl: 'app',
 	paths: {
-		jquery: 				'../libs/jquery',
-		'jquery-ui':		'../libs/jquery-ui',
-		'datatables': 	'../libs/jquery.dataTables',
-		underscore: 		'../libs/underscore',
-		backbone: 			'../libs/backbone',
-		text: 					'../libs/text',
-		big:						'../libs/big',
-		moment:					'../libs/moment-with-langs'
+		jquery: '../libs/jquery',
+		'jquery-ui': '../libs/jquery-ui',
+		'datatables': '../libs/jquery.dataTables',
+		'datatables-jquery-ui': '../libs/dataTables.jqueryui',
+		underscore: '../libs/underscore',
+		backbone: '../libs/backbone',
+		text: '../libs/text',
+		big: '../libs/big',
+		moment: '../libs/moment-with-langs'
 	},
 	shim: {
 		backbone: {
@@ -20,8 +21,12 @@ require.config({
 			deps: ['jquery']
 		},
 
-		'jquery-dataTables': {
+		datatables: {
 			deps: ['jquery']
+		},
+
+		'datatables-jquery-ui': {
+			deps: ['datatables']
 		}
 	},
 	noGlobal: true
@@ -35,7 +40,8 @@ requirejs([
 	'models/login-info',
 
 	'jquery-ui',
-	'datatables'
+	'datatables',
+	'datatables-jquery-ui'
 ],
 function ($, _, Backbone, Big, loginInfo) {
 
