@@ -42,7 +42,7 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, CompanyM
 
 					// Preset today's date.
 					//
-					var now = moment().format('DD/MM/YYYY');
+					var now = moment();
 					model.set('date', now);
 					var receipt = model.get('receipt');
 					receipt.date = now;
