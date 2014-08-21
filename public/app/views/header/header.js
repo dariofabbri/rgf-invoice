@@ -79,8 +79,10 @@ function ($, _, Backbone, loginInfo, headerHtml) {
 		onChuckClick: function() {
 
 			$.ajax({
-				url: 'http://api.icndb.com/jokes/random',
+				url: 'http://api.icndb.com/jokes/random?callback=callback',
 				type: 'GET',
+				dataType: 'jsonp',
+				jsonp: 'callback',
 				success: function(response) {
 
 					$('<div>' + response.value.joke + '</div>').dialog({
