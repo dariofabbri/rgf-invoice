@@ -83,9 +83,21 @@ function ($, _, Backbone, Big, loginInfo) {
 		});
 
 		options.error = function(jqxhr, status, error) {
-			$('<div>Il server ha risposto con un errore.<br><b>' + error + '</b><br>' + jqxhr.responseText + '</div>').dialog({
-				modal: true
-			});
+
+			switch(jqxhr.status) {
+
+				case 409:
+					$('<div title="Attenzione">Si sta tentando di inserire un duplicato.<br>L\'operazione è stata annullata.</div>').dialog({
+						modal: true
+					});
+					break;
+
+				default:
+					$('<div title="Attenzione">Il server ha risposto con un errore.<br><b>' + error + '</b><br>' + jqxhr.responseText + '</div>').dialog({
+						modal: true
+					});
+					break;
+			}
 		}
 	});
 

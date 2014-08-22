@@ -79,6 +79,7 @@ function ($, _, Backbone, ParentView, messageHtml) {
 			var hasTooltip = this.$(selector).data('hasTooltip');
 			if(hasTooltip) {
 				this.$(selector).tooltip('destroy');
+				this.$(selector).data('hasTooltip', false);
 			}
 
 			return this.$(selector)
