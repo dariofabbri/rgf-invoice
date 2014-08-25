@@ -21,7 +21,9 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 		events: {
 			'click #selectAddressee': 'onClickSelectAddressee',
 			'click #back': 'onClickBack',
-			'click #save': 'onClickSave'
+			'click #save': 'onClickSave',
+			'click #print': 'onClickPrint',
+			'click #freeze': 'onClickFreeze'
 		},
 
 		initialize: function() {
@@ -41,6 +43,8 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.$('#selectAddressee').button();
 			this.$('#save').button();
 			this.$('#back').button();
+			this.$('#print').button();
+			this.$('#freeze').button();
 
 			// Set up date picker fields.
 			//
@@ -114,6 +118,8 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.$('#selectAddressee').button('destroy');
 			this.$('#save').button('destroy');
 			this.$('#back').button('destroy');
+			this.$('#print').button('destroy');
+			this.$('#freeze').button('destroy');
 
 			this.$('#date').datepicker('destroy');
 
@@ -141,6 +147,16 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 		onClickSave: function() {
 
 			Backbone.trigger('invoice:prepareforsave');
+		},
+
+		onClickPrint: function() {
+
+			var printUrl = '/invoice/' + this.model.id + '/print';
+			window.open(printUrl);
+		},
+
+		onClickFreeze: function() {
+
 		},
 
 		onReadyForSave: function(rows) {

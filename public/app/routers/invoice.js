@@ -5,18 +5,20 @@ define([
 	'moment',
 	'views/invoice/search',
 	'views/invoice/detail',
+	'views/invoice/print',
 	'models/company',
 	'models/invoice',
 	'utils/view-manager'
 ],
-function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, CompanyModel, InvoiceModel, viewManager) {
+function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, PrintInvoiceView, CompanyModel, InvoiceModel, viewManager) {
 	
 	var InvoiceRouter = Backbone.Router.extend({
 
 		routes: {
 			'invoices': 'invoices',
 			'newInvoice': 'newInvoice',
-			'invoice/:id': 'invoice'
+			'invoice/:id': 'invoice',
+			'invoice/:id/print': 'printInvoice'
 		},
 
 		invoices: function() {
@@ -72,6 +74,14 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, CompanyM
 			model.fetch();
 			var detailInvoiceView = new DetailInvoiceView({ model: model });
 			viewManager.setView('#main-content', detailInvoiceView);
+		},
+
+		printInvoice: function(id) {
+
+			var model = new InvoiceModel({ _id: id });
+			model.fetch();
+			var printInvoiceView = new PrintInvoiceView({ model: model });
+			printInvoiceView.render();
 		}
 	});
 
