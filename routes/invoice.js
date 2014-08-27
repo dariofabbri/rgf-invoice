@@ -231,3 +231,23 @@ exports.generateNextNumber = function(req, res) {
 	});
 
 };
+
+
+exports.print = function(req, res) {
+
+	var id = req.params.id;
+
+	Invoice.findById(id, function(err, doc) {
+		if(err) {
+			res.statusCode = 500;
+			return res.send(err);
+		}
+		if(!doc) {
+			res.statusCode = 404;
+			return res.send('Invoice not found.');
+		}
+
+		doc.layout = 'print';
+  	res.render('invoice', doc);
+	});
+};

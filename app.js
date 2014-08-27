@@ -1,4 +1,5 @@
 var express = require('express');
+var exphbs = require('express-handlebars');
 var http = require('http');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -39,6 +40,7 @@ passport.use(new BasicStrategy({
 	}
 ));
 
+
 // Open database connection.
 //
 mongoose.connect('mongodb://localhost:27017/rgf');
@@ -58,6 +60,12 @@ app.use(cookieParser());
 app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
 app.use(app.router);
+
+// Set up templating engine.
+//
+app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: __dirname + '/views/layouts'}));
+app.set('view engine', 'handlebars');
+app.set('views', __dirname + '/views');
 
 // Set up routing.
 //
@@ -85,6 +93,8 @@ app.delete('/contacts/:id', passport.authenticate('basic', { session: false }), 
 //
 app.get('/invoices', passport.authenticate('basic', { session: false }), invoices.list);
 app.get('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.retrieve);
+//app.get('/invoices/:id/print', passport.authenticate('basic', { session: false }), invoices.print);
+app.get('/invoices/:id/print', invoices.print);
 app.post('/invoices', passport.authenticate('basic', { session: false }), invoices.create);
 app.put('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.update);
 app.delete('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.delete);

@@ -1,22 +1,56 @@
-@media print {
+body {
+	font-family: sans-serif;
+}
 
-	div.header { display: none }
-	div.header { display: block; position: running(header); }
+div.header h1,h2 {
+	text-align: center;
+	margin: 0;
+}
 
-	div.footer { display: none }
-	div.footer { display: block; position: running(footer); }
+div.header h1 {
+	font-size: 18pt;
+	color: #000000;
+	margin-bottom: 6pt;
+}
 
-	@page {
-		size: a4 portrait;
-		@bottom-right { 
-			content: "Page " counter(page) " of " counter(pages);
-			font-family: Helvetica, Arial, Sans-Serif; font-size: 10pt; 
-		}
-		@bottom-left { 
-			content: "Generated with VelocityReport Plugin $!plugin.version for Servoy";
-			font-family:helvetica, arial, sans-serif; font-size: 10pt; 
-		}
-		margin: 1.2in .4in .4in .4in;
-		@top-left { content: element(header); }
-	}
+div.header h2 {
+	font-size: 12pt;
+	color: #8F8F8F;
+}
+
+div.header {
+	margin-bottom: 40pt;
+}
+
+div.address {
+	float: right;
+	width: 500px;
+	padding-right: 50px;
+	text-align: right;
+}
+
+div.address p {
+	margin-top: 0;
+	margin-bottom: 3pt;
+}
+
+div.invoice-data {
+	width: 100%;
+}
+
+div.invoice-data .left {
+	float: left;
+	width: 200px;
+	padding-left: 20px;
+}
+
+div.invoice-data .right {
+	float: right;
+	width: 200px;
+	padding-right: 20px;
+}
+
+@page {
+	size: a4 portrait;
+	margin: .6in .6in .6in .6in;
 }
