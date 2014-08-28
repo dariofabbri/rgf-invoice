@@ -22,6 +22,11 @@ div.header {
 	margin-bottom: 40pt;
 }
 
+.fullwidth {
+	width: 100%;
+	overflow: auto;
+}
+
 div.address {
 	float: right;
 	width: 500px;
