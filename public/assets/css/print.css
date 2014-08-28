@@ -1,5 +1,6 @@
 body {
 	font-family: sans-serif;
+	font-size: 10pt;
 }
 
 div.header h1,h2 {
@@ -29,8 +30,7 @@ div.header {
 
 div.address {
 	float: right;
-	width: 500px;
-	padding-right: 50px;
+	padding-right: 20pt;
 	text-align: right;
 }
 
@@ -41,18 +41,49 @@ div.address p {
 
 div.invoice-data {
 	width: 100%;
+	overflow: auto;
+	background: #CCCCCC;
 }
 
 div.invoice-data .left {
 	float: left;
-	width: 200px;
-	padding-left: 20px;
+	padding-left: 20pt;
 }
 
 div.invoice-data .right {
 	float: right;
-	width: 200px;
-	padding-right: 20px;
+	padding-right: 20pt;
+}
+
+div.register-data {
+	width: 100%;
+	overflow: auto;
+}
+
+div.register-data .left {
+	float: left;
+	padding-left: 20pt;
+}
+
+div.register-data .right {
+	float: right;
+	padding-right: 20pt;
+}
+
+div.detail {
+	width: 100%;
+	overflow: auto;
+}
+
+div.detail table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+div.detail td, th {
+	border-style: solid;
+	border-color: #000000;
+	border-width: thin;
 }
 
 @page {
