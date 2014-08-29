@@ -32,6 +32,7 @@ div.address {
 	float: right;
 	padding-right: 20pt;
 	text-align: right;
+	margin-bottom: 40pt;
 }
 
 div.address p {
