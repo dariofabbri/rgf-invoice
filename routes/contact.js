@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var moment = require('moment');
 var mongoose = require('mongoose');
 var Contact = require('../models/contact');
