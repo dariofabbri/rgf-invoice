@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+		"underscore": "~1.7.0",
     "express": "~3.4.8",
 		"express-handlebars": "~1.0.1",
     "static-favicon": "~1.0.0",

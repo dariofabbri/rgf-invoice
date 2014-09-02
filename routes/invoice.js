@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var moment = require('moment');
 var mongoose = require('mongoose');
 var Invoice = require('../models/invoice');
@@ -247,7 +248,14 @@ exports.print = function(req, res) {
 			return res.send('Invoice not found.');
 		}
 
-		doc.layout = 'print';
+		_.extend(doc, {
+			layout: 'print',
+			sameCfAndVat: doc.issuer.cfCode && doc.issuer.vatCode && doc.issuer.cfCode === doc.issuer.vatCode,
+			hasReaCodeAndStock: doc.issuer.reaCode && doc.issuer.stock,
+			formattedDate: moment(doc.date).format('DD/MM/YYYY'),
+			formattedReceiptDate: doc.receipt && doc.receipt.date ? moment(doc.receipt.date).format('DD/MM/YYYY') : null
+		});
+
   	res.render('invoice', doc);
 	});
 };

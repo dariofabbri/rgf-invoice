@@ -87,6 +87,10 @@ div.detail td, th {
 	border-width: thin;
 }
 
+.right-align {
+	text-align: right
+}
+
 @page {
 	size: a4 portrait;
 	margin: .6in .6in .6in .6in;

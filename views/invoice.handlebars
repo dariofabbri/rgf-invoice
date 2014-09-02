@@ -2,7 +2,7 @@
 	<h1>{{issuer.description}}</h1>
 	<h2>{{issuer.address}} {{issuer.zipCode}} {{issuer.city}}</h2>
 
-	{{#if issuer.cfCode && issuer.vatCode && issuer.cfCode === issuer.vatCode}}
+	{{#if sameCfAndVat}}
 	<h2>Codice Fiscale e Partita IVA {{issuer.vatCode}}</h2>
 	{{else}}
 		{{#if issuer.cfCode}}
@@ -13,7 +13,7 @@
 		{{/if}}
 	{{/if}}
 
-	{{#if issuer.reaCode && issuer.stock}}
+	{{#if hasReaCodeAndStock}}
 	<h2>Registro delle imprese di Firenze n. {{issuer.reaCode}}, capitale sociale {{issuer.stock}}</h2>
 	{{else}}
 		{{#if issuer.reaCode}}
@@ -28,30 +28,40 @@
 
 <div class="fullwidth">
 	<div class="address">
-		<p>Spett.le Gino Pilota</p>
-		<p>Via le mani dal naso, 1</p>
-		<p>50100 FIRENZE</p>
+		<p>Spett.le {{addressee.description}}</p>
+		<p>{{addressee.address1}}</p>
+		{{#if addressee.address2}}
+		<p>{{addressee.address2}}</p>
+		{{/if}}
+		<p>{{addressee.zipCode}} {{addressee.city}}</p>
+		{{#if addressee.country}}
+		<p>{{addressee.country}}</p>
+		{{/if}}
 		<p>
-		<p>CF: FBBDRA75L20D612A</p>
-		<p>PI: 12345678901</p>
+		{{#if addressee.cfCode}}
+		<p>CF: {{addressee.cfCode}}</p>
+		{{/if}}
+		{{#if addressee.vatCode}}
+		<p>PI: {{addressee.vatCode}}</p>
+		{{/if}}
 	</div>
 </div>
 
 <div class="invoice-data">
 	<div class="left">
-		<p>Fattura n. 214001</p>
+		<p>Fattura n. {{number}}</p>
 	</div>
 	<div class="right">
-		<p>del 26/08/2014</p>
+		<p>del {{formattedDate}}</p>
 	</div>
 </div>
 
 <div class="register-data">
 	<div class="left">
-		<p>Scontrino fiscale n. 34 del 11/8/2014</p>
+		<p>Scontrino fiscale n. {{receipt.number}} del {{formattedReceiptDate}}</p>
 	</div>
 	<div class="right">
-		<p>Ricevitore fiscale CRF 4055 matr. 0480004647</p>
+		<p>Ricevitore fiscale {{receipt.cashRegister.model}} matr. {{receipt.cashRegister.serial}}</p>
 	</div>
 </div>
 
@@ -75,19 +85,19 @@
 		</tr>
 		<tr>
 			<td>Pos. 10 - articolo 1</td>
-			<td>Pezzi</td>
-			<td>5,00</td>
-			<td>2500,00</td>
-			<td>7500,00</td>
-			<td>20</td>
+			<td class="right-align">Pezzi</td>
+			<td class="right-align">5,00</td>
+			<td class="right-align">2500,00</td>
+			<td class="right-align">7500,00</td>
+			<td class="right-align">20</td>
 		</tr>
 		<tr>
 			<td>Pos. 20 - articolo 2</td>
-			<td>Pezzi</td>
-			<td>5,00</td>
-			<td>2500,00</td>
-			<td>7500,00</td>
-			<td>20</td>
+			<td class="right-align">Pezzi</td>
+			<td class="right-align">5,00</td>
+			<td class="right-align">2500,00</td>
+			<td class="right-align">7500,00</td>
+			<td class="right-align">20</td>
 		</tr>
 	</table>
 	<table>
@@ -97,9 +107,13 @@
 			<th>TOTALE FATTURA (€)</th>
 		</tr>
 		<tr>
-			<td>9000,00</td>
-			<td>1800,00</td>
-			<td>10800,00</td>
+			<td class="right-align">9000,00</td>
+			<td class="right-align">1800,00</td>
+			<td class="right-align">10800,00</td>
 		</tr>
 	</table>
+</div>
+
+<div class="payment">
+	<p>Pagamento: {{payment}}</p>
 </div>
