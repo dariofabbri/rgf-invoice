@@ -136,49 +136,34 @@ exports.update = function(req, res) {
 
 	var id = req.params.id;
 
-	// Retrieve the specified contact using the provided id.
+	// Retrieve the specified invoice using the provided id.
 	//
-	Contact.findById(id, function(err, contact) {
+	Invoice.findById(id, function(err, invoice) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
 		}
 
-		if(!contact) {
+		if(!invoice) {
 			res.statusCode = 404;
-			return res.send('Contact not found.');
+			return res.send('Invoice not found.');
 		}
 
-		// Prepare contact object for database update.
+		// Prepare invoice object for database update.
 		//
-		contact.isCompany = req.body.isCompany ? req.body.isCompany : contact.isCompany;
-		contact.vatCode = req.body.vatCode ? req.body.vatCode : contact.vatCode;
-		contact.cfCode = req.body.cfCode ? req.body.cfCode : contact.cfCode;
-		contact.description = req.body.description ? req.body.description : contact.description;
-		contact.salutation = req.body.salutation ? req.body.salutation : contact.salutation;
-		contact.firstName = req.body.firstName ? req.body.firstName : contact.firstName;
-		contact.lastName = req.body.lastName ? req.body.lastName : contact.lastName;
-		contact.address1 = req.body.address1 ? req.body.address1 : contact.address1;
-		contact.address2 = req.body.address2 ? req.body.address2 : contact.address2;
-		contact.city = req.body.city ? req.body.city : contact.city;
-		contact.county = req.body.county ? req.body.county : contact.county;
-		contact.zipCode = req.body.zipCode ? req.body.zipCode : contact.zipCode;
-		contact.country = req.body.country ? req.body.country : contact.country;
-		contact.phone = req.body.phone ? req.body.phone : contact.phone;
-		contact.fax = req.body.fax ? req.body.fax : contact.fax;
-		contact.email = req.body.email ? req.body.email : contact.email;
-		contact.updatedOn = new Date();
-		contact.updatedBy = req.user.username;
+		_.extend(invoice, req.body);
+		invoice.updatedOn = new Date();
+		invoice.updatedBy = req.user.username;
 
-		// Update the contact in the db collection.
+		// Update the invoice in the db collection.
 		//
-		contact.save(function(err, contact) {
+		invoice.save(function(err, invoice) {
 			if(err) {
 				res.statusCode = 500;
 				return res.send(err);
 			}
 
-			return res.send(contact);
+			return res.send(invoice);
 		});
 
 	});
