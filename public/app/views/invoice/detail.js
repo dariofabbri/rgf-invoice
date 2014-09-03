@@ -146,26 +146,25 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		onClickSave: function() {
 
-			Backbone.trigger('invoice:prepareforsave');
+			Backbone.trigger('invoice:prepareforsave', false);
 		},
 
 		onClickPrint: function() {
 
-			var printUrl = '/invoice/' + this.model.id + '/print';
-			window.open(printUrl);
+			Backbone.trigger('invoice:prepareforsave', true);
 		},
 
 		onClickFreeze: function() {
 
 		},
 
-		onReadyForSave: function(rows) {
+		onReadyForSave: function(rows, isPrinting) {
 
 			this.formToModel();
 			this.model.set('rows', rows);
 
 			var valid = this.model.save({}, {
-				success: function() {
+				success: function(model) {
 
 					// Put out a message box for confirmation.
 					//
@@ -182,10 +181,20 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 						]
 					}).on('dialogclose', function() {
 
-						// Get back to the search panel.
-						//
-						Backbone.history.navigate('invoices', true);
+						if(!isPrinting) {
+							// Get back to the search panel.
+							//
+							Backbone.history.navigate('invoices', true);
+						}
 					});
+
+					if(isPrinting) {
+
+						// Open new window with printable version.
+						//
+						var printUrl = '/invoices/' + model.id + '/print';
+						window.open(printUrl);
+					}
 				}
 			});
 
