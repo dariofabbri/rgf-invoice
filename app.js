@@ -68,17 +68,11 @@ app.engine('handlebars', exphbs({
 	defaultLayout: 'main', 
 	layoutsDir: __dirname + '/views/layouts',
 	helpers: {
-		formatBig: function(number, ts, ds, dp) {
-			console.log(number);
-			console.log(ts);
-			console.log(ds);
-			console.log(dp);
+		formatBig: function(number, options) {
 			var b = new Big(number);
-			console.log(b);
-			var arr = b.toFixed(dp || 2).split('.');
-      arr[0] = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, ts == null ? '.' : ts + '');
-			console.log(arr);
-			return arr.join(ds == null ? ',' : ds + '');
+			var arr = b.toFixed(options.hash.dp || 2).split('.');
+      arr[0] = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, options.hash.ts == null ? '.' : options.hash.ts + '');
+			return arr.join(options.hash.ds == null ? ',' : options.hash.ds + '');
 		}
 	}
 }));

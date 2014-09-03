@@ -83,22 +83,16 @@
 			<td></td>
 			<td></td>
 		</tr>
+		{{#each rows}}
 		<tr>
-			<td>Pos. 10 - articolo 1</td>
-			<td class="right-align">Pezzi</td>
-			<td class="right-align">5,00</td>
-			<td class="right-align">2500,00</td>
-			<td class="right-align">7500,00</td>
-			<td class="right-align">20</td>
+			<td>Pos. {{position}} - {{description}}</td>
+			<td class="right-align">{{uom}}</td>
+			<td class="right-align">{{formatBig quantity}}</td>
+			<td class="right-align">{{formatBig price}}</td>
+			<td class="right-align">{{formatBig taxable}}</td>
+			<td class="right-align">{{vatPercentage}}</td>
 		</tr>
-		<tr>
-			<td>Pos. 20 - articolo 2</td>
-			<td class="right-align">Pezzi</td>
-			<td class="right-align">5,00</td>
-			<td class="right-align">2500,00</td>
-			<td class="right-align">7500,00</td>
-			<td class="right-align">20</td>
-		</tr>
+		{{/each}}
 	</table>
 	<table>
 		<tr>
@@ -107,9 +101,9 @@
 			<th>TOTALE FATTURA (€)</th>
 		</tr>
 		<tr>
-			<td class="right-align">{{formatBig 12347.32}}</td>
-			<td class="right-align">1800,00</td>
-			<td class="right-align">10800,00</td>
+			<td class="right-align">{{formatBig totals.taxable}}</td>
+			<td class="right-align">{{formatBig totals.tax}}</td>
+			<td class="right-align">{{formatBig totals.total}}</td>
 		</tr>
 	</table>
 </div>
