@@ -137,28 +137,29 @@ exports.create = function(req, res) {
 		// Prepare contact object to be inserted in the DB.
 		//
 		var now = new Date();
-		var contact = new Contact({
-			isCompany: req.body.isCompany,
-			vatCode: req.body.vatCode,
-			cfCode: req.body.cfCode,
-			description: req.body.description,
-			salutation: req.body.salutation,
-			firstName: req.body.firstName,
-			lastName: req.body.lastName,
-			address1: req.body.address1,
-			address2: req.body.address2,
-			city: req.body.city,
-			county: req.body.county,
-			zipCode: req.body.zipCode,
-			country: req.body.country,
-			phone: req.body.phone,
-			fax: req.body.fax,
-			email: req.body.email,
-			createdOn: now,
-			createdBy: req.user.username,
-			updatedOn: now,
-			updatedBy: req.user.username
-		});
+		var contact = new Contact(_.pick(req.body, 
+					'isCompany', 
+					'vatCode', 
+					'isCompany',
+					'vatCode',
+					'cfCode',
+					'description',
+					'salutation',
+					'firstName',
+					'lastName',
+					'address1',
+					'address2',
+					'city',
+					'county',
+					'zipCode',
+					'country',
+					'phone',
+					'fax',
+					'email'));
+		contact.set('createdOn', now);
+		contact.set('createdBy', req.user.username);
+		contact.set('updatedOn', now);
+		contact.set('updatedBy', req.user.username);
 
 		// Insert the contact in the db collection.
 		//
@@ -194,22 +195,7 @@ exports.update = function(req, res) {
 
 		// Prepare contact object for database update.
 		//
-		contact.isCompany = req.body.isCompany ? req.body.isCompany : contact.isCompany;
-		contact.vatCode = req.body.vatCode ? req.body.vatCode : contact.vatCode;
-		contact.cfCode = req.body.cfCode ? req.body.cfCode : contact.cfCode;
-		contact.description = req.body.description ? req.body.description : contact.description;
-		contact.salutation = req.body.salutation ? req.body.salutation : contact.salutation;
-		contact.firstName = req.body.firstName ? req.body.firstName : contact.firstName;
-		contact.lastName = req.body.lastName ? req.body.lastName : contact.lastName;
-		contact.address1 = req.body.address1 ? req.body.address1 : contact.address1;
-		contact.address2 = req.body.address2 ? req.body.address2 : contact.address2;
-		contact.city = req.body.city ? req.body.city : contact.city;
-		contact.county = req.body.county ? req.body.county : contact.county;
-		contact.zipCode = req.body.zipCode ? req.body.zipCode : contact.zipCode;
-		contact.country = req.body.country ? req.body.country : contact.country;
-		contact.phone = req.body.phone ? req.body.phone : contact.phone;
-		contact.fax = req.body.fax ? req.body.fax : contact.fax;
-		contact.email = req.body.email ? req.body.email : contact.email;
+		_.extend(contact, req.body);
 		contact.updatedOn = new Date();
 		contact.updatedBy = req.user.username;
 

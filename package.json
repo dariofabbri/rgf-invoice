@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+		"big.js": "2.5.1",
 		"underscore": "~1.7.0",
     "express": "~3.4.8",
 		"express-handlebars": "~1.0.1",

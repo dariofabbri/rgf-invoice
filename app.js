@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
+var Big = require('big.js');
 var BasicStrategy = require('gt-passport-http').BasicStrategy;
 var User = require('./models/user');
 
@@ -63,7 +64,24 @@ app.use(app.router);
 
 // Set up templating engine.
 //
-app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: __dirname + '/views/layouts'}));
+app.engine('handlebars', exphbs({
+	defaultLayout: 'main', 
+	layoutsDir: __dirname + '/views/layouts',
+	helpers: {
+		formatBig: function(number, ts, ds, dp) {
+			console.log(number);
+			console.log(ts);
+			console.log(ds);
+			console.log(dp);
+			var b = new Big(number);
+			console.log(b);
+			var arr = b.toFixed(dp || 2).split('.');
+      arr[0] = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, ts == null ? '.' : ts + '');
+			console.log(arr);
+			return arr.join(ds == null ? ',' : ds + '');
+		}
+	}
+}));
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 

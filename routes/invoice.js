@@ -174,9 +174,9 @@ exports.delete = function(req, res) {
 
 	var id = req.params.id;
 
-	// Remove the contact from the database.
+	// Remove the invoice from the database.
 	//
-	Contact.findByIdAndRemove(id, function(err, result) {
+	Invoice.findByIdAndRemove(id, function(err, result) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
@@ -184,10 +184,10 @@ exports.delete = function(req, res) {
 
 		if(!result) {
 			res.statusCode = 404;
-			return res.send('Contact not found.');
+			return res.send('Invoice not found.');
 		}
 
-		return res.send('Contact removed.');
+		return res.send('Invoice removed.');
 	});
 };
 

@@ -17,8 +17,7 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, PrintInv
 		routes: {
 			'invoices': 'invoices',
 			'newInvoice': 'newInvoice',
-			'invoice/:id': 'invoice',
-			'invoice/:id/print': 'printInvoice'
+			'invoice/:id': 'invoice'
 		},
 
 		invoices: function() {
@@ -74,14 +73,6 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, PrintInv
 			model.fetch();
 			var detailInvoiceView = new DetailInvoiceView({ model: model });
 			viewManager.setView('#main-content', detailInvoiceView);
-		},
-
-		printInvoice: function(id) {
-
-			var model = new InvoiceModel({ _id: id });
-			model.fetch();
-			var printInvoiceView = new PrintInvoiceView({ model: model });
-			printInvoiceView.render();
 		}
 	});
 
