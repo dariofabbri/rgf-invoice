@@ -5,6 +5,7 @@ var invoiceSchema = new Schema({
 	type: String, // I - Invoice, C - Credit note
 	number: Number,
 	date: Date,
+	frozen: Boolean,
 	issuer: {
 		description: String,
 		address: String,

@@ -115,6 +115,15 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 				}
 			});
 
+			// Disable controls, if the invoice is frozen.
+			//
+			if(this.model.get('frozen')) {
+				this.$('#addRow').button('disable');
+				this.$('#removeRow').button('disable');
+				this.$('#moveUp').button('disable');
+				this.$('#moveDown').button('disable');
+			}
+
 			return this;
 		},
 
@@ -132,7 +141,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 			this.$('#rows').DataTable().destroy();
 		},
 
-		onPrepareForSave: function(isPrinting) {
+		onPrepareForSave: function(action) {
 
 			var datatable = this.$('#rows').DataTable();
 			var data = datatable.data();
@@ -212,10 +221,14 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 
 			// No errors detected, signal that we are ready to save the invoice.
 			//
-			Backbone.trigger('invoice:readyforsave', rows, isPrinting);
+			Backbone.trigger('invoice:readyforsave', rows, action);
 		},
 
 		onRowSelectionChange: function(row) {
+
+			if(this.model.get('frozen')) {
+				return;
+			}
 
 			this.$('#moveUp').button('option', 'disabled', !row);
 			this.$('#moveDown').button('option', 'disabled', !row);
@@ -649,6 +662,10 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 		},
 
 		onClickCell: function (e) {
+
+			if(this.model.get('frozen')) {
+				return;
+			}
 
 			var indexes = $(e.currentTarget).closest('table').DataTable().cell(e.currentTarget).index();
 

@@ -106,8 +106,41 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 			// Disable controls, if the invoice is frozen.
 			//
-			this.$('#number').attr('disabled', 'disabled');
-			this.$('#date').datepicker('option', 'disabled', true);
+			if(this.model.get('frozen')) {
+				this.$('#number').attr('disabled', 'disabled');
+				this.$('#date').datepicker('option', 'disabled', true);
+				this.$('#issuerDescription').attr('disabled', 'disabled');
+				this.$('#issuerAddress').attr('disabled', 'disabled');
+				this.$('#issuerCity').attr('disabled', 'disabled');
+				this.$('#issuerCounty').attr('disabled', 'disabled');
+				this.$('#issuerZipCode').attr('disabled', 'disabled');
+				this.$('#issuerVatCode').attr('disabled', 'disabled');
+				this.$('#issuerCfCode').attr('disabled', 'disabled');
+				this.$('#issuerReaCode').attr('disabled', 'disabled');
+				this.$('#issuerStock').attr('disabled', 'disabled');
+
+				this.$('#selectAddressee').button('disable');
+				this.$('#addresseeDescription').attr('disabled', 'disabled');
+				this.$('#addresseeAddress1').attr('disabled', 'disabled');
+				this.$('#addresseeAddress2').attr('disabled', 'disabled');
+				this.$('#addresseeCity').attr('disabled', 'disabled');
+				this.$('#addresseeCounty').attr('disabled', 'disabled');
+				this.$('#addresseeZipCode').attr('disabled', 'disabled');
+				this.$('#addresseeVatCode').attr('disabled', 'disabled');
+				this.$('#addresseeCfCode').attr('disabled', 'disabled');
+
+				this.$('#receiptNumber').attr('disabled', 'disabled');
+				this.$('#receiptDate').datepicker('option', 'disabled', true);
+				this.$('#cashRegisterModel').attr('disabled', 'disabled');
+				this.$('#cashRegisterSerial').attr('disabled', 'disabled');
+
+				this.$('#totalsTaxable').attr('disabled', 'disabled');
+				this.$('#totalsTax').attr('disabled', 'disabled');
+				this.$('#totalsTotal').attr('disabled', 'disabled');
+
+				this.$('#save').button('disable');
+				this.$('#freeze').button('disable');
+			}
 
 			return this;
 		},
@@ -151,19 +184,34 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		onClickSave: function() {
 
-			Backbone.trigger('invoice:prepareforsave', false);
+			Backbone.trigger('invoice:prepareforsave', 'save');
 		},
 
 		onClickPrint: function() {
 
-			Backbone.trigger('invoice:prepareforsave', true);
+			if(this.model.get('frozen')) {
+
+				// If the invoce is already frozen, there is no need to save it.
+				// Directly open new window with printable version.
+				//
+				var printUrl = '/invoices/' + this.model.id + '/print';
+				window.open(printUrl);
+
+			} else {
+
+				// Signal that the invoice needs saving, before printing it.
+				//
+				Backbone.trigger('invoice:prepareforsave', 'print');
+			}
 		},
 
 		onClickFreeze: function() {
 
+			this.model.set('frozen', true);
+			Backbone.trigger('invoice:prepareforsave', 'freeze');
 		},
 
-		onReadyForSave: function(rows, isPrinting) {
+		onReadyForSave: function(rows, action) {
 
 			this.formToModel();
 			this.model.set('rows', rows);
@@ -186,14 +234,16 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 						]
 					}).on('dialogclose', function() {
 
-						if(!isPrinting) {
+						if(action === 'save' || action == 'freeze') {
+
 							// Get back to the search panel.
 							//
 							Backbone.history.navigate('invoices', true);
+							return;
 						}
 					});
 
-					if(isPrinting) {
+					if(action === 'print') {
 
 						// Open new window with printable version.
 						//

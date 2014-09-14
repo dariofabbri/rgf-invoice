@@ -12,6 +12,7 @@ function ($, _, Backbone, validation) {
 			type: null,
 			number: null,
 			date: null,
+			frozen: false,
 			issuer: {
 				description: null,
 				address: null,
