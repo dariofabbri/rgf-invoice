@@ -5,9 +5,13 @@
 		<title>Fattura n. {{number}}</title>
 		<link href="/assets/css/print.css" rel="stylesheet">
 	</head>
-	<body>
+	<body onafterprint="window.close()">
 
 			{{{body}}}
 
 	</body>
+	<script>
+		window.focus();
+		window.print();
+	</script>
 </html>

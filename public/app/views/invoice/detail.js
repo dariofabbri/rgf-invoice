@@ -104,6 +104,11 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			//
 			this.modelToForm();
 
+			// Disable controls, if the invoice is frozen.
+			//
+			this.$('#number').attr('disabled', 'disabled');
+			this.$('#date').datepicker('option', 'disabled', true);
+
 			return this;
 		},
 
