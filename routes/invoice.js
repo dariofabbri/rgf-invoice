@@ -97,7 +97,7 @@ exports.create = function(req, res) {
 
 	// Check if the invoice is already present.
 	//
-	Invoice.findOne({ number: req.body.number }, function(err, result) {
+	Invoice.findOne({ number: req.body.number, type: req.body.type }, function(err, result) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
@@ -239,6 +239,8 @@ exports.print = function(req, res) {
 			layout: 'print',
 			sameCfAndVat: doc.issuer.cfCode && doc.issuer.vatCode && doc.issuer.cfCode === doc.issuer.vatCode,
 			hasReaCodeAndStock: doc.issuer.reaCode && doc.issuer.stock,
+			isInvoice: doc.type === 'I',
+			isCreditNote: doc.type === 'C',
 			formattedDate: moment(doc.date).format('DD/MM/YYYY'),
 			formattedReceiptDate: doc.receipt && doc.receipt.date ? moment(doc.receipt.date).format('DD/MM/YYYY') : null
 		});

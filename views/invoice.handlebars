@@ -49,7 +49,12 @@
 
 <div class="invoice-data">
 	<div class="left">
+		{{#if isInvoice}}
 		<p>Fattura n. {{number}}</p>
+		{{/if}}
+		{{#if isCreditNote}}
+		<p>Nota di credito n. {{number}}</p>
+		{{/if}}
 	</div>
 	<div class="right">
 		<p>del {{formattedDate}}</p>

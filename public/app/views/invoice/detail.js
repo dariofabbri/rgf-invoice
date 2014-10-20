@@ -238,7 +238,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 							// Get back to the search panel.
 							//
-							Backbone.history.navigate('invoices', true);
+							Backbone.history.navigate('invoices/' + model.get('type'), true);
 							return;
 						}
 					});
@@ -300,7 +300,6 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		formToModel: function() {
 
-			this.model.set('type', 'I');
 			this.model.set('number', this.$('#number').val());
 			this.model.set('date', this.$('#date').val() ? moment(this.$('#date').val(), 'DD/MM/YYYY').toDate() : null);
 

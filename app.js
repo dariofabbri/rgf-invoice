@@ -69,6 +69,7 @@ app.engine('handlebars', exphbs({
 	layoutsDir: __dirname + '/views/layouts',
 	helpers: {
 		formatBig: function(number, options) {
+			number = number || '0';
 			var b = new Big(number);
 			var arr = b.toFixed(options.hash.dp || 2).split('.');
       arr[0] = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, options.hash.ts == null ? '.' : options.hash.ts + '');
