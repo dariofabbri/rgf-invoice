@@ -35,7 +35,10 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		render: function () {
 
-			var html = this.template(this.model.toJSON());
+			var html = this.template(_.extend(this.model, {
+				singular: this.model.get('type') === 'I' ? 'fattura' : 'nota di credito',
+				plural: this.model.get('type') === 'I' ? 'fatture' : 'note di credito'
+			}).toJSON());
 			this.$el.html(html);
 
 			// Set up form buttons.
@@ -179,7 +182,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		onClickBack: function() {
 
-			Backbone.history.navigate('invoices', true);
+			Backbone.history.navigate('invoices/' + this.model.get('type'), true);
 		},
 
 		onClickSave: function() {

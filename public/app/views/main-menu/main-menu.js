@@ -13,7 +13,8 @@ function ($, _, Backbone, html) {
 		events: {
 			'click #users': 'onUsersClick',
 			'click #contacts': 'onContactsClick',
-			'click #invoices': 'onInvoicesClick'
+			'click #invoices': 'onInvoicesClick',
+			'click #creditNotes': 'onCreditNotesClick'
 		},
 
 		render: function () {
@@ -42,7 +43,12 @@ function ($, _, Backbone, html) {
 
 		onInvoicesClick: function() {
 
-			Backbone.history.navigate('invoices', true);
+			Backbone.history.navigate('invoices/I', true);
+		},
+
+		onCreditNotesClick: function() {
+
+			Backbone.history.navigate('invoices/C', true);
 		},
 
 		onRemove: function() {

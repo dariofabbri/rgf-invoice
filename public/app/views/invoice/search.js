@@ -12,7 +12,15 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHt
 	
 	var SearchView = ParentView.extend({
 
+		initialize: function(options) {
+			this.type = options.type;
+
+			invoiceSearch.set('type', options.type);
+		},
+
 		template: _.template(searchHtml),
+
+		type: null,
 
 		events: {
 			'keyup input': 'onKeyup',
@@ -21,7 +29,11 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHt
 		},
 
 		render: function () {
-			var html = this.template();
+			var html = this.template({
+				type: this.type,
+				singular: this.type === 'I' ? 'fattura' : 'nota di credito',
+				plural: this.type === 'I' ? 'fatture' : 'note di credito',
+			});
 			this.$el.html(html);
 
 			// Set up search form buttons.
@@ -111,12 +123,13 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHt
 		},
 
 		ajaxSearch: function(data, callback, settings) {
+
 			var authorization = loginInfo.getAuthorization();
 
 			// Prepare query arguments. The type is always "invoices".
 			//
 			var queryArguments = {
-				type: 'I'
+				type: invoiceSearch.get('type')
 			};
 			_.each(data.columns, function(column) {
 				if(column.search.value) {
@@ -195,7 +208,7 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHt
 
 		onClickNew: function() {
 
-			Backbone.history.navigate('newInvoice', true);
+			Backbone.history.navigate('newInvoice/' + this.type, true);
 		},
 
 		onClickRow: function(e) {

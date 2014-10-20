@@ -15,18 +15,18 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, PrintInv
 	var InvoiceRouter = Backbone.Router.extend({
 
 		routes: {
-			'invoices': 'invoices',
-			'newInvoice': 'newInvoice',
+			'invoices/:type': 'invoices',
+			'newInvoice/:type': 'newInvoice',
 			'invoice/:id': 'invoice'
 		},
 
-		invoices: function() {
+		invoices: function(type) {
 
-			var searchInvoiceView = new SearchInvoiceView();
+			var searchInvoiceView = new SearchInvoiceView({type: type});
 			viewManager.setView('#main-content', searchInvoiceView);
 		},
 
-		newInvoice: function() {
+		newInvoice: function(type) {
 
 			// First fetch the default company's data.
 			//
@@ -39,6 +39,7 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, PrintInv
 					// and set the issuer's data.
 					//
 					var model = new InvoiceModel();
+					model.set('type', type);
 					model.setIssuer(company.toJSON());
 
 					// Preset today's date.
@@ -51,7 +52,7 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, PrintInv
 
 					// Preset invoice number.
 					//
-					$.ajax('invoices/nextNumber', { 
+					$.ajax('../invoices/nextNumber', { 
 						dataType: 'json',
 						type: 'POST',
 						success: function(data) {
