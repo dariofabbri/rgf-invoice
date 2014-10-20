@@ -6,9 +6,10 @@ define([
 	'views/parent/parent',
 	'models/invoice-search',
 	'models/login-info',
-	'text!templates/invoice/search.html'
+	'text!templates/invoice/search-invoice.html',
+	'text!templates/invoice/search-credit-note.html'
 ],
-function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHtml) {
+function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchInvoiceHtml, searchCreditNoteHtml) {
 	
 	var SearchView = ParentView.extend({
 
@@ -17,8 +18,6 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHt
 
 			invoiceSearch.set('type', options.type);
 		},
-
-		template: _.template(searchHtml),
 
 		type: null,
 
@@ -29,11 +28,8 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchHt
 		},
 
 		render: function () {
-			var html = this.template({
-				type: this.type,
-				singular: this.type === 'I' ? 'fattura' : 'nota di credito',
-				plural: this.type === 'I' ? 'fatture' : 'note di credito',
-			});
+			var template = this.type === 'I' ? _.template(searchInvoiceHtml) : _.template(searchCreditNoteHtml);
+			var html = template();
 			this.$el.html(html);
 
 			// Set up search form buttons.

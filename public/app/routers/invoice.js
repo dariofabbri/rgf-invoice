@@ -52,7 +52,7 @@ function ($, _, Backbone, moment, SearchInvoiceView, DetailInvoiceView, PrintInv
 
 					// Preset invoice number.
 					//
-					$.ajax('../invoices/nextNumber', { 
+					$.ajax('../invoices/nextNumber/' + type, { 
 						dataType: 'json',
 						type: 'POST',
 						success: function(data) {

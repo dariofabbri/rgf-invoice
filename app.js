@@ -110,7 +110,7 @@ app.get('/invoices/:id/print', invoices.print);
 app.post('/invoices', passport.authenticate('basic', { session: false }), invoices.create);
 app.put('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.update);
 app.delete('/invoices/:id', passport.authenticate('basic', { session: false }), invoices.delete);
-app.post('/invoices/nextNumber', passport.authenticate('basic', { session: false }), invoices.generateNextNumber);
+app.post('/invoices/nextNumber/:type', passport.authenticate('basic', { session: false }), invoices.generateNextNumber);
 
 // Companies related routes.
 //

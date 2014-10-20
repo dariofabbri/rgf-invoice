@@ -194,7 +194,9 @@ exports.delete = function(req, res) {
 
 exports.generateNextNumber = function(req, res) {
 
-	Invoice.findOne({}, 'number', {limit: 1, sort: { number: -1 }}, function(err, doc) {
+	var type = req.params.type;
+
+	Invoice.findOne({type: type}, 'number', {limit: 1, sort: { number: -1 }}, function(err, doc) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);

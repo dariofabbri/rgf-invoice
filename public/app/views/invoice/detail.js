@@ -10,13 +10,12 @@ define([
 	'collections/cities',
 	'collections/counties',
 	'utils/validation',
-	'text!templates/invoice/detail.html'
+	'text!templates/invoice/detail-invoice.html',
+	'text!templates/invoice/detail-credit-note.html'
 ],
-function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, validation, detailHtml) {
+function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, validation, detailInvoiceHtml, detailCreditNoteHtml) {
 	
 	var DetailView = FormView.extend({
-
-		template: _.template(detailHtml),
 
 		events: {
 			'click #selectAddressee': 'onClickSelectAddressee',
@@ -35,10 +34,8 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		render: function () {
 
-			var html = this.template(_.extend(this.model, {
-				singular: this.model.get('type') === 'I' ? 'fattura' : 'nota di credito',
-				plural: this.model.get('type') === 'I' ? 'fatture' : 'note di credito'
-			}).toJSON());
+			var template = this.model.get('type') === 'I' ? _.template(detailInvoiceHtml) : _.template(detailCreditNoteHtml);
+			var html = template(this.model.toJSON());
 			this.$el.html(html);
 
 			// Set up form buttons.
