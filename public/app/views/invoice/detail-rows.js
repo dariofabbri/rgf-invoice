@@ -17,7 +17,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 
 		editing: null,
 
-		editableColumns: [ 1, 2, 3, 4, 6 ],
+		editableColumns: [ 1, 2, 3, 4, 5 ],
 
 		selectableColumns: [ 0 ],
 
@@ -50,8 +50,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 
 			var data = _.clone(this.model.get('rows'));
 			_.each(data, function(row) {
-				row.taxable = validation.formatBig(row.taxable);
-				row.price = validation.formatBig(row.price);
+				row.priceVat = validation.formatBig(row.priceVat);
 				row.quantity = validation.formatBig(row.quantity);
 			});
 
@@ -84,13 +83,8 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 						orderable: false
 					},
 					{
-						name: 'price',
-						data: 'price',
-						orderable: false
-					},
-					{
-						name: 'taxable',
-						data: 'taxable',
+						name: 'priceVat',
+						data: 'priceVat',
 						orderable: false
 					},
 					{
@@ -155,7 +149,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 						!data[i].description &&
 						!data[i].uom &&
 						!data[i].quantity &&
-						!data[i].price &&
+						!data[i].priceVat &&
 						!data[i].vatPercentage) {
 					toBeDeleted.push(i);
 				}
@@ -175,9 +169,8 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 				var row = _.clone(data[i]);
 				_.extend(row, {
 					quantity: row.quantity.replace('.', '').replace(',', '.'),
-					price: row.price.replace('.', '').replace(',', '.'),
-					taxable: row.taxable.replace('.', '').replace(',', '.'),
-				})
+					priceVat: row.priceVat.replace('.', '').replace(',', '.')
+				});
 				var invoiceRow = new InvoiceRow(row);
 
 				// Call validation method.
@@ -257,8 +250,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 				description: null,
 				uom: null,
 				quantity: null,
-				price: null,
-				taxable: null,
+				priceVat: null,
 				vatPercentage: null
 			});
 			datatable.draw();
@@ -419,7 +411,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 					}
 				break;
 
-				// Price.
+				// PriceVAT.
 				//
 				case 4:
 					if(!validation.isValidNumber(val)) {
@@ -429,7 +421,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 
 				// VAT percentage.
 				//
-				case 6:
+				case 5:
 					var item = vats.find(function(item) {
 						return item.get('description') === val;
 					});
@@ -453,12 +445,18 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 
 			var data = row.data();
 
-			if(data.quantity && data.price) {
-				data.taxable = Big(data.quantity.replace(',', '.'))
-					.times(data.price.replace(',', '.'))
-					.toFormat();
-				row.data(data);
+			if(data.quantity && data.priceVat && data.vatPercentage) {
+				var perc = Big(data.vatPercentage.replace('%', '').replace(',', '.').trim()).plus(Big("100")).div(Big("100"));
+				data.total = Big(data.quantity.replace(',', '.'))
+					.times(data.priceVat.replace(',', '.'));
+				data.taxable = data.total.div(perc).toFixed(2);
 			}
+
+			if(data.quantity && data.taxable) {
+				data.price = Big(data.taxable).div(Big(data.quantity.replace(',', '.'))).toFixed(4);
+			}
+
+			row.data(data);
 		},
 
 		resetEditCell: function() {
@@ -581,7 +579,7 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 					this.autocompletize(input, uoms);
 					break;
 
-				case 6:
+				case 5:
 					this.autocompletize(input, vats);
 					break;
 			}
@@ -717,20 +715,16 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 
 				var tmp, perc;
 				
-				if(row.quantity && row.price) {
-					tmp = Big(row.quantity.replace(',', '.'))
-						.times(row.price.replace(',', '.'));
-					totals.taxable = totals.taxable.plus(tmp.toFixed(2));
+				if(row.taxable) {
+					totals.taxable = totals.taxable.plus(Big(row.taxable));
+				}
 
-					tax = Big(0);
-					if(row.vatPercentage) {
+				if(row.total) {
+					totals.total = totals.total.plus(Big(row.total));
+				}
 
-						perc = Big(row.vatPercentage.replace('%', '').replace(',', '.').trim());
-						tax = tmp.times(perc).div(100).toFixed(2); 
-						totals.tax = totals.tax.plus(tax);
-					}
-
-					totals.total = totals.total.plus(tmp).plus(tax);
+				if(row.total && row.taxable) {
+					totals.tax = totals.tax.plus(Big(row.total).minus(Big(row.taxable)));
 				}
 			});
 

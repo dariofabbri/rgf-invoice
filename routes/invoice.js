@@ -34,6 +34,12 @@ exports.list = function(req, res) {
 		listQuery.where('number', parseInt(req.query.number, 10));
 		countQuery.where('number', parseInt(req.query.number, 10));
 	}
+
+	var date = moment(req.query.date, 'D-M-YYYY');
+	if(date.isValid()) {
+		listQuery.where('date', date.toDate());
+		countQuery.where('date', date.toDate());
+	}
 	
 	// Count the filtered results.
 	//

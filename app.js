@@ -74,6 +74,13 @@ app.engine('handlebars', exphbs({
 			var arr = b.toFixed(options.hash.dp || 2).split('.');
       arr[0] = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, options.hash.ts == null ? '.' : options.hash.ts + '');
 			return arr.join(options.hash.ds == null ? ',' : options.hash.ds + '');
+		},
+		formatBig4: function(number, options) {
+			number = number || '0';
+			var b = new Big(number);
+			var arr = b.toFixed(options.hash.dp || 4).split('.');
+      arr[0] = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, options.hash.ts == null ? '.' : options.hash.ts + '');
+			return arr.join(options.hash.ds == null ? ',' : options.hash.ds + '');
 		}
 	}
 }));

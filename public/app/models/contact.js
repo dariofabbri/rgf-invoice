@@ -61,8 +61,17 @@ function ($, _, Backbone, validation) {
 
 			// Check the validity of CF code, if present.
 			//
-			if (this.get('cfCode') && !validation.isValidCodiceFiscale(this.get('cfCode'))) {
-				errors['cfCode'] = 'Il codice fiscale immesso non è valido.';
+			if(this.get('cfCode')) {
+				if(this.get('isCompany')) {
+					if (!validation.isValidCodiceFiscale(this.get('cfCode')) && !validation.isValidPartitaIVA(this.get('cfCode'))) {
+						errors['cfCode'] = 'Il codice fiscale immesso non è valido.';
+					}
+
+				} else {
+					if (!validation.isValidCodiceFiscale(this.get('cfCode'))) {
+						errors['cfCode'] = 'Il codice fiscale immesso non è valido.';
+					}
+				}
 			}
 
 			// Check the validity of the email field, if present.
