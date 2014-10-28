@@ -322,6 +322,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			issuer.cfCode = this.$('#issuerCfCode').val();
 			issuer.reaCode = this.$('#issuerReaCode').val();
 			issuer.stock = this.$('#issuerStock').val();
+			issuer.email = this.$('#issuerEmail').val();
 			this.model.set('issuer', issuer);
 
 			var addressee = {};
@@ -365,6 +366,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.$('#issuerCfCode').val(this.model.get('issuer').cfCode);
 			this.$('#issuerReaCode').val(this.model.get('issuer').reaCode);
 			this.$('#issuerStock').val(this.model.get('issuer').stock);
+			this.$('#issuerEmail').val(this.model.get('issuer').email);
 
 			this.$('#addresseeDescription').val(this.model.get('addressee').description);
 			this.$('#addresseeAddress1').val(this.model.get('addressee').address1);

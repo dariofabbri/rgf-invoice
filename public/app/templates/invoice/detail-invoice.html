@@ -74,6 +74,11 @@
 					<div class="c8"><input id="issuerStock" type="text" placeholder="Inserire il capitale sociale dell'emittente della fattura" value="{{issuer.stock}}"/></div>
 				</div>
 
+				<div class="row">
+					<div class="c4"><span>Indirizzo PEC:<span></div>
+					<div class="c8"><input id="issuerEmail" type="text" placeholder="Inserire l'indirizzo PEC dell'emittente della fattura" value="{{issuer.email}}"/></div>
+				</div>
+
 			</div>
 
 		</div>
@@ -210,7 +215,7 @@
 				<button id="back">Indietro</button>
 				<button id="save">Salva</button>
 				<button id="print">Stampa</button>
-				<button id="freeze">Emetti</button>
+				<button id="freeze" style="display: none;">Emetti</button>
 			</div>
 		</div>
 	</div>

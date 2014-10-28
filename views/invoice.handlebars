@@ -24,6 +24,10 @@
 		{{/if}}
 	{{/if}}
 
+	{{#if issuer.email}}
+	<h2>Indirizzo PEC {{issuer.email}}</h2>
+	{{/if}}
+
 </div>
 
 <div class="fullwidth">
@@ -93,7 +97,7 @@
 			<td>Pos. {{position}} - {{description}}</td>
 			<td class="right-align">{{uom}}</td>
 			<td class="right-align">{{formatBig quantity}}</td>
-			<td class="right-align">{{formatBig4 price}}</td>
+			<td class="right-align">{{formatBig price}}</td>
 			<td class="right-align">{{formatBig taxable}}</td>
 			<td class="right-align">{{vatPercentage}}</td>
 		</tr>

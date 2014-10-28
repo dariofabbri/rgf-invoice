@@ -15,7 +15,8 @@ var invoiceSchema = new Schema({
 		cfCode: String,
 		vatCode: String,
 		reaCode: String,
-		stock: String
+		stock: String,
+		email: String
 	},
 	addressee: {
 		idContact: Schema.Types.ObjectId,

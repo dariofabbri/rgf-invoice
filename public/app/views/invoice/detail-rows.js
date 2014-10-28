@@ -438,6 +438,8 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 
 		updateTotals: function(td) {
 
+			var perc;
+
 			var row = $(this.editing)
 				.closest('table')
 				.DataTable()
@@ -446,9 +448,12 @@ function ($, _, Backbone, Big, InvoiceRow, uoms, vats, validation, detailRowsHtm
 			var data = row.data();
 
 			if(data.quantity && data.priceVat && data.vatPercentage) {
-				var perc = Big(data.vatPercentage.replace('%', '').replace(',', '.').trim()).plus(Big("100")).div(Big("100"));
-				data.total = Big(data.quantity.replace(',', '.'))
-					.times(data.priceVat.replace(',', '.'));
+				if(data.vatPercentage === 'Esente Art. 74') {
+					perc = Big('1');
+				} else {
+					perc = Big(data.vatPercentage.replace('%', '').replace(',', '.').trim()).plus(Big('100')).div(Big('100'));
+				}
+				data.total = Big(data.quantity.replace(',', '.')).times(data.priceVat.replace(',', '.'));
 				data.taxable = data.total.div(perc).toFixed(2);
 			}
 

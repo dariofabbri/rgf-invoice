@@ -17,6 +17,7 @@ var companySchema = new Schema({
 		model: String,
 		serial: String
 	},
+	email: String,
 	createdBy: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedBy: String,
