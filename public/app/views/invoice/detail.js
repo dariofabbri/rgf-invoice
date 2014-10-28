@@ -9,11 +9,12 @@ define([
 	'views/invoice/detail-rows',
 	'collections/cities',
 	'collections/counties',
+	'collections/payments',
 	'utils/validation',
 	'text!templates/invoice/detail-invoice.html',
 	'text!templates/invoice/detail-credit-note.html'
 ],
-function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, validation, detailInvoiceHtml, detailCreditNoteHtml) {
+function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, DetailRowsView, cities, counties, payments, validation, detailInvoiceHtml, detailCreditNoteHtml) {
 	
 	var DetailView = FormView.extend({
 
@@ -69,6 +70,12 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 					response(counties.list(request.term));
 				}
 			});
+			this.$('#payment').autocomplete({
+				source: function(request, response) {
+					response(payments.list(request.term));
+				},
+				minLength: 0
+			});
 
 			// Set up the accordions.
 			//
@@ -78,6 +85,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.$('#accordion-receipt').accordion({collapsible: true, heightStyle: 'content', active: 0});
 			this.$('#accordion-detail').accordion({collapsible: true, heightStyle: 'content', active: 0});
 			this.$('#accordion-totals').accordion({collapsible: true, heightStyle: 'content', active: 0});
+			this.$('#accordion-payment').accordion({collapsible: true, heightStyle: 'content', active: 0});
 
 			// Set focus on the first form field.
 			//
@@ -170,6 +178,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.$('#accordion-receipt').accordion('destroy');
 			this.$('#accordion-detail').accordion('destroy');
 			this.$('#accordion-totals').accordion('destroy');
+			this.$('#accordion-payment').accordion('destroy');
 		},
 
 		onClickSelectAddressee: function() {
@@ -338,6 +347,8 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			totals.tax = validation.cleanBig(this.$('#totalsTax').val());
 			totals.total = validation.cleanBig(this.$('#totalsTotal').val());
 			this.model.set('totals', totals);
+
+			this.model.set('payment', this.$('#payment').val());
 		},
 
 		modelToForm: function() {
@@ -372,6 +383,8 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 			this.$('#totalsTaxable').val(validation.formatBig(this.model.get('totals').taxable));
 			this.$('#totalsTax').val(validation.formatBig(this.model.get('totals').tax));
 			this.$('#totalsTotal').val(validation.formatBig(this.model.get('totals').total));
+
+			this.$('#payment').val(this.model.get('payment'));
 		},
 
 		// Clear previous validation errors from form fields.

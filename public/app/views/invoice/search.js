@@ -102,7 +102,8 @@ function ($, _, Backbone, moment, ParentView, invoiceSearch, loginInfo, searchIn
 						previous:	'Precedente'
 					},
 					search: 'Cerca'
-				}
+				},
+				order: [0, 'desc']
 			});
 
 			// Apply search filters.
