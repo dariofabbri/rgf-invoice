@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var mongoose = require('mongoose');
 var Invoice = require('../models/invoice');
 
@@ -247,8 +247,8 @@ exports.print = function(req, res) {
 			hasReaCodeAndStock: doc.issuer.reaCode && doc.issuer.stock,
 			isInvoice: doc.type === 'I',
 			isCreditNote: doc.type === 'C',
-			formattedDate: moment(doc.date).format('DD/MM/YYYY'),
-			formattedReceiptDate: doc.receipt && doc.receipt.date ? moment(doc.receipt.date).format('DD/MM/YYYY') : null
+			formattedDate: moment(doc.date).tz('Europe/Rome').format('DD/MM/YYYY'),
+			formattedReceiptDate: doc.receipt && doc.receipt.date ? moment(doc.receipt.date).tz('Europe/Rome').format('DD/MM/YYYY') : null
 		});
 
   	res.render('invoice', doc);
