@@ -183,6 +183,7 @@ function ($, _, Backbone, moment, ContactModel, FormView, ContactPickerView, Det
 
 		onClickSelectAddressee: function() {
 
+			this.formToModel();
 			Backbone.trigger('invoice:opencontactpicker');
 		},
 
