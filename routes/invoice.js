@@ -8,7 +8,7 @@ exports.list = function(req, res) {
 
 	var response = {};
 	var listQuery = Invoice.find({});
-	var countQuery = Invoice.count({});
+	var countQuery = Invoice.countDocuments({});
 
 	if(req.query.type) {
 		listQuery.where('type', req.query.type);
@@ -43,7 +43,7 @@ exports.list = function(req, res) {
 	
 	// Count the filtered results.
 	//
-	countQuery.count(function(err, count) {
+	countQuery.countDocuments(function(err, count) {
 		if(err) {
 			res.statusCode = 500;
 			return res.send(err);
@@ -59,11 +59,11 @@ exports.list = function(req, res) {
 	}
 
 	if(req.query._length) {
-		listQuery.limit(req.query._length);
+		listQuery.limit(parseInt(req.query._length, 10));
 	}
 
 	if(req.query._start) {
-		listQuery.skip(req.query._start);
+		listQuery.skip(parseInt(req.query._start, 10));
 	}
 
 	listQuery.exec(function(err, docs) {

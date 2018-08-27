@@ -44,7 +44,7 @@ passport.use(new BasicStrategy({
 
 // Open database connection.
 //
-mongoose.connect('mongodb://localhost:27017/rgf');
+mongoose.connect('mongodb://localhost/rgf', { useNewUrlParser: true });
 
 var users = require('./routes/user');
 var contacts = require('./routes/contact');
