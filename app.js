@@ -2,14 +2,14 @@ var express = require('express');
 var exphbs = require('express-handlebars');
 var http = require('http');
 var path = require('path');
-var favicon = require('static-favicon');
+var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var Big = require('big.js');
-var BasicStrategy = require('gt-passport-http').BasicStrategy;
+var BasicStrategy = require('passport-http').BasicStrategy;
 var User = require('./models/user');
 
 // Set up BASIC authentication strategy in PassportJS.
@@ -56,11 +56,10 @@ var app = express();
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
-app.use(app.router);
 
 // Set up templating engine.
 //
